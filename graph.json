@@ -1,0 +1,62 @@
+{
+	"Graph":
+    [
+        {
+			"Name": "A",
+			"Active": 0,
+			"Type": "Filter",
+			"Next":[{"Name": "B", "Active": 2}],
+			"Prev":[{"Name": "", "Active": -1}],
+			"Config":{"Name": "Resize", "Width": 1000,"Height": 1000 }
+		},{
+			"Name": "D",
+			"Active": 1,
+			"Type": "Filter",
+			"Next":[{"Name": "E", "Active": 3}],
+			"Prev":[{"Name": "", "Active": -1}],
+			"Config":{"Name": "Resize", "Width": 1000,"Height": 1000 }
+		},{
+			"Name": "B",
+			"Active": 2,
+			"Type": "Filter",
+			"Next":[{"Name": "C", "Active": 4}],
+			"Prev":[{"Name": "A", "Active": 0}],
+			"Config":{"Name": "GaussianBlur", "KernelSizeX": 3,"KernelSizeY": 3 ,	"SigmaX": 3, "SigmaY": 3, "BorderType": 4}
+		},{
+			"Name": "E",
+			"Active": 3,
+			"Type": "Filter",
+			"Next":[{"Name": "F", "Active": 5}],
+			"Prev":[{"Name": "D", "Active": 1}],
+			"Config":{"Name": "GaussianBlur", "KernelSizeX": 3,"KernelSizeY": 3 ,	"SigmaX": 3, "SigmaY": 3, "BorderType": 4}
+		},{
+			"Name": "C",
+			"Active": 4,
+			"Type": "Filter",
+			"Next":[{"Name": "G", "Active": 6}],
+			"Prev":[{"Name": "B", "Active": 2}],
+			"Config":{"Name": "GaussianBlur", "KernelSizeX": 3,"KernelSizeY": 3 ,	"SigmaX": 3, "SigmaY": 3, "BorderType": 4}
+		},{
+			"Name": "F",
+			"Active": 5,
+			"Type": "Filter",
+			"Next":[{"Name": "G", "Active": 6}],
+			"Prev":[{"Name": "E", "Active": 3}],
+			"Config":{"Name": "GaussianBlur", "KernelSizeX": 3,"KernelSizeY": 3 ,	"SigmaX": 3, "SigmaY": 3, "BorderType": 4}
+		},{
+			"Name": "G",
+			"Active": 6,
+			"Type": "Adder",
+			"Next":[{"Name": "H", "Active": 7}],
+			"Prev":[{"Name": "C", "Active": 4},{"Name": "F", "Active": 5}],
+			"Config":{"Name": "AddWeighted", "Alpha": 0.5, "Beta":0.5, "Gamma":0.0}
+		},{
+			"Name": "H",
+			"Active": 7,
+			"Type": "Filter",
+			"Next":[{"Name": "", "Active": -1}],
+			"Prev":[{"Name": "G", "Active": 6}],
+			"Config":{"Name": "GaussianBlur", "KernelSizeX": 3,"KernelSizeY": 3 ,	"SigmaX": 3, "SigmaY": 3, "BorderType": 4}
+		}
+	]
+}

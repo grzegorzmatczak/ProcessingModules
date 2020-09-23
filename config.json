@@ -1,0 +1,489 @@
+{
+	"CommunicationServer":
+    {
+        "Port":1883,
+        "Ip":"127.0.0.1",
+        "InfoTopic":"All/Info/Topic",
+        "CommandTopic":"All/Command/Topic"
+    },
+    "CommunicationClient":
+    {
+        "Port":1883,
+        "Ip":"127.0.0.1",
+        "InfoTopic":"Client/Info/Topic",
+	    "CommandTopic":"Client/Command/Topic"
+    },
+	"DronParameter":
+	{
+		"RandSeed":12,
+		"SizeMin": 3,
+		"SizeMax": 6,
+		"Marker": 2,
+		"Color": 0,
+		"Rotate": true,
+		"VelocityMin": 2,
+		"VelocityMax": 4,
+		"ProbOfChangeSize": 0.25,
+		"ProbOfChangeVelocity" : 0.15
+	},
+	"Colors":
+	{
+		"UnknownGTColor":170
+	},
+	"Results":
+	{
+		"ResultsPath": "/home/gmatczak/genetic/Result/result_GMATCZAK/result/",
+		"Mp4Path":"/home/gmatczak/genetic/Result/result_GMATCZAK/mp4/",
+		"BestPath":"/home/gmatczak/genetic/Result/result_GMATCZAK/best/",
+		"EstimatorPrefix":"KNN",
+		"ParamPrefix":"0_0_0_KNN",
+		"ResultsPathRemote": "/home/gmatczak/remote/Result/result_GMATCZAK/result/",
+		"ResultsPathRemoteJSON": "/home/gmatczak/remote/Result/result_GMATCZAK/result_json/",
+		"ParamPrefixRemote":"0_0_0_KNN"
+	},
+	"General":
+	{
+		"LogLevel":2,
+		"ThreadsMax":7,
+		"Standalone":false
+
+	},
+	"Genetic":
+	{
+		"RandSeed":12,
+		"Preview":99,
+		"AdditionalLogs":false,
+		"IterationMax":100,
+		"IterationChange":20,
+		"PopulationSize":30,
+		"ProbMutation":0.6,
+		"ProbXover":0.6,
+		"ProbGradient":0.6,
+		"ActiveDataSet":0,
+		"BestNotChangeIteration": 100,
+		"BestNotChangeIterationNoFilter":100,
+		"BestNotChangeIterationFilter":100,
+		"BestNotChangeIterationClean":100
+	},
+	"Dataset":
+	{
+		"Resize":true,
+		"Noise":10.00,
+		"DronSize":3,
+		"Height":25,
+		"Width":25,
+		"FolderInput":"/home/gmatczak/genetic/repo/CirrusCloudLowResolution/",
+		"VideoInput":"NORM0001_1920x1080_30_1.MP4",
+		"VideoGT":"groundtruth/%d.png",
+		"NameROI":"/home/gmatczak/genetic/QtDataset/TestDron1/noise_0/ROI.bmp",
+		"StartFrame" : 1,
+		"StopFrame" : 80,
+		"StartGT" : 50,
+		"StopGT" : 80,
+		"NegativeGT" : false,
+		"NegativeInput":false
+	}
+	,
+	"Block":
+	[	{	"name": "blok1a",
+			"type": "Filter"
+		},{	"name": "blok1b",
+			"type": "Filter"
+		},{	"name": "blok1c",
+			"type": "Filter"
+		},{	"name": "blok2",
+			"type": "Subtractor"
+		},{	"name": "blok3a",
+			"type": "Filter"
+		},{	"name": "blok3b",
+			"type": "Filter"
+		},{	"name": "blok3c",
+			"type": "Filter"
+		},{	"name": "blok3d",
+			"type": "FilterThreshold"
+		},{	"name": "blok4",
+			"type": "Compare"
+		},{	"name": "blok5",
+			"type": "Encode"
+		},{	"name": "blok6",
+			"type": "Fitness"
+		}
+	],
+	"Fitness": 
+	{
+		"name": "fitness_type",
+		"min": 2,
+		"max": 2,
+		"isOdd": false,
+		"isEven":false,
+		"Fitness":
+		[[{
+			"name": "None_None",
+			"min": 1,
+			"max": 1
+		}],
+		[{
+			"name": "BGFitness_FitnessFunction",
+            "isString":"Recall_Specificity_FMeasure_Precision"
+		}]
+		]
+	},
+	"FilterThreshold": 
+	{
+		"name": "FilterThreshold_type",
+		"min":1,
+		"max": 1,
+		"isOdd": false,
+		"isEven":false,
+		"FilterThreshold":
+		[
+		[{
+			"name": "Threshold_DecisionThreshold",
+			"min": 2,
+			"max": 250
+		},{
+			"name": "Threshold_ThresholdTypes",
+			"min": 0,
+			"max": 1
+		}]
+		]
+	},
+	"Filter": 
+	{
+		"name": "filter_type",
+		"min":1,
+		"max": 1,
+		"isOdd": false,
+		"isEven":false,
+		"Filter":
+		[
+		[{
+			"name": "None_None"
+		}],
+		[{
+			"name": "MedianBlur_KernelSize",
+			"min": 1,
+			"max": 23,
+			"isOdd": true
+		}],
+		[{	
+			"name": "Blur_KernelSizeX",
+			"min": 1,
+			"max": 23,
+			"isOdd": true
+		},{
+			"name": "Blur_KernelSizeY",
+			"min": 1,
+			"max": 23,
+			"isOdd": true
+		},{
+			"name": "Blur_BorderType",
+			"min": 1,
+			"max": 2
+		}],
+		[{	
+			"name": "GaussianBlur_KernelSizeX",
+			"min": 1,
+			"max": 23,
+			"isOdd": true
+		},{
+			"name": "GaussianBlur_KernelSizeY",
+			"min": 1,
+			"max": 23,
+			"isOdd": true
+		},{
+			"name": "GaussianBlur_m_sigmaX",
+			"min": 0,
+			"max": 1,
+			"isDouble": 10
+		},{
+			"name": "GaussianBlur_m_sigmaY",
+			"min": 0,
+			"max": 1,
+			"isDouble": 10
+		},{
+			"name": "GaussianBlur_BorderType",
+			"min": 1,
+			"max": 2
+		}],
+		[{	
+			"name": "Sobel_OrderDerivativeX",
+			"min": 1,
+			"max": 2
+		  },{
+			"name": "Sobel_OrderDerivativeY",
+			"min": 1,
+			"max": 2
+		  },{
+			"name": "Sobel_KernelSize",
+			"min": 1,
+			"max": 7,
+			"isOdd": true
+		  },{
+			"name": "Sobel_BorderType",
+			"min": 1,
+			"max": 2
+		}],
+		[{
+			"name": "MorphologyOperation_MorphOperator",
+			"min": 0,
+			"max": 5
+		},{
+			"name": "MorphologyOperation_MorphSize",
+			"min": 1,
+			"max": 35
+		},{
+			"name": "MorphologyOperation_MorphElement",
+			"min": 0,
+			"max": 2
+		}],
+		[{
+			"name": "BilateralFilter_Diameter",
+			"min": 1,
+			"max": 5
+		},{
+			"name": "BilateralFilter_SigmaColor",
+			"min": 1,
+			"max": 1000,
+      		"isDouble": 100
+    	},{
+			"name": "BilateralFilter_SigmaSpace",
+			"min": 1,
+			"max": 1000,
+      		"isDouble": 100
+		},{
+			"name": "BilateralFilter_BorderType",
+			"min": 1,
+			"max": 2
+		}],
+		[{
+			"name": "Threshold_DecisionThreshold",
+			"min": 2,
+			"max": 250
+		},{
+			"name": "Threshold_ThresholdTypes",
+			"min": 0,
+			"max": 1
+		}]
+		]
+	},
+	"Subtractor": 
+	{
+		"name": "subtractor_type",
+		"min":2,
+		"max": 2,
+		"isOdd": false,
+		"isEven":false,
+		"Subtractor": 
+		[[{
+			"name": "KNN_LearningRate",
+			"min": 1,
+			"max": 1000,
+			"isDouble": 1000
+		},{
+			"name": "KNN_History",
+			"min": 1,
+			"max": 100
+		},{
+			"name": "KNN_VarThreshold",
+			"min": 0,
+			"max": 255
+		},{
+			"name": "KNN_DetectShadow",
+			"min": 0,
+			"max": 1,
+			"isBool":true
+		}],
+		[{
+			"name": "MOG2_LearningRate",
+			"min": 1,
+			"max": 100,
+			"isDouble": 100
+		},{
+			"name": "MOG2_History",
+			"min": 1,
+			"max": 200
+		},{
+			"name": "MOG2_VarThreshold",
+			"min": 1,
+			"max": 255
+		},{
+			"name": "MOG2_DetectShadow",
+			"min": 0,
+			"max": 1,
+			"isBool":true	
+		}],
+		[{
+			"name": "CNT_MinPixelStability",
+			"min": 10,
+			"max": 20
+		},{
+			"name": "CNT_MaxPixelStability",
+			"min": 600,
+			"max": 1200
+		},{
+			"name": "CNT_IsParallel",
+			"min": 0,
+			"max": 1,
+			"isBool":true
+		},{
+			"name": "CNT_UseHistory",
+			"min": 0,
+			"max": 1,
+			"isBool":true
+		}],
+		[{
+			"name": "GMG_InitializationFrames",
+			"min": 10,
+			"max": 30
+		},{
+			"name": "GMG_DecisionThreshold",
+			"min": 1,
+			"max": 255
+		}],
+		[{
+			"name": "MOG_History",
+			"min": 1,
+			"max": 200
+		},{
+			"name": "MOG_Nmixtures",
+			"min": 1,
+			"max": 20
+		},{
+			"name": "MOG_BackgroundRatio",
+			"min": 1,
+			"max": 100,
+			"isDouble": 100
+		},{
+			"name": "MOG_NoiseSigma",
+			"min": 1,
+			"max": 100,
+			"isDouble": 100
+		}],
+		[{
+			"name": "GSOC_CameraMotionCompensation",
+			"min": 0,
+			"max": 1,
+			"isBool":true
+		},{
+			"name": "GSOC_NumberOfSamples",
+			"min": 2,
+			"max": 1000
+		},{
+			"name": "GSOC_ReplaceRate",
+			"min": 1,
+			"max": 100,
+			"isDouble": 100
+		},{
+			"name": "GSOC_PropagationRate",
+			"min": 1,
+			"max": 100,
+			"isDouble": 100
+		},{
+			"name": "GSOC_HitsThreshold",
+			"min": 1,
+			"max": 255
+		}],
+		[{
+			"name": "LSBP_CameraMotionCompensation",
+			"min": 0,
+			"max": 0
+		},{
+			"name": "LSBP_NumberOfSamples",
+			"min": 2,
+			"max": 1000
+		},{
+			"name": "LSBP_LSBPRadius",
+			"min": 1,
+			"max": 32
+		}],
+		
+		[{
+			"name": "Median_History",
+			"min": 2,
+			"max": 30
+		},{
+			"name": "Median_HistoryDelta",
+			"min": 1,
+			"max": 30 
+		},{
+			"name": "Median_DecisionThreshold",
+			"min": 1,
+			"max": 255
+		}],
+		[{
+			"name": "None_None"
+		}]]
+	},
+	"Compare": 
+	{
+		"name": "compare_type",
+		"min": 1,
+		"max": 1,
+		"isOdd": false,
+		"isEven":false,
+		"Compare":
+		[
+		[{
+			"name": "CodeStats2014_Roi",
+			"min": 1,
+			"max": 1,
+			"isString":"/home/gmatczak/genetic/QtDataset/TestDron1/noise_40/ROI.bmp"
+		},{
+			"name": "CodeStats2014_DronSize",
+			"min": 400,
+			"max": 400
+		},{
+			"name": "CodeStats2014_Width",
+			"min": 300,
+			"max": 300
+		},{
+			"name": "CodeStats2014_Height",
+			"min": 300,
+			"max": 300
+		}]]
+	},
+	"Encode": 
+	{
+		"name": "encode_type",
+		"min": 1,
+		"max": 1,
+		"isOdd": false,
+		"isEven":false,
+		"Encode":
+		[
+		[{
+			"name": "None_None",
+			"min": 1,
+			"max": 1
+		}],
+		[{
+			"name": "Preview_Type",
+			"min": 1,
+			"max": 1,
+            "isString":".mp4"
+		},{
+			"name": "Preview_Path",
+			"min": 1,
+			"max": 1,
+            "isString":"/home/gmatczak/temp/filmo"
+		},{
+			"name": "Preview_FPS",
+			"min": 24,
+			"max": 25
+		},{
+			"name": "Preview_Iter",
+			"min": 1,
+			"max": 1
+		}
+		,{
+			"name": "Preview_Width",
+			"min": 600,
+			"max": 601
+		},{
+			"name": "Preview_Height",
+			"min": 400,
+			"max": 401
+		}]]
+	}
+}
