@@ -82,7 +82,9 @@ struct _data {
   cv::Mat processing;
   qint32 test;
   std::vector<QPolygonF> bounds;
+  std::vector<cv::Rect> rects;
   QString nameOfTracker;
+  QString nameOfFile;
   QString testStr;
 };
 

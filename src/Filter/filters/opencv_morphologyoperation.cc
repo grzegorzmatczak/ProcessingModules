@@ -10,10 +10,18 @@ Filters::MorphologyOperation::MorphologyOperation(QJsonObject const &a_config)
   , m_morphSize{ a_config[MORPH_SIZE].toInt() }
   , m_morphElement{ a_config[MORPH_ELEMENT].toInt() }
 {
+  spdlog::debug("Filters::MorphologyOperation::MorphologyOperation()");
 }
 
 void Filters::MorphologyOperation::process(std::vector<_data> &_data)
 {
+  if (_data[0].processing.empty()) {
+    spdlog::error("Filters::MorphologyOperation::process() image is empty!");
+  } else {
+    spdlog::trace("Filters::MorphologyOperation::process() image is correct");
+  }
+
+  assert(_data[0].processing.empty() == false);
   cv::Mat m_Element = cv::getStructuringElement(m_morphElement, cv::Size(2 * m_morphSize + 1, 2 * m_morphSize + 1),
                                                 cv::Point(m_morphSize, m_morphSize));
   morphologyEx(_data[0].processing, _data[0].processing, m_morphOperator, m_Element);

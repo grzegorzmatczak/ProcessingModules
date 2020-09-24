@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include <opencv2/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "../../include/block.h"
 

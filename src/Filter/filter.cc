@@ -6,9 +6,8 @@ Filter::Filter(QObject *parent) : Block(parent) {
 }
 
 void Filter::configure(QJsonObject const &a_config) {
-  //H_logger->trace("Filter::configure()");
   auto const NAME_STRING{a_config[NAME].toString()};
-  //H_logger->trace("filter type: {}", NAME_STRING.toStdString());
+  spdlog::trace("filter type: {}", NAME_STRING.toStdString());
   delete m_baseFilter;
   m_timer.reset();
 
@@ -21,7 +20,7 @@ void Filter::configure(QJsonObject const &a_config) {
   } else if (NAME_STRING == "MedianBlur") {
     m_baseFilter = new Filters::MedianBlur{a_config};
   } else if (NAME_STRING == "MorphologyOperation") {
-    m_baseFilter = new Filters::MorphologyOperation{a_config};
+    m_baseFilter = new Filters::MorphologyOperation{ a_config };
   } else if (NAME_STRING == "BilateralFilter") {
     m_baseFilter = new Filters::BilateralFilter{a_config};
   } else if (NAME_STRING == "Blur") {
@@ -42,6 +41,8 @@ void Filter::configure(QJsonObject const &a_config) {
     m_baseFilter = new Filters::AddGaussianNoise{ a_config };
   } else if (NAME_STRING == "AddDron") {
     m_baseFilter = new Filters::AddDron{ a_config };
+  } else if (NAME_STRING == "FindContours") {
+    m_baseFilter = new Filters::FindContours{ a_config };
   } else if (NAME_STRING == "None") {
     m_baseFilter = new Filters::None{};
   } else {
@@ -52,6 +53,15 @@ void Filter::configure(QJsonObject const &a_config) {
 void Filter::process(std::vector<_data> &_data) {
   //H_logger->trace("Filter::process(a_image)");
   m_timer.start();
+
+  if (_data[0].processing.empty()) {
+    spdlog::error("Filter::process() image is empty!");
+  } else {
+    spdlog::trace("Filter::process() image is correct");
+  }
+  assert(_data[0].processing.empty() == false);
+ // CV_ASSERT(_data[0].processing.empty() == false);
+
   m_baseFilter->process(_data);
   m_timer.stop();
 }
