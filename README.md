@@ -15,8 +15,10 @@ List of filters:
     #include "filters/opencv_resize.h"
     #include "filters/opencv_sobel.h"
     #include "filters/opencv_threshold.h"
-    #include "filters/opencv_bitwise_not.h"
-    #include "filters/opencv_region_of_interest.h"
+    #include "filters/opencv_bitwisenot.h"
+    #include "filters/opencv_regionofinterest.h"
+    #include "filters/custom_addgaussiannoise.h"
+    #include "filters/custom_adddron.h"
 
 List of backgroundsubtractors:
 
