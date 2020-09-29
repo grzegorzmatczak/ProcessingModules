@@ -17,9 +17,7 @@ void Filters::MorphologyOperation::process(std::vector<_data> &_data)
 {
   if (_data[0].processing.empty()) {
     spdlog::error("Filters::MorphologyOperation::process() image is empty!");
-  } else {
-    spdlog::trace("Filters::MorphologyOperation::process() image is correct");
-  }
+  } 
 
   assert(_data[0].processing.empty() == false);
   cv::Mat m_Element = cv::getStructuringElement(m_morphElement, cv::Size(2 * m_morphSize + 1, 2 * m_morphSize + 1),

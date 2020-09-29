@@ -66,12 +66,10 @@ void Subtractor::configure(QJsonObject const &a_config)
 void Subtractor::process(std::vector<_data> &_data)
 {
   m_timer.start();
-  spdlog::trace("Subtractor::process(a_image)");
 
   if (_data[0].processing.empty()) {
     spdlog::error("Subtractor::process() image is empty!");
   } else {
-    spdlog::trace("Subtractor::process() image iis correct");
   }
   assert(_data[0].processing.empty() == false);
 

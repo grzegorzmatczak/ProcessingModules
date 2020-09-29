@@ -57,7 +57,6 @@ void Filter::process(std::vector<_data> &_data) {
   if (_data[0].processing.empty()) {
     spdlog::error("Filter::process() image is empty!");
   } else {
-    spdlog::trace("Filter::process() image is correct");
   }
   assert(_data[0].processing.empty() == false);
  // CV_ASSERT(_data[0].processing.empty() == false);

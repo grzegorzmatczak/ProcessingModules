@@ -70,8 +70,8 @@ void Filters::AddDron::process(std::vector<_data> &_data)
   m_iterator++;
   if (m_firstTime) {
     m_firstTime = false;
-    spdlog::debug("AddDron::AddDron() initial data");
-    spdlog::debug("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
+    spdlog::trace("AddDron::AddDron() initial data");
+    spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
                   _data[0].processing.cols, _data[0].processing.rows);
     m_width = _data[0].processing.cols;
     m_height = _data[0].processing.rows;
@@ -158,7 +158,7 @@ void Filters::AddDron::process(std::vector<_data> &_data)
   m_oldRandX = m_randX;
   m_oldRandY = m_randY;
 
-  spdlog::debug("AddDron::AddDron() done");
+  spdlog::trace("AddDron::AddDron() done");
 
 }
 
