@@ -64,7 +64,7 @@ void Filters::FindContours::process(std::vector<_data> &_data)
       cv::Rect boundRect;
       boundRect = cv::boundingRect(contoursBEST[i]);
 
-      _data[0].rects.push_back(boundRect);
+      //_data[0].rects.push_back(boundRect);
     }
   }
 

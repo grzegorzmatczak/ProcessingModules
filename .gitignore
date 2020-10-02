@@ -736,3 +736,8 @@ build/x64/Release/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.read.1.tlog
 build/x64/Release/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.write.1.tlog
 build/x64/Release/ZERO_CHECK/ZERO_CHECK.tlog/ZERO_CHECK.lastbuildstate
 build/.vs/ProcessingModules/v16/ipch/AutoPCH/db473c97911af4a6/BASEADDER.ipch
+build/.vs/ProcessingModules/v16/ipch/AutoPCH/6b41f758f7526af5/OPENCV_BITWISENOT.ipch
+build/.vs/ProcessingModules/v16/ipch/AutoPCH/9f6987a75df4d5de/FILTER.ipch
+build/.vs/ProcessingModules/v16/ipch/AutoPCH/bca6ebe9238c7695/BLOCK.ipch
+build/ProcessingModules.dir/Debug/opencv_findcontours.obj
+build/ProcessingModules.dir/Debug/Processi.2DE8AF8A.tlog/unsuccessfulbuild

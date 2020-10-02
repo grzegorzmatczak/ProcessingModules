@@ -1,9 +1,7 @@
 #include "../include/block.h"
 #include "Adder/adder.h"
-#include "Compare/compare.h"
 #include "Filter/filter.h"
 #include "Subtractor/subtractor.h"
-#include "Tracker/tracker.h"
 
 Block::Block(QObject *parent) : QObject(parent) {
 
@@ -21,10 +19,6 @@ Block *Block::make(QString model) {
     return new Subtractor(nullptr);
   } else if (model == "Adder") {
     return new Adder(nullptr);
-  } else if (model == "Tracker") {
-    return new Tracker(nullptr);
-  } else if (model == "Compare") {
-    return new Compare(nullptr);
   }
   return new Filter(nullptr);
 }

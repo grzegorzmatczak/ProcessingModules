@@ -77,15 +77,27 @@ typedef struct regionOverlap {
   float only2;
 } regionOverlap;
 
+struct imageErrors
+{
+    qint64 tpError;
+    qint64 fpError;
+    qint64 fnError;
+    qint64 tnError;
+    qint64 nbShadowError;
+    double time;
+};
+
+struct _postData {
+    QString testStr;
+    imageErrors ie;
+    std::vector<QPolygonF> bounds;
+    std::vector<cv::Rect> rects;
+    QString nameOfTracker;
+    QString nameOfFile;
+};
+
 struct _data {
-  cv::Mat input;
   cv::Mat processing;
-  qint32 test;
-  std::vector<QPolygonF> bounds;
-  std::vector<cv::Rect> rects;
-  QString nameOfTracker;
-  QString nameOfFile;
-  QString testStr;
 };
 
 struct _list {

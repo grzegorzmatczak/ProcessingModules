@@ -106,7 +106,7 @@ void Filters::AddDron::process(std::vector<_data> &_data)
    
  double _chanceOfRotate = m_randomGenerator->bounded(0, 100) / 100.0;
   if (_chanceOfRotate < m_probabilityOfRotate) {
-   m_markerType = m_randomGenerator->bounded(0, 1);
+   m_markerType = m_randomGenerator->bounded(0, 2);
   }
 
   m_randX = m_oldRandX + m_velocityX;

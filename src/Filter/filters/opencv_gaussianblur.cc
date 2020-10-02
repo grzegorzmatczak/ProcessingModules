@@ -20,5 +20,4 @@ void Filters::GaussianBlur::process(std::vector<_data> &_data)
 {
   cv::GaussianBlur(_data[0].processing, _data[0].processing, cv::Size(m_kernelSizeX, m_kernelSizeY), m_sigmaX, m_sigmaY,
                    m_borderType);
-  _data[0].test += 1;
 }

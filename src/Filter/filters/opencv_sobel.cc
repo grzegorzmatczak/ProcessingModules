@@ -18,6 +18,7 @@ Filters::Sobel::Sobel(QJsonObject const &a_config)
 
 void Filters::Sobel::process(std::vector<_data> &_data)
 {
+
   cv::Mat dst = _data[0].processing.clone();
   cv::Mat grad_x, grad_y;
   cv::Mat abs_grad_x, abs_grad_y;

@@ -57,12 +57,6 @@ endif()
   file(GLOB_RECURSE SUBTRACTOR_SRC src/Subtractor/*.cc src/Subtractor/*.c)
   file(GLOB_RECURSE SUBTRACTOR_HEADERS src/Subtractor/*.h src/Subtractor/*.hpp)
 
-  file(GLOB_RECURSE COMPARE_SRC src/Compare/*.cc src/Compare/*.c)
-  file(GLOB_RECURSE COMPARE_HEADERS src/Compare/*.h src/Compare/*.hpp)
-
-  file(GLOB_RECURSE TRACKER_SRC src/Tracker/*.cc src/Tracker/*.c)
-  file(GLOB_RECURSE TRACKER_HEADERS src/Tracker/*.h src/Tracker/*.hpp)
-
 set(SRC
    src/block.cc
 )

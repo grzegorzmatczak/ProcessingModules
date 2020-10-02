@@ -1,36 +1,39 @@
 #include "filter.h"
 #include "filterlist.h"
 
-Filter::Filter(QObject *parent) : Block(parent) {
+Filter::Filter(QObject *parent)
+  : Block(parent)
+{
   m_baseFilter = new Filters::None{};
 }
 
-void Filter::configure(QJsonObject const &a_config) {
-  auto const NAME_STRING{a_config[NAME].toString()};
+void Filter::configure(QJsonObject const &a_config)
+{
+  auto const NAME_STRING{ a_config[NAME].toString() };
   spdlog::trace("filter type: {}", NAME_STRING.toStdString());
   delete m_baseFilter;
   m_timer.reset();
 
   if (NAME_STRING == "Color") {
-    m_baseFilter = new Filters::Color{a_config};
+    m_baseFilter = new Filters::Color{ a_config };
   } else if (NAME_STRING == "Resize") {
-    m_baseFilter = new Filters::Resize{a_config};
+    m_baseFilter = new Filters::Resize{ a_config };
   } else if (NAME_STRING == "Threshold") {
-    m_baseFilter = new Filters::Threshold{a_config};
+    m_baseFilter = new Filters::Threshold{ a_config };
   } else if (NAME_STRING == "MedianBlur") {
-    m_baseFilter = new Filters::MedianBlur{a_config};
+    m_baseFilter = new Filters::MedianBlur{ a_config };
   } else if (NAME_STRING == "MorphologyOperation") {
     m_baseFilter = new Filters::MorphologyOperation{ a_config };
   } else if (NAME_STRING == "BilateralFilter") {
-    m_baseFilter = new Filters::BilateralFilter{a_config};
+    m_baseFilter = new Filters::BilateralFilter{ a_config };
   } else if (NAME_STRING == "Blur") {
-    m_baseFilter = new Filters::Blur{a_config};
+    m_baseFilter = new Filters::Blur{ a_config };
   } else if (NAME_STRING == "Sobel") {
-    m_baseFilter = new Filters::Sobel{a_config};
+    m_baseFilter = new Filters::Sobel{ a_config };
   } else if (NAME_STRING == "Canny") {
-    m_baseFilter = new Filters::Canny{a_config};
+    m_baseFilter = new Filters::Canny{ a_config };
   } else if (NAME_STRING == "InRange") {
-    m_baseFilter = new Filters::InRange{a_config};
+    m_baseFilter = new Filters::InRange{ a_config };
   } else if (NAME_STRING == "BitwiseNot") {
     m_baseFilter = new Filters::BitwiseNot{ a_config };
   } else if (NAME_STRING == "RegionOfInterest") {
@@ -46,22 +49,31 @@ void Filter::configure(QJsonObject const &a_config) {
   } else if (NAME_STRING == "None") {
     m_baseFilter = new Filters::None{};
   } else {
-    //H_logger->error("Unsupported filter type: {}", NAME_STRING.toStdString());
+    // H_logger->error("Unsupported filter type: {}", NAME_STRING.toStdString());
   }
 }
 
-void Filter::process(std::vector<_data> &_data) {
-  //H_logger->trace("Filter::process(a_image)");
+void Filter::process(std::vector<_data> &_data)
+{
+  // H_logger->trace("Filter::process(a_image)");
   m_timer.start();
 
   if (_data[0].processing.empty()) {
-    spdlog::error("Filter::process() image is empty!");
+    spdlog::error("Filter::process() image is empty! ?");
+    qDebug() << "&_data" << &_data;
+    qDebug() << "&_data[0]" << &_data[0];
+    qDebug() << "&_data[0].processing" << &_data[0].processing;
+
   } else {
   }
-  assert(_data[0].processing.empty() == false);
- // CV_ASSERT(_data[0].processing.empty() == false);
+
+  // assert(_data[0].processing.empty() == false);
+  // CV_ASSERT(_data[0].processing.empty() == false);
 
   m_baseFilter->process(_data);
   m_timer.stop();
 }
-double Filter::getElapsedTime() { return m_timer.getTimeMilli(); }
+double Filter::getElapsedTime()
+{
+  return m_timer.getTimeMilli();
+}
