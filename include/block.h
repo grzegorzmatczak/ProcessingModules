@@ -109,7 +109,7 @@ struct _list {
 class Filter;
 class Subtractor;
 class Adder;
-class Tracker;
+
 
 class Block : public QObject {
   Q_OBJECT
