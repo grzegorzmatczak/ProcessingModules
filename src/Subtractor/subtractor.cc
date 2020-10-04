@@ -1,7 +1,7 @@
 #include "subtractor.h"
 #include "subtractorlist.h"
 
-constexpr auto FILTER_NAME{ "Name" };
+constexpr auto NAME{ "Name" };
 
 Subtractor::Subtractor(QObject *parent)
   : Block(parent)
@@ -14,7 +14,7 @@ void Subtractor::configure(QJsonObject const &a_config)
   //H_logger->trace("Subtractor::configure()");
   delete m_subtractor;
   m_timer.reset();
-  auto const NAME_STRING{ a_config[FILTER_NAME].toString() };
+  auto const NAME_STRING{ a_config[NAME].toString() };
   //H_logger->trace("Subtractor type: {}", NAME_STRING.toStdString());
 
   if (NAME_STRING == "GSOC")

@@ -53,7 +53,7 @@ Filters::AddDron::AddDron(QJsonObject const &a_config)
   dronVelocity = 3;
   offset = 5;
   m_iterator = 0;
-  spdlog::debug("AddDron::AddDron()");
+  //spdlog::debug("AddDron::AddDron()");
   m_velocityX = 1;
   m_velocityY = 1;
 }
@@ -71,8 +71,8 @@ void Filters::AddDron::process(std::vector<_data> &_data)
   if (m_firstTime) {
     m_firstTime = false;
     spdlog::trace("AddDron::AddDron() initial data");
-    spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
-                  _data[0].processing.cols, _data[0].processing.rows);
+   // spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
+   //               _data[0].processing.cols, _data[0].processing.rows);
     m_width = _data[0].processing.cols;
     m_height = _data[0].processing.rows;
 

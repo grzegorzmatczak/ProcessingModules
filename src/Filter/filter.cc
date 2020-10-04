@@ -1,6 +1,8 @@
 #include "filter.h"
 #include "filterlist.h"
 
+constexpr auto NAME{ "Name" };
+
 Filter::Filter(QObject *parent)
   : Block(parent)
 {

@@ -6,7 +6,6 @@
 #include <QJsonObject>
 #include <QMetaEnum>
 #include <QObject>
-#include <QPolygonF>
 #include <QtCore>
 #include <stdio.h>
 
@@ -17,106 +16,20 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-constexpr auto GRAPH{"Graph"};
-constexpr auto NAME{"Name"};
-constexpr auto ACTIVE{"Active"};
-constexpr auto COPY_SIGNAL{ "Signal" };
-constexpr auto TYPE{"Type"};
-constexpr auto NEXT{"Next"};
-constexpr auto PREV{"Prev"};
-constexpr auto CONFIG{"Config"};
-
-constexpr auto TRACKERS{"Trackers"};
-constexpr auto WIDTH{"Width"};
-constexpr auto HEIGHT{"Height"};
-constexpr auto INIT_FRAME{"InitFrame"};
-
-constexpr auto COMPARE{"COMPARE"};
-constexpr auto VOT_CPP{"VOTCpp"};
-constexpr auto GROUNDTRUTH{"GroundtruthString"};
-
-constexpr auto X{ "X" };
-constexpr auto Y{ "Y" };
-
-
-typedef struct regionBounds {
-  float top;
-  float bottom;
-  float left;
-  float right;
-} regionBounds;
-
-typedef struct regionRectangle {
-  float x;
-  float y;
-  float width;
-  float height;
-} regionRectangle;
-
-typedef struct regionMask {
-  float x;
-  float y;
-  float width;
-  float height;
-  char *data;
-} regionMask;
-
-typedef enum regionType { EMPTY, SPECIAL, RECTANGLE, POLYGON, MASK } regionType;
-typedef struct regionContainer {
-  enum regionType type;
-  union {
-    regionRectangle rectangle;
-    regionMask mask;
-  } data;
-
-} regionContainer;
-
-typedef struct regionOverlap {
-  float overlap;
-  float only1;
-  float only2;
-} regionOverlap;
-
-struct imageErrors
-{
-    qint64 tpError;
-    qint64 fpError;
-    qint64 fnError;
-    qint64 tnError;
-    qint64 nbShadowError;
-    double time;
-};
-
-struct _postData {
-    QString testStr;
-    imageErrors ie;
-    std::vector<QPolygonF> bounds;
-    std::vector<cv::Rect> rects;
-    QString nameOfTracker;
-    QString nameOfFile;
-};
-
 struct _data {
   cv::Mat processing;
-};
-
-struct _list {
-  std::vector<qint32> prev;
-  std::vector<_data> active;
-  std::vector<qint32> next;
 };
 
 class Filter;
 class Subtractor;
 class Adder;
 
-
 class Block : public QObject {
   Q_OBJECT
 
 public:
-  enum Model { FILTER, ESTIMATOR };
-  Q_ENUM(Model);
+  //enum Model { FILTER, ESTIMATOR };
+  //Q_ENUM(Model);
 
   explicit Block(QObject *parent = nullptr);
 

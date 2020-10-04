@@ -1,6 +1,8 @@
 #include "adder.h"
 #include "adderlist.h"
 
+constexpr auto NAME{ "Name" };
+
 Adder::Adder(QObject *parent) : Block(parent) { m_adder = new Adders::None();
   spdlog::set_level(static_cast<spdlog::level::level_enum>(0));
   spdlog::set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%t] [%^%l%$] %v");

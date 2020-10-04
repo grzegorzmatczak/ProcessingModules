@@ -77,9 +77,9 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   m_iterator++;
   if (m_firstTime) {
     m_firstTime = false;
-    spdlog::trace("AddDron::AddDron() initial data OK");
-    spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
-                  _data[0].processing.cols, _data[0].processing.rows);
+    //spdlog::trace("AddDron::AddDron() initial data OK");
+    //spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
+    //              _data[0].processing.cols, _data[0].processing.rows);
     m_width = _data[0].processing.cols;
     m_height = _data[0].processing.rows;
     qint32 deltaX = 0;
@@ -207,7 +207,7 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   }
 
 
-  spdlog::trace("AddDron::AddDron() done");
+  //spdlog::trace("AddDron::AddDron() done");
 }
 
 void Filters::AddMultipleDron::checkBoundies(const qint32 &offset, qint32 &x, qint32 &y,

@@ -1,6 +1,11 @@
 #include "opencv_regionofinterest.h"
 #include <QJsonObject>
 
+constexpr auto WIDTH{ "Width" };
+constexpr auto HEIGHT{ "Height" };
+constexpr auto X{ "X" };
+constexpr auto Y{ "Y" };
+
 Filters::RegionOfInterest::RegionOfInterest(QJsonObject const &a_config)
 : m_width{a_config[WIDTH].toInt()}, m_height{a_config[HEIGHT].toInt()} 
 , m_x{a_config[X].toInt()}, m_y{a_config[Y].toInt()}

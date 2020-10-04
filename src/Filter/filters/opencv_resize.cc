@@ -1,6 +1,9 @@
 #include "opencv_resize.h"
 #include <QJsonObject>
 
+constexpr auto WIDTH{ "Width" };
+constexpr auto HEIGHT{ "Height" };
+
 Filters::Resize::Resize(QJsonObject const &a_config)
     : m_width{a_config[WIDTH].toInt()}, m_height{a_config[HEIGHT].toInt()} {}
 
