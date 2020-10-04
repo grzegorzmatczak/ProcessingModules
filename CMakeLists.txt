@@ -18,8 +18,8 @@ if (UNIX)
 endif (UNIX)
 
 cmake_policy(SET CMP0054 NEW)
-set (CMAKE_PREFIX_PATH "C:\\repo\\OpenCV\\build")
-list(APPEND CMAKE_PREFIX_PATH "C:\\repo\\vcpkg\\installed\\x64-windows")
+set (CMAKE_PREFIX_PATH "D:\\opencv\\build")
+list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\vcpkg\\installed\\x64-windows")
 list(APPEND CMAKE_PREFIX_PATH "D:\\Qt\\Qt5.12.8\\5.12.8\\msvc2017_64")
 find_package(spdlog CONFIG REQUIRED)
 
