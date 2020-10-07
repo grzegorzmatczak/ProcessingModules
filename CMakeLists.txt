@@ -21,6 +21,7 @@ cmake_policy(SET CMP0054 NEW)
 set (CMAKE_PREFIX_PATH "D:\\opencv\\build")
 list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\vcpkg\\installed\\x64-windows")
 list(APPEND CMAKE_PREFIX_PATH "D:\\Qt\\Qt5.12.8\\5.12.8\\msvc2017_64")
+list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\ConfigReader\\build")
 find_package(spdlog CONFIG REQUIRED)
 
 macro(print_all_variables)
@@ -35,6 +36,7 @@ endmacro()
 print_all_variables()
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(ConfigReader REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -86,7 +88,7 @@ endif (UNIX)
 
 if (WIN32)
 	target_link_libraries(${PROJECT_NAME} spdlog::spdlog spdlog::spdlog_header_only)
-	target_link_libraries(${PROJECT_NAME} Qt5::Core ${OpenCV_LIBS} Threads::Threads)
+	target_link_libraries(${PROJECT_NAME} Qt5::Core ${OpenCV_LIBS} Threads::Threads ConfigReader)
 endif (WIN32)
 
 
