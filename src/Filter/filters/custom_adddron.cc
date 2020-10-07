@@ -53,7 +53,7 @@ Filters::AddDron::AddDron(QJsonObject const &a_config)
   dronVelocity = 3;
   offset = 5;
   m_iterator = 0;
-  //spdlog::debug("AddDron::AddDron()");
+  //Logger->debug("AddDron::AddDron()");
   m_velocityX = 1;
   m_velocityY = 1;
 }
@@ -70,8 +70,8 @@ void Filters::AddDron::process(std::vector<_data> &_data)
   m_iterator++;
   if (m_firstTime) {
     m_firstTime = false;
-    spdlog::trace("AddDron::AddDron() initial data");
-   // spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
+    Logger->trace("AddDron::AddDron() initial data");
+   // Logger->trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
    //               _data[0].processing.cols, _data[0].processing.rows);
     m_width = _data[0].processing.cols;
     m_height = _data[0].processing.rows;
@@ -81,9 +81,9 @@ void Filters::AddDron::process(std::vector<_data> &_data)
     m_oldRandX = m_randX;
     m_oldRandY = m_randY;
   }
-  cv::Mat mask(m_height, m_width, CV_8UC1, cv::Scalar(255));
+  cv::Mat mask(m_height, m_width, CV_8UC1, cv::Scalar(0));
   //cv::Mat tempImage = _data[0].processing.clone;
-  cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(255));
+  cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
   double _chanceOfChangeVelocity = m_randomGenerator->bounded(0, 100) / 100.0;
   if (_chanceOfChangeVelocity < m_probabilityOfChangeVelocity) {
@@ -118,8 +118,8 @@ void Filters::AddDron::process(std::vector<_data> &_data)
       m_markerType, dronSize, 2,8);
 
   struct _data dataTemp;
-  //spdlog::debug("AddDron::AddDron() m_iterator:{} m_startGT:{}", m_iterator, m_startGT);
-  //spdlog::debug("AddDron::AddDron() m_height:{} m_width:{}", m_height, m_width);
+  //Logger->debug("AddDron::AddDron() m_iterator:{} m_startGT:{}", m_iterator, m_startGT);
+  //Logger->debug("AddDron::AddDron() m_height:{} m_width:{}", m_height, m_width);
   if (m_iterator <= m_startGT) // create GT:
   {
     cv::Mat tempImageGT = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(m_unknownGTColor));
@@ -131,8 +131,8 @@ void Filters::AddDron::process(std::vector<_data> &_data)
     dataTemp.processing = mark.clone();
   }
   _data.push_back(dataTemp);
-  //spdlog::debug("AddDron::AddDron() _data.size()", _data.size());
-  //spdlog::debug("AddDron::AddDron() m_noise_double.", _data.size());
+  //Logger->debug("AddDron::AddDron() _data.size()", _data.size());
+  //Logger->debug("AddDron::AddDron() m_noise_double.", _data.size());
 
   //2:
   cv::Mat noise_image(_data[0].processing.size(), CV_16SC1);
@@ -141,30 +141,30 @@ void Filters::AddDron::process(std::vector<_data> &_data)
   struct _data dataTempGT;
   dataTempGT.processing = noise_image.clone();
   _data.push_back(dataTempGT);
-  //spdlog::debug("AddDron::AddDron() _data.size()", _data.size());
+  //Logger->debug("AddDron::AddDron() _data.size()", _data.size());
 
   //0:
   cv::Mat temp_image;
   mark = _data[0].processing.clone();
   cv::drawMarker(mark, cv::Point(m_randX, m_randY), cv::Scalar(m_color), m_markerType, dronSize, 2, 8);
-  //spdlog::debug("AddDron::AddDron() after clone ");
+  //Logger->debug("AddDron::AddDron() after clone ");
   mark.convertTo(temp_image, CV_16SC1);
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
-  //spdlog::debug("AddDron::AddDron() cols:{},{},{}", _data[0].processing.cols, _data[1].processing.cols,
+  //Logger->debug("AddDron::AddDron() cols:{},{},{}", _data[0].processing.cols, _data[1].processing.cols,
   //               _data[2].processing.cols);
 
   m_oldRandX = m_randX;
   m_oldRandY = m_randY;
 
-  spdlog::trace("AddDron::AddDron() done");
+  Logger->trace("AddDron::AddDron() done");
 
 }
 
 void Filters::AddDron::checkBoundies(qint32 offset)
 {
-  //spdlog::trace("AddDron::AddDron() checkBoundies");
+  //Logger->trace("AddDron::AddDron() checkBoundies");
   if (m_randX < offset) {
     m_randX = offset;
   }
@@ -182,7 +182,7 @@ void Filters::AddDron::checkBoundies(qint32 offset)
 
 void Filters::AddDron::addGaussianNoise(cv::Mat &image, double average, double standard_deviation, cv::Mat &noise)
 {
-  //spdlog::trace("AddDron::AddDron() addGaussianNoise");
+  //Logger->trace("AddDron::AddDron() addGaussianNoise");
   cv::Mat noise_image(image.size(), CV_16SC1);
   randn(noise_image, cv::Scalar::all(average), cv::Scalar::all(standard_deviation));
   cv::Mat temp_image;

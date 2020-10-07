@@ -4,7 +4,7 @@
 
 Adders::Add::Add(QJsonObject const &a_config)
 {
-  spdlog::debug("Adders::Add::Add()");
+  Logger->debug("Adders::Add::Add()");
 }
 
 void Adders::Add::process(std::vector<_data> &_data)
@@ -12,14 +12,14 @@ void Adders::Add::process(std::vector<_data> &_data)
 	if (_data[0].processing.empty()) {
     spdlog::error("Adders::Add::process() image 1 is empty!");
   } else {
-    spdlog::trace("Adders::Add::process() image 1 is correct");
+    Logger->trace("Adders::Add::process() image 1 is correct");
   }
   assert(_data[0].processing.empty() == false);
 
   if (_data[1].processing.empty()) {
     spdlog::error("Adders::Add::process() image 2 is empty!");
   } else {
-    spdlog::trace("Adders::Add::process() image 2 is correct");
+    Logger->trace("Adders::Add::process() image 2 is correct");
   }
   assert(_data[1].processing.empty() == false);
 

@@ -10,7 +10,7 @@ Filters::MorphologyOperation::MorphologyOperation(QJsonObject const &a_config)
   , m_morphSize{ a_config[MORPH_SIZE].toInt() }
   , m_morphElement{ a_config[MORPH_ELEMENT].toInt() }
 {
-  spdlog::debug("Filters::MorphologyOperation::MorphologyOperation()");
+  Logger->debug("Filters::MorphologyOperation::MorphologyOperation()");
 }
 
 void Filters::MorphologyOperation::process(std::vector<_data> &_data)

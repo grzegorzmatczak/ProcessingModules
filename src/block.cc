@@ -3,16 +3,14 @@
 #include "Filter/filter.h"
 #include "Subtractor/subtractor.h"
 
-Block::Block(QObject *parent) : QObject(parent) {
-
-spdlog::set_level(static_cast<spdlog::level::level_enum>(0));
-  spdlog::set_pattern("[%Y-%m-%d] [%H:%M:%S.%e] [%t] [%^%l%$] %v");
+Block::Block(QObject *parent)
+  : QObject(parent)
+{
 }
 
-Block *Block::make(QString model) {
-  //qInfo() << "Creating: " << model;
-  //spdlog->trace("Filter type: {}", model.toStdString());
-  qInfo() << "Creating: " << model;
+Block *Block::make(QString model)
+{
+  Logger->trace("Creating model: {}", model.toStdString());
   if (model == "Filter") {
     return new Filter(nullptr);
   } else if (model == "Estimator") {

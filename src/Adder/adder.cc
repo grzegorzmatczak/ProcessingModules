@@ -30,7 +30,6 @@ void Adder::configure(QJsonObject const &a_config) {
 
 void Adder::process(std::vector<_data> &_data) {
   m_timer.start();
-  // H_logger->trace("Adder::process(a_image)");
   m_adder->process(_data);
   m_timer.stop();
 }

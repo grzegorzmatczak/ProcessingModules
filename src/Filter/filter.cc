@@ -12,7 +12,7 @@ Filter::Filter(QObject *parent)
 void Filter::configure(QJsonObject const &a_config)
 {
   auto const NAME_STRING{ a_config[NAME].toString() };
-  spdlog::trace("filter type: {}", NAME_STRING.toStdString());
+  Logger->trace("filter type: {}", NAME_STRING.toStdString());
   delete m_baseFilter;
   m_timer.reset();
 
@@ -63,10 +63,7 @@ void Filter::process(std::vector<_data> &_data)
   m_timer.start();
 
   if (_data[0].processing.empty()) {
-    spdlog::error("Filter::process() image is empty! ?");
-    qDebug() << "&_data" << &_data;
-    qDebug() << "&_data[0]" << &_data[0];
-    qDebug() << "&_data[0].processing" << &_data[0].processing;
+    Logger->error("Filter::process() image is empty!");
 
   } else {
   }
