@@ -32,17 +32,6 @@ List of backgroundsubtractors:
     #include "subtractors/opencv_mog.h"
     #include "subtractors/opencv_mog2.h"
 
-List of Trackers:
-
-    #include "trackers/custom_none.h"
-    #include "trackers/opencv_trackers.h"
-
-List of Compares:
-
-    #include "compares/custom_none.h"
-    #include "compares/vot_challenge.h"
-    #include "compares/votcpp_challenge.h"
-
 List od Adders:
 
     #include "adders/custom_none.h"
