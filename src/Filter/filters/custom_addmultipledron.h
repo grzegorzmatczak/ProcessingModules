@@ -70,6 +70,7 @@ class AddMultipleDron : public BaseFilter {
   int m_height{};
   bool m_firstTime{};
   int m_iterator{};
+  bool m_globalOffset{};
 
  private:
   QRandomGenerator *m_randomGenerator;

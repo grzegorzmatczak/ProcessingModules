@@ -28,7 +28,7 @@ constexpr auto CLUSTER_WIDTH{ "ClusterWidth" };
 constexpr auto CLUSTER_HEIGHT{ "ClusterHeight" };
 constexpr auto OFFSET{ "Offset" };
 constexpr auto DRON_THICKNESS{ "DronThickness" };
-
+constexpr auto GLOBAL_OFFSET{ "GlobalOffset" };
 
 Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
   : m_sizeMin{ a_config[DRON_SIZE_MIN].toInt() }
@@ -50,6 +50,7 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
   , m_clusterHeight{ a_config[CLUSTER_HEIGHT].toInt() }
   , m_offset{ a_config[OFFSET].toInt() }
   , m_dronThickness{ a_config[DRON_THICKNESS].toInt() }
+  , m_globalOffset{ a_config[GLOBAL_OFFSET].toBool() }
 {
   // Init randseed's:
   m_randomGenerator = new QRandomGenerator(m_randSeed);
@@ -77,15 +78,15 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   m_iterator++;
   if (m_firstTime) {
     m_firstTime = false;
-    //spdlog::trace("AddDron::AddDron() initial data OK");
-    //spdlog::trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
+    //Logger->trace("AddDron::AddDron() initial data OK");
+    //Logger->trace("AddDron::AddDron() _data[0].processing.cols:{},_data[0].processing.rows:{}",
     //              _data[0].processing.cols, _data[0].processing.rows);
     m_width = _data[0].processing.cols;
     m_height = _data[0].processing.rows;
     qint32 deltaX = 0;
     qint32 deltaY = 0;
     while (true) {
-      //spdlog::trace("AddDron::AddDron() deltaX:{}, deltaY:{}", deltaX, deltaY);
+      //Logger->trace("AddDron::AddDron() deltaX:{}, deltaY:{}", deltaX, deltaY);
       if ((deltaX + m_clusterWidth)<= m_width) {
         m_X.push_back(deltaX + m_clusterWidth / 2);
         m_Y.push_back(deltaY + m_clusterHeight / 2);
@@ -109,11 +110,11 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
     }
   }
 
-  //spdlog::trace("AddDron::AddDron() m_X size:{}", m_X.size());
+  //Logger->trace("AddDron::AddDron() m_X size:{}", m_X.size());
 
-  cv::Mat mask(m_height, m_width, CV_8UC1, cv::Scalar(255));
+  cv::Mat mask(m_height, m_width, CV_8UC1, cv::Scalar(0));
   // cv::Mat tempImage = _data[0].processing.clone;
-  cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(255));
+  cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
   for (int i = 0 ; i < m_X.size(); i++)
   {
@@ -148,15 +149,23 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
     }
   }
    // update x,y
-   for (int i = 0; i < m_X.size(); i++) {
-    m_X[i] = m_oldX[i] + m_velocityX[i];
-     m_Y[i] = m_oldY[i] + m_velocityY[i];
-   }
+  if (m_globalOffset) {
+    for (int i = 0; i < m_X.size(); i++) {
+      m_X[i] = m_oldX[i] + m_velocityX[0];
+      m_Y[i] = m_oldY[i] + m_velocityY[0];
+    }
+  } else {
+    for (int i = 0; i < m_X.size(); i++) {
+      m_X[i] = m_oldX[i] + m_velocityX[i];
+      m_Y[i] = m_oldY[i] + m_velocityY[i];
+    }
+  }
+   
    // checkBoundies
    for (int i = 0; i < m_X.size(); i++) {
      checkBoundies(m_offset, m_X[i], m_Y[i], m_bounds[i]);
    }
-   //spdlog::trace("AddDron::AddDron() drawMarker");
+   //Logger->trace("AddDron::AddDron() drawMarker");
    for (int i = 0; i < m_X.size(); i++) {
      cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerType[i], m_dronSize[i],
                     m_dronThickness, 8);
@@ -172,8 +181,8 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
     dataTemp.processing = mark.clone();
   }
   _data.push_back(dataTemp);
-  // spdlog::debug("AddDron::AddDron() _data.size()", _data.size());
-  // spdlog::debug("AddDron::AddDron() m_noise_double.", _data.size());
+  // Logger->debug("AddDron::AddDron() _data.size()", _data.size());
+  // Logger->debug("AddDron::AddDron() m_noise_double.", _data.size());
 
   // 2:
   cv::Mat noise_image(_data[0].processing.size(), CV_16SC1);
@@ -182,38 +191,38 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   struct _data dataTempGT;
   dataTempGT.processing = noise_image.clone();
   _data.push_back(dataTempGT);
-  // spdlog::debug("AddDron::AddDron() _data.size()", _data.size());
+  // Logger->debug("AddDron::AddDron() _data.size()", _data.size());
 
   // 0:
   cv::Mat temp_image;
   mark = _data[0].processing.clone();
   for (int i = 0; i < m_X.size(); i++) {
-    cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerType[i], m_dronSize[i],
+    cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color), m_markerType[i], m_dronSize[i],
                    m_dronThickness, 8);
   }
-  // spdlog::debug("AddDron::AddDron() after clone ");
+  // Logger->debug("AddDron::AddDron() after clone ");
   mark.convertTo(temp_image, CV_16SC1);
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
-  // spdlog::debug("AddDron::AddDron() cols:{},{},{}", _data[0].processing.cols, _data[1].processing.cols,
+  // Logger->debug("AddDron::AddDron() cols:{},{},{}", _data[0].processing.cols, _data[1].processing.cols,
   //               _data[2].processing.cols);
 
-  m_oldRandX = m_randX;
-  m_oldRandY = m_randY;
+  //m_oldRandX = m_randX;
+  //m_oldRandY = m_randY;
   for (int i = 0; i < m_X.size(); i++) {
     m_oldX[i] = m_X[i];
     m_oldY[i] = m_Y[i];
   }
 
 
-  //spdlog::trace("AddDron::AddDron() done");
+  //Logger->trace("AddDron::AddDron() done");
 }
 
 void Filters::AddMultipleDron::checkBoundies(const qint32 &offset, qint32 &x, qint32 &y,
                                              const struct bounds &b)
 {
-  //spdlog::trace("AddDron::AddDron() checkBoundies");
+  //Logger->trace("AddDron::AddDron() checkBoundies");
   if (x < b.x1 + offset) {
     x = b.x1 + offset;
   }
@@ -232,7 +241,7 @@ void Filters::AddMultipleDron::checkBoundies(const qint32 &offset, qint32 &x, qi
 void Filters::AddMultipleDron::addGaussianNoise(cv::Mat &image, double average, double standard_deviation,
                                                 cv::Mat &noise)
 {
-  // spdlog::trace("AddDron::AddDron() addGaussianNoise");
+  // Logger->trace("AddDron::AddDron() addGaussianNoise");
   cv::Mat noise_image(image.size(), CV_16SC1);
   randn(noise_image, cv::Scalar::all(average), cv::Scalar::all(standard_deviation));
   cv::Mat temp_image;
