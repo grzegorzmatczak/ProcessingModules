@@ -2,6 +2,12 @@
 #include <time.h>
 
 #include "vibe-background-sequential.h"
+//#include "configreader.h"
+
+int COLOR_BACKGROUND = 0; // Default label for background pixels
+int COLOR_FOREGROUND =
+    255; // Default label for foreground pixels. Note that some authors chose any value different from 0 instead
+int NUMBER_OF_HISTORY_IMAGES = 2;
 
 namespace vibe {
 uint32_t distance_Han2014Improved(uint8_t pixel, uint8_t bg)
@@ -270,14 +276,14 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C1R(vibeModel_Sequential_t *mode
                                                     uint8_t *segmentation_map)
 {
   /* Basic checks. */
-  spdlog::trace("ViBe()  Basic checks:");
+  //Logger->trace("ViBe()  Basic checks:");
   assert((image_data != NULL) && (model != NULL) && (segmentation_map != NULL));
   assert((model->width > 0) && (model->height > 0));
   assert(model->historyBuffer != NULL);
   assert((model->jump != NULL) && (model->neighbor != NULL) && (model->position != NULL));
 
   /* Some variables. */
-  spdlog::trace("ViBe()  Some variables:");
+  //Logger->trace("ViBe()  Some variables:");
   uint32_t width = model->width;
   uint32_t height = model->height;
   uint32_t matchingNumber = model->matchingNumber;
@@ -287,11 +293,11 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C1R(vibeModel_Sequential_t *mode
   uint8_t *historyBuffer = model->historyBuffer;
 
   /* Segmentation. */
-  spdlog::trace("ViBe()  Segmentation:");
+  //Logger->trace("ViBe()  Segmentation:");
   memset(segmentation_map, matchingNumber - 1, width * height);
 
   /* First history Image structure. */
-  spdlog::trace("ViBe()  First history Image structure:");
+  //Logger->trace("ViBe()  First history Image structure:");
   for (int index = width * height - 1; index >= 0; --index) {
     // if (abs_uint(image_data[index] - historyImage[index]) > matchingThreshold)
     if (abs_uint(image_data[index] - historyImage[index]) >
@@ -300,7 +306,7 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C1R(vibeModel_Sequential_t *mode
   }
 
   /* Next historyImages. */
-  spdlog::trace("ViBe()  Next historyImages:");
+  //Logger->trace("ViBe()  Next historyImages:");
   for (int i = 1; i < NUMBER_OF_HISTORY_IMAGES; ++i) {
     uint8_t *pels = historyImage + i * width * height;
 
@@ -312,7 +318,7 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C1R(vibeModel_Sequential_t *mode
   }
 
   /* For swapping. */
-  spdlog::trace("ViBe()   For swapping:");
+  //Logger->trace("ViBe()   For swapping:");
   model->lastHistoryImageSwapped = (model->lastHistoryImageSwapped + 1) % NUMBER_OF_HISTORY_IMAGES;
   uint8_t *swappingImageBuffer = historyImage + (model->lastHistoryImageSwapped) * width * height;
 
@@ -592,31 +598,31 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C3R(vibeModel_Sequential_t *mode
                                                     uint8_t *segmentation_map)
 {
   /* Basic checks. */
-  spdlog::trace("ViBe()  Basic checks:");
+  //Logger->trace("ViBe()  Basic checks:");
   assert((image_data != NULL) && (model != NULL) && (segmentation_map != NULL));
   assert((model->width > 0) && (model->height > 0));
   assert(model->historyBuffer != NULL);
   assert((model->jump != NULL) && (model->neighbor != NULL) && (model->position != NULL));
 
   /* Some variables. */
-  spdlog::trace("ViBe()  Some variables:");
+  //Logger->trace("ViBe()  Some variables:");
   uint32_t width = model->width;
   uint32_t height = model->height;
   uint32_t matchingNumber = model->matchingNumber;
   uint32_t matchingThreshold = model->matchingThreshold;
 
-  spdlog::trace("ViBe()  width:{},height:{}", width, height);
+  //Logger->trace("ViBe()  width:{},height:{}", width, height);
   uint8_t *historyImage = model->historyImage;
   uint8_t *historyBuffer = model->historyBuffer;
 
   /* Segmentation. */
-  spdlog::trace("ViBe()  Segmentation:");
+  //Logger->trace("ViBe()  Segmentation:");
   memset(segmentation_map, matchingNumber - 1, width * height);
-  spdlog::trace("ViBe()  First history Image structure:");
+  //Logger->trace("ViBe()  First history Image structure:");
   /* First history Image structure. */
   uint8_t *first = historyImage;
 
-  spdlog::trace("ViBe()  Before for loop:");
+  //Logger->trace("ViBe()  Before for loop:");
   for (int index = width * height - 1; index >= 0; --index) {
     if (!distance_is_close_8u_C3R(image_data[3 * index], image_data[3 * index + 1], image_data[3 * index + 2],
                                   first[3 * index], first[3 * index + 1], first[3 * index + 2], matchingThreshold))
@@ -624,7 +630,7 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C3R(vibeModel_Sequential_t *mode
   }
 
   /* Next historyImages. */
-  spdlog::trace("ViBe()  Next historyImages:");
+  //Logger->trace("ViBe()  Next historyImages:");
   for (int i = 1; i < NUMBER_OF_HISTORY_IMAGES; ++i) {
     uint8_t *pels = historyImage + i * (3 * width) * height;
 
@@ -636,15 +642,15 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C3R(vibeModel_Sequential_t *mode
   }
 
   // For swapping
-  spdlog::trace("ViBe()  For swapping:");
+  //Logger->trace("ViBe()  For swapping:");
   model->lastHistoryImageSwapped = (model->lastHistoryImageSwapped + 1) % NUMBER_OF_HISTORY_IMAGES;
   uint8_t *swappingImageBuffer = historyImage + (model->lastHistoryImageSwapped) * (3 * width) * height;
 
   // Now, we move in the buffer and leave the historyImages
-  spdlog::trace("ViBe()  Now, we move in the buffer and leave the historyImages:");
+  //Logger->trace("ViBe()  Now, we move in the buffer and leave the historyImages:");
   int numberOfTests = (model->numberOfSamples - NUMBER_OF_HISTORY_IMAGES);
 
-  spdlog::trace("ViBe()  for loop:");
+  //Logger->trace("ViBe()  for loop:");
   for (int index = width * height - 1; index >= 0; --index) {
     if (segmentation_map[index] > 0) {
       /* We need to check the full border and swap values with the first or second historyImage.
@@ -676,11 +682,11 @@ int32_t libvibeModel_Sequential_Segmentation_8u_C3R(vibeModel_Sequential_t *mode
       } // for
     }   // if
   }     // for
-  spdlog::trace("ViBe()  Produces the output. Note that this step is application-dependent:");
+  //Logger->trace("ViBe()  Produces the output. Note that this step is application-dependent:");
   /* Produces the output. Note that this step is application-dependent. */
   for (uint8_t *mask = segmentation_map; mask < segmentation_map + (width * height); ++mask)
     if (*mask > 0) *mask = COLOR_FOREGROUND;
-  spdlog::trace("ViBe()  done:");
+  //Logger->trace("ViBe()  done:");
   return (0);
 }
 

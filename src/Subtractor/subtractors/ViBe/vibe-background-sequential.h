@@ -5,15 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h"
-
 
     namespace vibe
     {
-      const int COLOR_BACKGROUND = 0; // Default label for background pixels
-      const int COLOR_FOREGROUND = 255; // Default label for foreground pixels. Note that some authors chose any value different from 0 instead
-      const int NUMBER_OF_HISTORY_IMAGES = 2;
+      
 
       /**
        * \typedef struct vibeModel_Sequential_t
