@@ -3,7 +3,7 @@
 
 #include <opencv2/imgproc.hpp>
 
-#include "../../include/block.h"
+#include "../../include/processing.h"
 
 class BaseAdder;
 class QJsonObject;
@@ -13,7 +13,7 @@ class Mat;
 class TickMeter;
 } // namespace cv
 
-class Adder : public Block {
+class Adder : public Processing {
   Q_OBJECT
 public:
   explicit Adder(QObject *parent = nullptr);

@@ -4,7 +4,7 @@
 constexpr auto NAME{ "Name" };
 
 Subtractor::Subtractor(QObject *parent)
-  : Block(parent)
+  : Processing(parent)
 {
   m_subtractor = new Subtractors::None();
 }

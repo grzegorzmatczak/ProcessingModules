@@ -7,12 +7,12 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "../../include/block.h"
+#include "../../include/processing.h"
 
 class BaseFilter;
 class QJsonObject;
 
-class Filter : public Block {
+class Filter : public Processing {
   Q_OBJECT
 public:
   explicit Filter(QObject *parent = nullptr);

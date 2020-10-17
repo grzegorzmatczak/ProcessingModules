@@ -4,7 +4,7 @@
 constexpr auto NAME{ "Name" };
 
 Filter::Filter(QObject *parent)
-  : Block(parent)
+  : Processing(parent)
 {
   m_baseFilter = new Filters::None{};
 }

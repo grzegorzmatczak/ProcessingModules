@@ -3,7 +3,7 @@
 
 #include <opencv2/imgproc.hpp>
 
-#include "../../include/block.h"
+#include "../../include/processing.h"
 
 class BaseSubtractor;
 class QJsonObject;
@@ -12,7 +12,7 @@ class Mat;
 class TickMeter;
 } // namespace cv
 
-class Subtractor : public Block {
+class Subtractor : public Processing {
   Q_OBJECT
 public:
   explicit Subtractor(QObject *parent = nullptr);

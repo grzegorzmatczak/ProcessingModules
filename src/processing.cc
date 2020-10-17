@@ -1,14 +1,14 @@
-#include "../include/block.h"
+#include "../include/processing.h"
 #include "Adder/adder.h"
 #include "Filter/filter.h"
 #include "Subtractor/subtractor.h"
 
-Block::Block(QObject *parent)
+Processing::Processing(QObject *parent)
   : QObject(parent)
 {
 }
 
-Block *Block::make(QString model)
+Processing *Processing::make(QString model)
 {
   Logger->trace("Creating model: {}", model.toStdString());
   if (model == "Filter") {

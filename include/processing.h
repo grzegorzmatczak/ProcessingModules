@@ -1,5 +1,5 @@
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef PROCESSING_H
+#define PROCESSING_H
 
 #include <QDebug>
 #include <QJsonArray>
@@ -23,19 +23,17 @@ class Filter;
 class Subtractor;
 class Adder;
 
-class Block : public QObject {
+class Processing : public QObject {
   Q_OBJECT
 
 public:
-  //enum Model { FILTER, ESTIMATOR };
-  //Q_ENUM(Model);
 
-  explicit Block(QObject *parent = nullptr);
+  explicit Processing(QObject *parent = nullptr);
 
-  static Block *make(QString model);
+  static Processing *make(QString model);
   virtual void configure(QJsonObject const &a_config) = 0;
   virtual void process(std::vector<_data> &_data) = 0;
   virtual double getElapsedTime() = 0;
 };
 
-#endif // BLOCK_H
+#endif // PROCESSING_H
