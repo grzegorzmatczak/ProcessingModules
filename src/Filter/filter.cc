@@ -48,6 +48,8 @@ void Filter::configure(QJsonObject const &a_config)
     m_baseFilter = new Filters::AddDron{ a_config };
   } else if (NAME_STRING == "AddMultipleDron") {
     m_baseFilter = new Filters::AddMultipleDron{ a_config };
+  } else if (NAME_STRING == "AddMultipleDronBlurred") {
+    m_baseFilter = new Filters::AddMultipleDronBlurred{ a_config };
   } else if (NAME_STRING == "FindContours") {
     m_baseFilter = new Filters::FindContours{ a_config };
   } else if (NAME_STRING == "None") {

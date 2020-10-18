@@ -18,5 +18,6 @@
 #include "filters/custom_addgaussiannoise.h"
 #include "filters/custom_adddron.h"
 #include "filters/custom_addmultipledron.h"
+#include "filters/custom_addmultipledronblurred.h"
 #include "filters/opencv_findcontours.h"
 #endif // FILTER_LIST_H
