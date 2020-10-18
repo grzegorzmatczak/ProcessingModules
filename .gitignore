@@ -830,3 +830,4 @@ build/.vs/ProcessingModules/v16/ipch/AutoPCH/60f6a42f6ae3c819/CUSTOM_ADDMULTIPLE
 build/.vs/ProcessingModules/v16/ipch/AutoPCH/764febc026339216/ADDER.ipch
 build/.vs/ProcessingModules/v16/ipch/AutoPCH/ce1207b3070e3b6e/FILTER.ipch
 build/ProcessingModules.dir/Debug/custom_addmultipledronblurred.obj
+.vscode/settings.json
