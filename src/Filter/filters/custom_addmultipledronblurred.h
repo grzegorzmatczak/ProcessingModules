@@ -71,6 +71,7 @@ class AddMultipleDronBlurred : public BaseFilter {
   bool m_firstTime{};
   int m_iterator{};
   bool m_globalOffset{};
+  int m_markerType{};
 
  private:
   QRandomGenerator *m_randomGenerator;
@@ -86,8 +87,9 @@ class AddMultipleDronBlurred : public BaseFilter {
   std::vector<qint32> m_oldY;
   std::vector<qint32> m_velocityX;
   std::vector<qint32> m_velocityY;
-  std::vector<qint32> m_markerType;
+  std::vector<qint32> m_markerTypeVec;
   std::vector<qint32> m_dronSize;
+  std::vector<qint32> m_clusterOffset;
 
   std::vector<struct boundsBlurred> m_bounds;
 };

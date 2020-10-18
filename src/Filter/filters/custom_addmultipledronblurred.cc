@@ -75,7 +75,9 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   1 - generated dron - so GT
   2 - generated noise
   */
-  qint32 clusterOffset = 6;
+  //qint32 clusterOffset = 6;
+  
+
   m_iterator++;
   if (m_firstTime) {
     m_firstTime = false;
@@ -89,6 +91,8 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     while (true) {
       //Logger->trace("AddDron::AddDron() deltaX:{}, deltaY:{}", deltaX, deltaY);
       if ((deltaX + m_clusterWidth)<= m_width) {
+        qint32 clusterOffset = m_randomGenerator->bounded(2, 40);
+        m_clusterOffset.push_back(clusterOffset);
         m_X.push_back((m_clusterWidth + clusterOffset )/ 2);
         m_Y.push_back((m_clusterHeight + clusterOffset) / 2);
         m_oldX.push_back((m_clusterWidth + clusterOffset) / 2);
@@ -100,7 +104,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         m_velocityX.push_back(1);
         m_velocityY.push_back(1);
         m_dronSize.push_back(1);
-        m_markerType.push_back(1);
+        m_markerTypeVec.push_back(m_randomGenerator->bounded(0, m_markerType));
         deltaX += m_clusterWidth;
       } else if ((deltaX + m_clusterWidth) > m_width && (deltaY + m_clusterHeight) <= m_height) {
         deltaX = 0;
@@ -113,7 +117,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
 
   Logger->trace("AddDron::AddMultipleDronBlurred() m_X size:{}", m_X.size());
 
-  cv::Mat mask((m_clusterHeight + clusterOffset), (m_clusterWidth + clusterOffset), CV_8UC1, cv::Scalar(0));
+  
   // cv::Mat tempImage = _data[0].processing.clone;
   cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
@@ -146,7 +150,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
    for (int i = 0; i < m_X.size(); i++) {
     double _chanceOfRotate = m_randomGenerator->bounded(0, 100) / 100.0;
     if (_chanceOfRotate < m_probabilityOfRotate) {
-      m_markerType[i] = m_randomGenerator->bounded(0, 2);
+      m_markerTypeVec[i] = m_randomGenerator->bounded(0, m_markerType);
     }
   }
    // update x,y
@@ -180,24 +184,33 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
    qint32 deltaY = 0;
    qint32 i = 0;
    while (true) {
-     // Logger->trace("AddDron::AddDron() deltaX:{}, deltaY:{}", deltaX, deltaY);
-     if ((deltaX + m_clusterWidth) <= m_width) {
-       cv::drawMarker(mask, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerType[i], m_dronSize[i],m_dronThickness, 8);
+     if((deltaY + m_clusterHeight) >= m_height)
+     {
+      break;
+     }
+      else if ((deltaX + m_clusterWidth) >= m_width && (deltaY + m_clusterHeight) >= m_height) {
+       break;
+       }
+       else if ((deltaX + m_clusterWidth) > m_width && (deltaY + m_clusterHeight) <= m_height) {
+       deltaX = 0;
+       deltaY += m_clusterHeight;
+     } else if ((deltaX + m_clusterWidth) <= m_width) {
+      // Logger->trace("Wystaje:{},{}",deltaX + m_clusterWidth, deltaY + m_clusterHeight );
+       cv::Mat mask((m_clusterHeight + m_clusterOffset[i]), (m_clusterWidth + m_clusterOffset[i]), CV_8UC1, cv::Scalar(0));
+       //Logger->trace("Try to draw pixel on:{},{}",m_X[i], m_Y[i] );
+       cv::drawMarker(mask, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],m_dronThickness, 8);
        cv::Mat maskResize;
+       //Logger->trace("resize" );
        cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
        cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
+       //Logger->trace("rect :{}x{}x{}x{}",deltaX,deltaY,maskResize.cols, maskResize.rows);
        maskResize.copyTo(mark(rect));
        deltaX += m_clusterWidth;
        i++;
-     } else if ((deltaX + m_clusterWidth) > m_width && (deltaY + m_clusterHeight) <= m_height) {
-       deltaX = 0;
-       deltaY += m_clusterHeight;
-     } else if ((deltaX + m_clusterWidth) > m_width && (deltaY + m_clusterHeight) > m_height) {
-       break;
-     }
+     } 
    }
 
-   Logger->trace("AddDron::AddMultipleDronBlurred() dataTemp");
+  // Logger->trace("AddDron::AddMultipleDronBlurred() dataTemp");
   struct _data dataTemp;
   if (m_iterator <= m_startGT) // create GT:
   {
@@ -209,8 +222,8 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     dataTemp.processing = mark.clone();
   }
   _data.push_back(dataTemp);
-   Logger->debug("AddDron::AddMultipleDronBlurred() _data.size()", _data.size());
-   Logger->debug("AddDron::AddMultipleDronBlurred() m_noise_double.", _data.size());
+  // Logger->debug("AddDron::AddMultipleDronBlurred() _data.size()", _data.size());
+  // Logger->debug("AddDron::AddMultipleDronBlurred() m_noise_double.", _data.size());
 
   // 2:
   cv::Mat noise_image(_data[0].processing.size(), CV_16SC1);
@@ -219,20 +232,20 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   struct _data dataTempGT;
   dataTempGT.processing = noise_image.clone();
   _data.push_back(dataTempGT);
-  Logger->debug("AddDron::AddMultipleDronBlurred() _data.size()", _data.size());
+  //Logger->debug("AddDron::AddMultipleDronBlurred() _data.size()", _data.size());
 
   // 0:
 
   cv::Mat temp_image;
   cv::Mat mark2;
-  mark = _data[0].processing.clone();
-  cv::add(mark, mask, mark2);
+  cv::Mat clone = _data[0].processing.clone();
+  cv::add(mark, clone, mark2);
   /*
   for (int i = 0; i < m_X.size(); i++) {
     cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color), m_markerType[i], m_dronSize[i],m_dronThickness, 8);
   }*/
   // Logger->debug("AddDron::AddDron() after clone ");
-  mark.convertTo(temp_image, CV_16SC1);
+  mark2.convertTo(temp_image, CV_16SC1);
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
