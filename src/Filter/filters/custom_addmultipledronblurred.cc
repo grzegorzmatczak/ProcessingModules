@@ -1,5 +1,7 @@
 #include "custom_addmultipledronblurred.h"
 #include <QJsonObject>
+#include <stdio.h>
+#include <iostream>
 /*
 *   MarkerType:
     MARKER_CROSS = 0,            //!< A crosshair marker shape
@@ -213,13 +215,17 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
        //Logger->trace("rect :{}x{}x{}x{}",deltaX,deltaY,maskResize.cols, maskResize.rows);
        cv::Mat cleanROI = clone(rect);
 
-       //cv::Scalar m = cv::mean(cleanROI);
+       cv::Scalar m = cv::mean(cleanROI);
+       std::cout << "scalar:" << m << std::endl;
        bool up_down = m_randomGenerator->bounded(0, 2);
+       double delta;
        if (up_down)
        {
-        // double delta  = 255.0 - m;
+         delta = 255.0 - m[0];
+       } else {
+         delta = 0.0 + m[0];
        }
-
+       std::cout << "delta:" << delta << std::endl;
 
        maskResize.copyTo(mark(rect));
        deltaX += m_clusterWidth;
