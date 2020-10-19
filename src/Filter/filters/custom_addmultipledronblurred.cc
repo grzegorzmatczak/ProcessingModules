@@ -212,6 +212,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
        //Logger->trace("resize" );
        cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
        cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
+       maskResize.copyTo(mark(rect));
        //Logger->trace("rect :{}x{}x{}x{}",deltaX,deltaY,maskResize.cols, maskResize.rows);
        cv::Mat cleanROI = clone(rect);
 
@@ -225,9 +226,11 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
        } else {
          delta = 0.0 + m[0];
        }
-       std::cout << "delta:" << delta << std::endl;
+       cv::normalize(maskResize, maskResize, 0, delta);
+       cv::add(cleanROI, maskResize, cleanROI);
+       maskResize.copyTo(clone(rect));
 
-       maskResize.copyTo(mark(rect));
+       std::cout << "delta:" << delta << std::endl;
        deltaX += m_clusterWidth;
        i++;
      } 
@@ -268,7 +271,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color), m_markerType[i], m_dronSize[i],m_dronThickness, 8);
   }*/
   // Logger->debug("AddDron::AddDron() after clone ");
-  mark2.convertTo(temp_image, CV_16SC1);
+  clone.convertTo(temp_image, CV_16SC1);
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
