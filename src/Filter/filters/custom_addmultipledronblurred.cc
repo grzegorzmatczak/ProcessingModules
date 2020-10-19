@@ -29,6 +29,7 @@ constexpr auto CLUSTER_HEIGHT{ "ClusterHeight" };
 constexpr auto OFFSET{ "Offset" };
 constexpr auto DRON_THICKNESS{ "DronThickness" };
 constexpr auto GLOBAL_OFFSET{ "GlobalOffset" };
+constexpr auto RANDOM_COLOR{ "RandomColor" };
 
 Filters::AddMultipleDronBlurred::AddMultipleDronBlurred(QJsonObject const &a_config)
   : m_sizeMin{ a_config[DRON_SIZE_MIN].toInt() }
@@ -51,6 +52,7 @@ Filters::AddMultipleDronBlurred::AddMultipleDronBlurred(QJsonObject const &a_con
   , m_offset{ a_config[OFFSET].toInt() }
   , m_dronThickness{ a_config[DRON_THICKNESS].toInt() }
   , m_globalOffset{ a_config[GLOBAL_OFFSET].toBool() }
+  , m_randomColor{ a_config[RANDOM_COLOR].toBool() }
 {
   // Init randseed's:
   m_randomGenerator = new QRandomGenerator(m_randSeed);
@@ -178,7 +180,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
      //cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
      //maskResize.copyTo()
    }
-
+  cv::Mat clone = _data[0].processing.clone();
 
    qint32 deltaX = 0;
    qint32 deltaY = 0;
@@ -198,12 +200,27 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       // Logger->trace("Wystaje:{},{}",deltaX + m_clusterWidth, deltaY + m_clusterHeight );
        cv::Mat mask((m_clusterHeight + m_clusterOffset[i]), (m_clusterWidth + m_clusterOffset[i]), CV_8UC1, cv::Scalar(0));
        //Logger->trace("Try to draw pixel on:{},{}",m_X[i], m_Y[i] );
+
+       if (m_randomColor)
+       {   
+         m_color = m_randomGenerator->bounded(0, 255);
+       }
        cv::drawMarker(mask, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],m_dronThickness, 8);
        cv::Mat maskResize;
        //Logger->trace("resize" );
        cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
        cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
        //Logger->trace("rect :{}x{}x{}x{}",deltaX,deltaY,maskResize.cols, maskResize.rows);
+       cv::Mat cleanROI = clone(rect);
+
+       //cv::Scalar m = cv::mean(cleanROI);
+       bool up_down = m_randomGenerator->bounded(0, 2);
+       if (up_down)
+       {
+        // double delta  = 255.0 - m;
+       }
+
+
        maskResize.copyTo(mark(rect));
        deltaX += m_clusterWidth;
        i++;
@@ -238,8 +255,8 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
 
   cv::Mat temp_image;
   cv::Mat mark2;
-  cv::Mat clone = _data[0].processing.clone();
-  cv::add(mark, clone, mark2);
+  
+  ////////////////cv::add(mark, clone, mark2);
   /*
   for (int i = 0; i < m_X.size(); i++) {
     cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color), m_markerType[i], m_dronSize[i],m_dronThickness, 8);

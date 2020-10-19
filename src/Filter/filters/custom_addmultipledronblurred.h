@@ -72,6 +72,7 @@ class AddMultipleDronBlurred : public BaseFilter {
   int m_iterator{};
   bool m_globalOffset{};
   int m_markerType{};
+  bool m_randomColor{};
 
  private:
   QRandomGenerator *m_randomGenerator;
