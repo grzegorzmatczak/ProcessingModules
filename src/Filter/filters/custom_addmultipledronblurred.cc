@@ -119,7 +119,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   }
 
   Logger->trace("AddDron::AddMultipleDronBlurred() m_X size:{}", m_X.size());
-
   // cv::Mat tempImage = _data[0].processing.clone;
   cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
@@ -138,7 +137,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       }
     }
   }
-
   // lottery change size:
   for (int i = 0; i < m_X.size(); i++) {
     double _chanceOfChangeSize = m_randomGenerator->bounded(0, 100) / 100.0;
@@ -172,12 +170,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     checkBoundies(m_offset, m_X[i], m_Y[i], m_bounds[i]);
   }
   Logger->trace("AddDron::AddMultipleDronBlurred() drawMarker");
-  for (int i = 0; i < m_X.size(); i++) {
-    // cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerType[i], m_dronSize[i],
-    // m_dronThickness, 8); cv::drawMarker(mask, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerType[i],
-    // m_dronSize[i],m_dronThickness, 8); cv::Mat maskResize; cv::resize(mask, maskResize, cv::Size(m_clusterWidth,
-    // m_clusterHeight)); maskResize.copyTo()
-  }
   cv::Mat clone = _data[0].processing.clone();
 
   qint32 deltaX = 0;
@@ -192,59 +184,38 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       deltaX = 0;
       deltaY += m_clusterHeight;
     } else if ((deltaX + m_clusterWidth) <= m_width) {
-      // Logger->trace("Wystaje:{},{}",deltaX + m_clusterWidth, deltaY + m_clusterHeight );
       cv::Mat mask((m_clusterHeight + m_clusterOffset[i]), (m_clusterWidth + m_clusterOffset[i]), CV_8UC1,
                    cv::Scalar(0));
-      // Logger->trace("Try to draw pixel on:{},{}",m_X[i], m_Y[i] );
-
       if (m_randomColor) {
         m_color = m_randomGenerator->bounded(0, 255);
       }
       cv::drawMarker(mask, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],
                      m_dronThickness, 8);
       cv::Mat maskResize;
-      // Logger->trace("resize" );
       cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
       cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
       maskResize.copyTo(mark(rect));
-      // Logger->trace("rect :{}x{}x{}x{}",deltaX,deltaY,maskResize.cols, maskResize.rows);
       cv::Mat cleanROI = clone(rect);
 
       cv::Scalar m = cv::mean(cleanROI);
-      // std::cout << "scalar:" << m << std::endl;
       bool up_down = m_randomGenerator->bounded(0, 2);
-      // Logger->info("up_down:{}", up_down);
       double delta;
-      // Logger->info("m[0]:{}", int(m[0]));
       if (up_down) {
         delta = (255.0 - m[0]) - 10;
-        // cv::normalize(maskResize, maskResize, 0, int(delta));
         maskResize.convertTo(maskResize, -1, delta / 255.0, 0);
         cv::Scalar n1 = cv::mean(maskResize);
-        // Logger->info("up:  n1:{}", (n1[0]));
         cv::add(cleanROI, maskResize, cleanROI);
-        // Logger->info("up:  delta:{}", int(delta));
       } else {
         delta = (m[0]) - 10;
-        // cv::normalize(maskResize, maskResize, int(delta),0,cv::NORM_MINMAX,-1);
         maskResize.convertTo(maskResize, -1, delta / 255.0, 0);
         cv::Scalar n2 = cv::mean(maskResize);
-        // Logger->info("down:  n2:{}", (n2[0]));
         cv::subtract(cleanROI, maskResize, cleanROI);
-        // Logger->info("down: delta:{}", int(delta));
       }
-      // cv::imshow("pre", maskResize);
-      // cv::imshow("dd",maskResize);
       cleanROI.copyTo(clone(rect));
-      // cv::imshow("post", cleanROI);
-      // cv::waitKey(0);
-      // std::cout << "delta:" << delta << std::endl;
       deltaX += m_clusterWidth;
       i++;
     }
   }
-
-  // Logger->trace("AddDron::AddMultipleDronBlurred() dataTemp");
   struct _data dataTemp;
   if (m_iterator <= m_startGT) // create GT:
   {
@@ -252,43 +223,27 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     dataTemp.processing = tempImageGT.clone();
   } // Create unknown GT Color:
   else if (m_iterator > m_startGT) {
-    //_data[1].processing = tempImage.clone();
     dataTemp.processing = mark.clone();
   }
   _data.push_back(dataTemp);
-  // Logger->debug("AddDron::AddMultipleDronBlurred() _data.size()", _data.size());
-  // Logger->debug("AddDron::AddMultipleDronBlurred() m_noise_double.", _data.size());
 
   // 2:
   cv::Mat noise_image(_data[0].processing.size(), CV_16SC1);
   cv::randn(noise_image, cv::Scalar::all(0.0), cv::Scalar::all(m_noise_double));
-  //_data[2].processing;
   struct _data dataTempGT;
   dataTempGT.processing = noise_image.clone();
   _data.push_back(dataTempGT);
-  // Logger->debug("AddDron::AddMultipleDronBlurred() _data.size()", _data.size());
 
   // 0:
-
   cv::Mat temp_image;
   cv::Mat mark2;
-
-  ////////////////cv::add(mark, clone, mark2);
-  /*
-  for (int i = 0; i < m_X.size(); i++) {
-    cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color), m_markerType[i],
-  m_dronSize[i],m_dronThickness, 8);
-  }*/
-  // Logger->debug("AddDron::AddDron() after clone ");
   clone.convertTo(temp_image, CV_16SC1);
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
   Logger->debug("AddDron::AddMultipleDronBlurred() cols:{},{},{}", _data[0].processing.cols, _data[1].processing.cols,
-                _data[2].processing.cols);
+    _data[2].processing.cols);
 
-  // m_oldRandX = m_randX;
-  // m_oldRandY = m_randY;
   for (int i = 0; i < m_X.size(); i++) {
     m_oldX[i] = m_X[i];
     m_oldY[i] = m_Y[i];
@@ -300,7 +255,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
 void Filters::AddMultipleDronBlurred::checkBoundies(const qint32 &offset, qint32 &x, qint32 &y,
                                                     const struct boundsBlurred &b)
 {
-  // Logger->trace("AddDron::AddDron() checkBoundies");
   if (x < b.x1 + offset) {
     x = b.x1 + offset;
   }
@@ -319,7 +273,6 @@ void Filters::AddMultipleDronBlurred::checkBoundies(const qint32 &offset, qint32
 void Filters::AddMultipleDronBlurred::addGaussianNoise(cv::Mat &image, double average, double standard_deviation,
                                                        cv::Mat &noise)
 {
-  // Logger->trace("AddDron::AddDron() addGaussianNoise");
   cv::Mat noise_image(image.size(), CV_16SC1);
   randn(noise_image, cv::Scalar::all(average), cv::Scalar::all(standard_deviation));
   cv::Mat temp_image;
