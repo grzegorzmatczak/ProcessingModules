@@ -241,8 +241,9 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
-  Logger->debug("AddDron::AddMultipleDronBlurred() cols:{},{},{}", _data[0].processing.cols, _data[1].processing.cols,
-    _data[2].processing.cols);
+  Logger->debug("AddDron::AddMultipleDronBlurred() [{}] cols:{},{},{}", m_iterator, _data[0].processing.cols,
+                _data[1].processing.rows,
+    _data[2].processing.channels());
 
   for (int i = 0; i < m_X.size(); i++) {
     m_oldX[i] = m_X[i];
