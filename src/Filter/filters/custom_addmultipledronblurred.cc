@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <QJsonObject>
 #include <iostream>
+
+#define DEBUG FALSE
 /*
 *   MarkerType:
     MARKER_CROSS = 0,            //!< A crosshair marker shape
@@ -28,7 +30,8 @@ constexpr auto DRON_RANDSEED{ "RandSeed" };
 constexpr auto DRON_NOISE{ "Noise" };
 constexpr auto CLUSTER_WIDTH{ "ClusterWidth" };
 constexpr auto CLUSTER_HEIGHT{ "ClusterHeight" };
-constexpr auto OFFSET{ "Offset" };
+constexpr auto IMAGE_OFFSET{ "ImageOffset" };
+constexpr auto CONTRAST_OFFSET{ "ContrastOffset" };
 constexpr auto DRON_THICKNESS{ "DronThickness" };
 constexpr auto GLOBAL_OFFSET{ "GlobalOffset" };
 constexpr auto RANDOM_COLOR{ "RandomColor" };
@@ -51,7 +54,8 @@ Filters::AddMultipleDronBlurred::AddMultipleDronBlurred(QJsonObject const &a_con
   , m_firstTime{ true }
   , m_clusterWidth{ a_config[CLUSTER_WIDTH].toInt() }
   , m_clusterHeight{ a_config[CLUSTER_HEIGHT].toInt() }
-  , m_offset{ a_config[OFFSET].toInt() }
+  , m_imageOffset{ a_config[IMAGE_OFFSET].toInt() }
+  , m_contrastOffset{ a_config[CONTRAST_OFFSET].toInt() }
   , m_dronThickness{ a_config[DRON_THICKNESS].toInt() }
   , m_globalOffset{ a_config[GLOBAL_OFFSET].toBool() }
   , m_randomColor{ a_config[RANDOM_COLOR].toBool() }
@@ -94,7 +98,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     while (true) {
       // Logger->trace("AddDron::AddDron() deltaX:{}, deltaY:{}", deltaX, deltaY);
       if ((deltaX + m_clusterWidth) <= m_width) {
-        qint32 clusterOffset = m_randomGenerator->bounded(2, 55);
+        qint32 clusterOffset = m_randomGenerator->bounded(1, 2);
         m_clusterOffset.push_back(clusterOffset);
         m_X.push_back((m_clusterWidth + clusterOffset) / 2);
         m_Y.push_back((m_clusterHeight + clusterOffset) / 2);
@@ -106,7 +110,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         m_bounds.push_back(tmp);
         m_velocityX.push_back(1);
         m_velocityY.push_back(1);
-        m_dronSize.push_back(1);
+        m_dronSize.push_back(m_randomGenerator->bounded(m_sizeMin, m_sizeMax + 1));
         m_markerTypeVec.push_back(m_randomGenerator->bounded(0, m_markerType));
         deltaX += m_clusterWidth;
       } else if ((deltaX + m_clusterWidth) > m_width && (deltaY + m_clusterHeight) <= m_height) {
@@ -167,9 +171,10 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
 
   // checkBoundies
   for (int i = 0; i < m_X.size(); i++) {
-    checkBoundies(m_offset, m_X[i], m_Y[i], m_bounds[i]);
+    checkBoundies(m_imageOffset, m_X[i], m_Y[i], m_bounds[i]);
+    //Logger->info("AddDron::AddMultipleDronBlurred() m_X[{}]:{}", i, m_X[i]);
   }
-  Logger->trace("AddDron::AddMultipleDronBlurred() drawMarker");
+  Logger->info("AddDron::AddMultipleDronBlurred() drawMarker");
   cv::Mat clone = _data[0].processing.clone();
 
   qint32 deltaX = 0;
@@ -187,30 +192,87 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Mat mask((m_clusterHeight + m_clusterOffset[i]), (m_clusterWidth + m_clusterOffset[i]), CV_8UC1,
                    cv::Scalar(0));
       if (m_randomColor) {
-        m_color = m_randomGenerator->bounded(0, 255);
+          //TODO: fix that:!
+        //m_color = m_randomGenerator->bounded(0, 255);
+        m_color = 255;
       }
-      cv::drawMarker(mask, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],
+
+      cv::drawMarker(mask, cv::Point(m_X[0], m_Y[0]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],
                      m_dronThickness, 8);
+
+      
+
+      //mask = cv::getRotationMatrix2D(pc, rotate, 1.0);
+#if (DEBUG)
+      std::cout << "mask=" << std::endl << mask << std::endl;
+      
+      Logger->info("m_clusterOffset[i]:{}", m_clusterOffset[i]);
+      Logger->info("m_dronSize[i]:{}", m_dronSize[i]);
+      Logger->info("m_markerTypeVec[i]:{}", m_markerTypeVec[i]);
+      Logger->info("m_dronThickness:{}", m_dronThickness);
+      Logger->info("m_color:{}", m_color);
+
+#endif
       cv::Mat maskResize;
       cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
-      cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
-      maskResize.copyTo(mark(rect));
+
+
+      cv::Point2f center((maskResize.cols - 1) / 2.0, (maskResize.rows - 1) / 2.0);
+      int rotate = m_randomGenerator->bounded(1, 90);
+      cv::Mat r = cv::getRotationMatrix2D(center, rotate, 1.0);
+      cv::Mat maskRotate;
+      cv::warpAffine(maskResize, maskRotate, r, cv::Size(maskResize.cols, maskResize.rows));
+
+#if (DEBUG)
+      std::cout << "maskResize=" << std::endl << maskResize << std::endl;
+      std::cout << "maskRotate=" << std::endl << maskRotate << std::endl;
+#endif
+      cv::Rect rect(deltaX, deltaY, maskRotate.cols, maskRotate.rows);
+      maskRotate.copyTo(mark(rect));
       cv::Mat cleanROI = clone(rect);
 
       cv::Scalar m = cv::mean(cleanROI);
       bool up_down = m_randomGenerator->bounded(0, 2);
-      double delta;
+      double delta(1.0);
+      double offset{ 1.0 };
+      cv::Mat maskResizeOffset;
+#if (DEBUG)
+      cv::imshow("before:", maskResize);
+      cv::imshow("maskRotate:", maskRotate);
+      Logger->info("m_contrastOffset:{}", m_contrastOffset);
+#endif
       if (up_down) {
-        delta = (255.0 - m[0]) - 10;
-        maskResize.convertTo(maskResize, -1, delta / 255.0, 0);
-        cv::Scalar n1 = cv::mean(maskResize);
-        cv::add(cleanROI, maskResize, cleanROI);
+        
+        delta = (255.0 - m[0]);
+        offset = delta * (m_contrastOffset / 100.0);
+        maskRotate.convertTo(maskRotate, -1, (delta + offset) / 255.0, 0);
+#if (DEBUG)
+        Logger->info("up: delta:{}", delta);
+        Logger->info("up: offset:{}", offset);
+        cv::imshow("up: middle:", maskRotate);
+#endif
+        cv::threshold(maskRotate, maskResizeOffset, 1, offset, 0);
+        cv::add(cleanROI, maskRotate, cleanROI);
+        cv::add(cleanROI, maskResizeOffset, cleanROI);
       } else {
-        delta = (m[0]) - 10;
-        maskResize.convertTo(maskResize, -1, delta / 255.0, 0);
-        cv::Scalar n2 = cv::mean(maskResize);
-        cv::subtract(cleanROI, maskResize, cleanROI);
+        delta = (m[0]) ;
+        offset = delta * (m_contrastOffset / 100.0);
+        maskRotate.convertTo(maskRotate, -1, (delta - offset) / 255.0, 0);
+#if (DEBUG)
+        Logger->info("down: delta:{}", delta);
+        Logger->info("down: offset:{}", offset);
+        cv::imshow("down: middle:", maskRotate);
+#endif
+        cv::threshold(maskRotate, maskResizeOffset, 1, offset, 0);
+        cv::subtract(cleanROI, maskRotate, cleanROI);
+        cv::subtract(cleanROI, maskResizeOffset, cleanROI);
       }
+#if (DEBUG)
+      cv::imshow("cleanROI:", cleanROI);
+      cv::imshow("maskRotate:", maskRotate);
+      cv::imshow("maskResizeOffset:", maskResizeOffset);
+      cv::waitKey(0);
+#endif
       cleanROI.copyTo(clone(rect));
       deltaX += m_clusterWidth;
       i++;

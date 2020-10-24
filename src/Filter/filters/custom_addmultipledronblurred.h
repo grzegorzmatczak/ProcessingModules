@@ -78,7 +78,8 @@ class AddMultipleDronBlurred : public BaseFilter {
   QRandomGenerator *m_randomGenerator;
 
  private:
-  qint32 m_offset;
+  qint32 m_imageOffset;
+  qint32 m_contrastOffset;
   qint32 m_dronThickness;
   qint32 m_clusterWidth;
   qint32 m_clusterHeight;
