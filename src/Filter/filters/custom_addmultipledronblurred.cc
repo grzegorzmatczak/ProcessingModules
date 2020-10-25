@@ -4,6 +4,7 @@
 #include <iostream>
 
 #define DEBUG FALSE
+
 /*
 *   MarkerType:
     MARKER_CROSS = 0,            //!< A crosshair marker shape
@@ -200,8 +201,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::drawMarker(mask, cv::Point(m_X[0], m_Y[0]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],
                      m_dronThickness, 8);
 
-      
-
       //mask = cv::getRotationMatrix2D(pc, rotate, 1.0);
 #if (DEBUG)
       std::cout << "mask=" << std::endl << mask << std::endl;
@@ -237,40 +236,64 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       double offset{ 1.0 };
       cv::Mat maskResizeOffset;
 #if (DEBUG)
-      cv::imshow("before:", maskResize);
-      cv::imshow("maskRotate:", maskRotate);
+      cv::Mat resize_maskResize;
+      cv::resize(maskResize, resize_maskResize, cv::Size(600, 400),0,0,0);
+      cv::imshow("resize_maskResize before:", resize_maskResize);
+
+      cv::Mat resize_maskRotate;
+      cv::resize(maskRotate, resize_maskRotate, cv::Size(600, 400), 0, 0, 0);
+      cv::imshow("resize_maskRotate:", resize_maskRotate);
       Logger->info("m_contrastOffset:{}", m_contrastOffset);
 #endif
       if (up_down) {
         
         delta = (255.0 - m[0]);
         offset = delta * (m_contrastOffset / 100.0);
-        maskRotate.convertTo(maskRotate, -1, (delta + offset) / 255.0, 0);
+        //double scale = (delta + offset);
+        maskRotate.convertTo(maskRotate, -1, 1, 0);
 #if (DEBUG)
         Logger->info("up: delta:{}", delta);
         Logger->info("up: offset:{}", offset);
-        cv::imshow("up: middle:", maskRotate);
+        cv::Mat resize_maskRotate;
+        cv::resize(maskRotate, resize_maskRotate, cv::Size(600, 400), 0, 0, 0);
+        cv::imshow("up maskRotate after resize:", resize_maskRotate);
 #endif
-        cv::threshold(maskRotate, maskResizeOffset, 1, offset, 0);
+        cv::threshold(maskRotate, maskResizeOffset, 1,int(offset), 0);
         cv::add(cleanROI, maskRotate, cleanROI);
         cv::add(cleanROI, maskResizeOffset, cleanROI);
       } else {
         delta = (m[0]) ;
         offset = delta * (m_contrastOffset / 100.0);
-        maskRotate.convertTo(maskRotate, -1, (delta - offset) / 255.0, 0);
+        double scale = (delta - offset);
+        maskRotate.convertTo(maskRotate, -1, 1, 0);
 #if (DEBUG)
+        std::cout << "down maskRotate after resize=" << std::endl << maskRotate << std::endl;
         Logger->info("down: delta:{}", delta);
         Logger->info("down: offset:{}", offset);
-        cv::imshow("down: middle:", maskRotate);
+        cv::Mat resize_maskRotate;
+        cv::resize(maskRotate, resize_maskRotate, cv::Size(600, 400), 0, 0, 0);
+        cv::imshow("down maskRotate after resize::", resize_maskRotate);
+
+
 #endif
-        cv::threshold(maskRotate, maskResizeOffset, 1, offset, 0);
+        cv::threshold(maskRotate, maskResizeOffset, 1, int(offset), 0);
         cv::subtract(cleanROI, maskRotate, cleanROI);
         cv::subtract(cleanROI, maskResizeOffset, cleanROI);
       }
 #if (DEBUG)
-      cv::imshow("cleanROI:", cleanROI);
-      cv::imshow("maskRotate:", maskRotate);
-      cv::imshow("maskResizeOffset:", maskResizeOffset);
+      cv::Mat resize_cleanROI;
+      cv::Mat resize_maskRotate2;
+      cv::Mat resize_maskResizeOffset;
+
+
+      cv::resize(cleanROI, resize_cleanROI, cv::Size(600, 400), 0, 0, 0);
+      cv::resize(maskRotate, resize_maskRotate2, cv::Size(600, 400), 0, 0, 0);
+      cv::resize(maskResizeOffset, resize_maskResizeOffset, cv::Size(600, 400), 0, 0, 0);
+
+
+      cv::imshow("cleanROI:", resize_cleanROI);
+      cv::imshow("maskRotate:", resize_maskRotate2);
+      cv::imshow("maskResizeOffset:", resize_maskResizeOffset);
       cv::waitKey(0);
 #endif
       cleanROI.copyTo(clone(rect));
