@@ -72,7 +72,7 @@ Filters::AddMultipleDronBlurred::AddMultipleDronBlurred(QJsonObject const &a_con
   dronVelocity = 3;
   // offset = 5;
   m_iterator = 0;
-  spdlog::info("AddMultipleDronBlurred::AddMultipleDronBlurred()");
+  spdlog::debug("AddMultipleDronBlurred::AddMultipleDronBlurred()");
   // m_velocityX = 1;
   // m_velocityY = 1;
 }
@@ -175,7 +175,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     checkBoundies(m_imageOffset, m_X[i], m_Y[i], m_bounds[i]);
     //Logger->info("AddDron::AddMultipleDronBlurred() m_X[{}]:{}", i, m_X[i]);
   }
-  Logger->info("AddDron::AddMultipleDronBlurred() drawMarker");
+  Logger->trace("AddDron::AddMultipleDronBlurred() drawMarker");
   cv::Mat clone = _data[0].processing.clone();
 
   qint32 deltaX = 0;
@@ -326,7 +326,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
-  Logger->debug("AddDron::AddMultipleDronBlurred() [{}] cols:{},{},{}", m_iterator, _data[0].processing.cols,
+  Logger->trace("AddDron::AddMultipleDronBlurred() [{}] cols:{},{},{}", m_iterator, _data[0].processing.cols,
                 _data[1].processing.rows,
     _data[2].processing.channels());
 

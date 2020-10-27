@@ -63,7 +63,7 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
   dronVelocity = 3;
   //offset = 5;
   m_iterator = 0;
-  spdlog::info("AddMultipleDron::AddMultipleDron()");
+  spdlog::debug("AddMultipleDron::AddMultipleDron()");
   //m_velocityX = 1;
   //m_velocityY = 1;
 }
