@@ -100,6 +100,7 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
         m_velocityY.push_back(1);
         m_dronSize.push_back(1);
         m_markerType.push_back(1);
+        m_color.push_back(m_randomGenerator->bounded(0, 255));
         deltaX += m_clusterWidth;
       } else if ((deltaX + m_clusterWidth) > m_width && (deltaY + m_clusterHeight) <= m_height) {
         deltaX = 0;
@@ -167,7 +168,7 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
    }
    //Logger->trace("AddDron::AddDron() drawMarker");
    for (int i = 0; i < m_X.size(); i++) {
-     cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color), m_markerType[i], m_dronSize[i],
+     cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(m_color[i]), m_markerType[i], m_dronSize[i],
                     m_dronThickness, 8);
    }
   struct _data dataTemp;
@@ -197,7 +198,7 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   cv::Mat temp_image;
   mark = _data[0].processing.clone();
   for (int i = 0; i < m_X.size(); i++) {
-    cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color), m_markerType[i], m_dronSize[i],
+    cv::drawMarker(mark, cv::Point(m_X[i], m_Y[i]), cv::Scalar(255 - m_color[i]), m_markerType[i], m_dronSize[i],
                    m_dronThickness, 8);
   }
   // Logger->debug("AddDron::AddDron() after clone ");

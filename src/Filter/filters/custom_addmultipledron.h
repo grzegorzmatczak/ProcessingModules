@@ -40,7 +40,7 @@ class AddMultipleDron : public BaseFilter {
  private:
   int m_sizeMin{};
   int m_sizeMax{};
-  int m_color{};
+  //int m_color{};
   int m_rotate{};
   int m_velocityMin{};
   int m_velocityMax{};
@@ -88,6 +88,7 @@ class AddMultipleDron : public BaseFilter {
   std::vector<qint32> m_velocityY;
   std::vector<qint32> m_markerType;
   std::vector<qint32> m_dronSize;
+  std::vector<qint32> m_color;
 
   std::vector<struct bounds> m_bounds;
 };

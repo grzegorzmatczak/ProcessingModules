@@ -52,6 +52,8 @@ void Filter::configure(QJsonObject const &a_config)
     m_baseFilter = new Filters::AddMultipleDronBlurred{ a_config };
   } else if (NAME_STRING == "FindContours") {
     m_baseFilter = new Filters::FindContours{ a_config };
+  } else if (NAME_STRING == "Viterbi") {
+    m_baseFilter = new Filters::Viterbi{ a_config };
   } else if (NAME_STRING == "None") {
     m_baseFilter = new Filters::None{};
   } else {

@@ -20,4 +20,5 @@
 #include "filters/custom_addmultipledron.h"
 #include "filters/custom_addmultipledronblurred.h"
 #include "filters/opencv_findcontours.h"
+#include "filters/custom_viterbi.h"
 #endif // FILTER_LIST_H
