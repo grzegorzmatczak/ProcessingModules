@@ -105,6 +105,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         m_Y.push_back((m_clusterHeight + clusterOffset) / 2);
         m_oldX.push_back((m_clusterWidth + clusterOffset) / 2);
         m_oldY.push_back((m_clusterHeight + clusterOffset) / 2);
+        m_up_down.push_back( m_randomGenerator->bounded(0, 2));
         struct boundsBlurred tmp {
           0, (m_clusterWidth + clusterOffset), 0, (m_clusterHeight + clusterOffset)
         };
@@ -181,6 +182,8 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   qint32 deltaX = 0;
   qint32 deltaY = 0;
   qint32 i = 0;
+  
+
   while (true) {
     if ((deltaY + m_clusterHeight) >= m_height) {
       break;
@@ -232,7 +235,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Mat cleanROI = clone(rect);
 
       cv::Scalar m = cv::mean(cleanROI);
-      bool up_down = m_randomGenerator->bounded(0, 2);
+      
       double delta(1.0);
       double offset{ 1.0 };
       cv::Mat maskResizeOffset;
@@ -246,7 +249,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::imshow("resize_maskRotate:", resize_maskRotate);
       Logger->info("m_contrastOffset:{}", m_contrastOffset);
 #endif
-      if (up_down) {
+      if (m_up_down[i]) {
         
         delta = (255.0 - m[0]);
         offset = delta * (m_contrastOffset / 100.0);
