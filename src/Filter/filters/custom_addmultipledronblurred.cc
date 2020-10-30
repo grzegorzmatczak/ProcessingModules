@@ -215,19 +215,20 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Mat maskResize;
       cv::resize(mask, maskResize, cv::Size(m_clusterWidth, m_clusterHeight));
 
-
+      cv::Mat maskRotate;
+      /*
       cv::Point2f center((maskResize.cols - 1) / 2.0, (maskResize.rows - 1) / 2.0);
       int rotate = m_randomGenerator->bounded(1, 90);
       cv::Mat r = cv::getRotationMatrix2D(center, rotate, 1.0);
-      cv::Mat maskRotate;
-      cv::warpAffine(maskResize, maskRotate, r, cv::Size(maskResize.cols, maskResize.rows));
+      
+      cv::warpAffine(maskResize, maskRotate, r, cv::Size(maskResize.cols, maskResize.rows));*/
 
 #if (DEBUG)
       std::cout << "maskResize=" << std::endl << maskResize << std::endl;
       std::cout << "maskRotate=" << std::endl << maskRotate << std::endl;
 #endif
-      cv::Rect rect(deltaX, deltaY, maskRotate.cols, maskRotate.rows);
-      maskRotate.copyTo(mark(rect));
+      cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
+      maskResize.copyTo(mark(rect));
       cv::Mat cleanROI = clone(rect);
 
       cv::Scalar m = cv::mean(cleanROI);
@@ -250,7 +251,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         delta = (255.0 - m[0]);
         offset = delta * (m_contrastOffset / 100.0);
         //double scale = (delta + offset);
-        maskRotate.convertTo(maskRotate, -1, 1, 0);
+        maskResize.convertTo(maskRotate, -1, 1, 0);
 #if (DEBUG)
         Logger->info("up: delta:{}", delta);
         Logger->info("up: offset:{}", offset);
@@ -265,7 +266,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         delta = (m[0]) ;
         offset = delta * (m_contrastOffset / 100.0);
         double scale = (delta - offset);
-        maskRotate.convertTo(maskRotate, -1, 1, 0);
+        maskResize.convertTo(maskRotate, -1, 1, 0);
 #if (DEBUG)
         std::cout << "down maskRotate after resize=" << std::endl << maskRotate << std::endl;
         Logger->info("down: delta:{}", delta);

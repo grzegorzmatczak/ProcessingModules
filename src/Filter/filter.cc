@@ -54,6 +54,8 @@ void Filter::configure(QJsonObject const &a_config)
     m_baseFilter = new Filters::FindContours{ a_config };
   } else if (NAME_STRING == "Viterbi") {
     m_baseFilter = new Filters::Viterbi{ a_config };
+  } else if (NAME_STRING == "VelocityFilter") {
+    m_baseFilter = new Filters::VelocityFilter{ a_config };
   } else if (NAME_STRING == "None") {
     m_baseFilter = new Filters::None{};
   } else {
