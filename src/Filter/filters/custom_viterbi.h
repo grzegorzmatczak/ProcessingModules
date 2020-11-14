@@ -18,10 +18,13 @@ class Viterbi : public BaseFilter {
   QRandomGenerator *m_randomGenerator;
   std::deque<cv::Mat> m_images;
   std::deque<cv::Mat> m_VAL;
+  std::deque<std::vector<cv::Mat>> m_kernels;
+  std::deque<std::vector<cv::Mat>> m_kernelsVAL;
 
   bool m_firstTime;
   int m_width;
   int m_height;
+
 };
 } // namespace Filters
 

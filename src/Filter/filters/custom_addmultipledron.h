@@ -71,26 +71,27 @@ class AddMultipleDron : public BaseFilter {
   bool m_firstTime{};
   int m_iterator{};
   bool m_globalOffset{};
+  int m_singleMarkerType{};
 
  private:
   QRandomGenerator *m_randomGenerator;
 
  private:
-  qint32 m_offset;
-  qint32 m_dronThickness;
-  qint32 m_clusterWidth;
-  qint32 m_clusterHeight;
-  std::vector<qint32> m_X;
-  std::vector<qint32> m_Y;
-  std::vector<qint32> m_oldX;
-  std::vector<qint32> m_oldY;
-  std::vector<qint32> m_velocityX;
-  std::vector<qint32> m_velocityY;
-  std::vector<qint32> m_markerType;
-  std::vector<qint32> m_dronSize;
-  std::vector<qint32> m_color;
+  int m_offset;
+  int m_dronThickness;
+  int m_clusterWidth;
+  int m_clusterHeight;
+  int m_X;
+  int m_Y;
+  int m_oldX;
+  int m_oldY;
+  int m_velocityX;
+  int m_velocityY;
+  int m_markerType;
+  int m_dronSize;
+  int m_color;
 
-  std::vector<struct bounds> m_bounds;
+  struct bounds m_bounds;
 };
 } // namespace Filters
 
