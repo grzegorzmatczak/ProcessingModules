@@ -94,6 +94,7 @@ class AddMultipleDronBlurred : public BaseFilter {
   std::vector<qint32> m_clusterOffset;
 
   std::vector<struct boundsBlurred> m_bounds;
+  std::vector < bool> m_up_down;
 };
 } // namespace Filters
 

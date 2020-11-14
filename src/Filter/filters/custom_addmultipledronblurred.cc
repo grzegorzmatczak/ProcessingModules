@@ -4,6 +4,7 @@
 #include <iostream>
 
 #define DEBUG FALSE
+#define DEBUG_END FALSE
 
 /*
 *   MarkerType:
@@ -105,6 +106,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         m_Y.push_back((m_clusterHeight + clusterOffset) / 2);
         m_oldX.push_back((m_clusterWidth + clusterOffset) / 2);
         m_oldY.push_back((m_clusterHeight + clusterOffset) / 2);
+        m_up_down.push_back(m_randomGenerator->bounded(0, 2));
         struct boundsBlurred tmp {
           0, (m_clusterWidth + clusterOffset), 0, (m_clusterHeight + clusterOffset)
         };
@@ -125,8 +127,14 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
 
   Logger->trace("AddDron::AddMultipleDronBlurred() m_X size:{}", m_X.size());
   // cv::Mat tempImage = _data[0].processing.clone;
-  cv::Mat mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
+  cv::Mat mark;
+  if (_data.size() == 1) {
+    mark = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
+  } else if (_data.size() == 2) {
+    mark = _data[1].processing.clone();
+  }
+  
   for (int i = 0; i < m_X.size(); i++) {
     double _chanceOfChangeVelocity = m_randomGenerator->bounded(0, 100) / 100.0;
     if (_chanceOfChangeVelocity < m_probabilityOfChangeVelocity) {
@@ -173,7 +181,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   // checkBoundies
   for (int i = 0; i < m_X.size(); i++) {
     checkBoundies(m_imageOffset, m_X[i], m_Y[i], m_bounds[i]);
-    //Logger->info("AddDron::AddMultipleDronBlurred() m_X[{}]:{}", i, m_X[i]);
+    // Logger->info("AddDron::AddMultipleDronBlurred() m_X[{}]:{}", i, m_X[i]);
   }
   Logger->trace("AddDron::AddMultipleDronBlurred() drawMarker");
   cv::Mat clone = _data[0].processing.clone();
@@ -181,6 +189,7 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
   qint32 deltaX = 0;
   qint32 deltaY = 0;
   qint32 i = 0;
+
   while (true) {
     if ((deltaY + m_clusterHeight) >= m_height) {
       break;
@@ -193,18 +202,19 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Mat mask((m_clusterHeight + m_clusterOffset[i]), (m_clusterWidth + m_clusterOffset[i]), CV_8UC1,
                    cv::Scalar(0));
       if (m_randomColor) {
-          //TODO: fix that:!
-        //m_color = m_randomGenerator->bounded(0, 255);
+        // TODO: fix that:!
+        // m_color = m_randomGenerator->bounded(0, 255);
         m_color = 255;
       }
 
       cv::drawMarker(mask, cv::Point(m_X[0], m_Y[0]), cv::Scalar(m_color), m_markerTypeVec[i], m_dronSize[i],
                      m_dronThickness, 8);
 
-      //mask = cv::getRotationMatrix2D(pc, rotate, 1.0);
+      // mask = cv::getRotationMatrix2D(pc, rotate, 1.0);
 #if (DEBUG)
+      Logger->info("AddDron::AddMultipleDronBlurred() _data.size():{}, m_startGT:{}", _data.size(), m_startGT);
       std::cout << "mask=" << std::endl << mask << std::endl;
-      
+
       Logger->info("m_clusterOffset[i]:{}", m_clusterOffset[i]);
       Logger->info("m_dronSize[i]:{}", m_dronSize[i]);
       Logger->info("m_markerTypeVec[i]:{}", m_markerTypeVec[i]);
@@ -220,50 +230,54 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Point2f center((maskResize.cols - 1) / 2.0, (maskResize.rows - 1) / 2.0);
       int rotate = m_randomGenerator->bounded(1, 90);
       cv::Mat r = cv::getRotationMatrix2D(center, rotate, 1.0);
-      
+
       cv::warpAffine(maskResize, maskRotate, r, cv::Size(maskResize.cols, maskResize.rows));*/
 
 #if (DEBUG)
       std::cout << "maskResize=" << std::endl << maskResize << std::endl;
-      std::cout << "maskRotate=" << std::endl << maskRotate << std::endl;
+      //std::cout << "maskRotate=" << std::endl << maskRotate << std::endl;
 #endif
       cv::Rect rect(deltaX, deltaY, maskResize.cols, maskResize.rows);
+
+     
+      cv::Mat originalGT = mark(rect);
+      cv::add(originalGT, maskResize, maskResize);
       maskResize.copyTo(mark(rect));
+
+
+
+
       cv::Mat cleanROI = clone(rect);
 
       cv::Scalar m = cv::mean(cleanROI);
-      bool up_down = m_randomGenerator->bounded(0, 2);
+
       double delta(1.0);
       double offset{ 1.0 };
       cv::Mat maskResizeOffset;
 #if (DEBUG)
-      cv::Mat resize_maskResize;
-      cv::resize(maskResize, resize_maskResize, cv::Size(600, 400),0,0,0);
-      cv::imshow("resize_maskResize before:", resize_maskResize);
+      cv::imshow("mark before:", mark);
 
-      cv::Mat resize_maskRotate;
-      cv::resize(maskRotate, resize_maskRotate, cv::Size(600, 400), 0, 0, 0);
-      cv::imshow("resize_maskRotate:", resize_maskRotate);
+      cv::Mat resize_maskResize;
+      cv::resize(maskResize, resize_maskResize, cv::Size(600, 400), 0, 0, 0);
+      cv::imshow("resize_maskResize before:", resize_maskResize);
+      cv::imshow("_data[0].processing:", _data[0].processing);
+      cv::imshow("_data[1].processing:", _data[1].processing);
       Logger->info("m_contrastOffset:{}", m_contrastOffset);
 #endif
-      if (up_down) {
-        
+      if (m_up_down[i]) {
         delta = (255.0 - m[0]);
         offset = delta * (m_contrastOffset / 100.0);
-        //double scale = (delta + offset);
+        // double scale = (delta + offset);
         maskResize.convertTo(maskRotate, -1, 1, 0);
 #if (DEBUG)
         Logger->info("up: delta:{}", delta);
         Logger->info("up: offset:{}", offset);
-        cv::Mat resize_maskRotate;
-        cv::resize(maskRotate, resize_maskRotate, cv::Size(600, 400), 0, 0, 0);
-        cv::imshow("up maskRotate after resize:", resize_maskRotate);
 #endif
-        cv::threshold(maskRotate, maskResizeOffset, 1,int(offset), 0);
+        cv::threshold(maskRotate, maskResizeOffset, 1, int(offset), 0);
         cv::add(cleanROI, maskRotate, cleanROI);
         cv::add(cleanROI, maskResizeOffset, cleanROI);
       } else {
-        delta = (m[0]) ;
+        delta = (m[0]);
         offset = delta * (m_contrastOffset / 100.0);
         double scale = (delta - offset);
         maskResize.convertTo(maskRotate, -1, 1, 0);
@@ -275,7 +289,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
         cv::resize(maskRotate, resize_maskRotate, cv::Size(600, 400), 0, 0, 0);
         cv::imshow("down maskRotate after resize::", resize_maskRotate);
 
-
 #endif
         cv::threshold(maskRotate, maskResizeOffset, 1, int(offset), 0);
         cv::subtract(cleanROI, maskRotate, cleanROI);
@@ -286,11 +299,9 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Mat resize_maskRotate2;
       cv::Mat resize_maskResizeOffset;
 
-
       cv::resize(cleanROI, resize_cleanROI, cv::Size(600, 400), 0, 0, 0);
       cv::resize(maskRotate, resize_maskRotate2, cv::Size(600, 400), 0, 0, 0);
       cv::resize(maskResizeOffset, resize_maskResizeOffset, cv::Size(600, 400), 0, 0, 0);
-
 
       cv::imshow("cleanROI:", resize_cleanROI);
       cv::imshow("maskRotate:", resize_maskRotate2);
@@ -303,33 +314,51 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
     }
   }
   struct _data dataTemp;
-  if (m_iterator <= m_startGT) // create GT:
+  if (m_iterator <= m_startGT) // 1  create GT:
   {
     cv::Mat tempImageGT = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(m_unknownGTColor));
     dataTemp.processing = tempImageGT.clone();
   } // Create unknown GT Color:
   else if (m_iterator > m_startGT) {
     dataTemp.processing = mark.clone();
+    
   }
-  _data.push_back(dataTemp);
 
-  // 2:
+  if (_data.size() == 1) {
+    _data.push_back(dataTemp);
+
+  } else if (_data.size() == 2) {
+    _data[1] = (dataTemp);
+  }
+#if (DEBUG_END)
+
+  cv::imshow("mark before: dataTemp:", mark);
+  cv::imshow("dataTemp.processing:", dataTemp.processing);
+  cv::imshow("_data[1]:", _data[1].processing);
+  cv::waitKey(0);
+#endif
+  // 2: Noise
   cv::Mat noise_image(_data[0].processing.size(), CV_16SC1);
   cv::randn(noise_image, cv::Scalar::all(0.0), cv::Scalar::all(m_noise_double));
   struct _data dataTempGT;
   dataTempGT.processing = noise_image.clone();
+
   _data.push_back(dataTempGT);
+
+
+
+
+  
+  
 
   // 0:
   cv::Mat temp_image;
-  cv::Mat mark2;
   clone.convertTo(temp_image, CV_16SC1);
   addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
   temp_image.convertTo(_data[0].processing, _data[0].processing.type());
 
   Logger->trace("AddDron::AddMultipleDronBlurred() [{}] cols:{},{},{}", m_iterator, _data[0].processing.cols,
-                _data[1].processing.rows,
-    _data[2].processing.channels());
+                _data[1].processing.rows, _data[2].processing.channels());
 
   for (int i = 0; i < m_X.size(); i++) {
     m_oldX[i] = m_X[i];
