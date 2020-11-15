@@ -77,7 +77,7 @@ class AddMultipleDron : public BaseFilter {
   QRandomGenerator *m_randomGenerator;
 
  private:
-  int m_offset;
+  int m_imageOffset;
   int m_dronThickness;
   int m_clusterWidth;
   int m_clusterHeight;

@@ -28,7 +28,7 @@ constexpr auto DRON_RANDSEED{ "RandSeed" };
 constexpr auto DRON_NOISE{ "Noise" };
 constexpr auto CLUSTER_WIDTH{ "ClusterWidth" };
 constexpr auto CLUSTER_HEIGHT{ "ClusterHeight" };
-constexpr auto OFFSET{ "Offset" };
+constexpr auto IMAGE_OFFSET{ "ImageOffset" };
 constexpr auto DRON_THICKNESS{ "DronThickness" };
 constexpr auto GLOBAL_OFFSET{ "GlobalOffset" };
 
@@ -76,7 +76,7 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
   , m_firstTime{ true }
   , m_clusterWidth{ a_config[CLUSTER_WIDTH].toInt() }
   , m_clusterHeight{ a_config[CLUSTER_HEIGHT].toInt() }
-  , m_offset{ a_config[OFFSET].toInt() }
+  , m_imageOffset{ a_config[IMAGE_OFFSET].toInt() }
   , m_dronThickness{ a_config[DRON_THICKNESS].toInt() }
   , m_globalOffset{ a_config[GLOBAL_OFFSET].toBool() }
 {
@@ -103,10 +103,10 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 
   int m_noiseStart = 1;
   int m_noiseStop = 50;
-  int m_noiseDelta = 3;
+  int m_noiseDelta = 2;
   int m_contrastStart = 1;
   int m_contrastStop = 99;
-  int m_contrastDelta = 5;
+  int m_contrastDelta = 3;
   bool color = false;
 
   m_iterator++;
@@ -139,17 +139,27 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   } else {
     clone = _data[0].processing(cv::Rect(0, 0, m_clusterWidth, m_clusterHeight));
   }
+  // Ensure that roi is in image:
+  cv::Mat cleanDron;
+  if (m_clusterWidth > m_width || m_clusterHeight > m_height) {
+    cv::resize(_data[1].processing, cleanDron, cv::Size(m_width, m_height));
+  } else {
+    cleanDron = _data[1].processing(cv::Rect(0, 0, m_clusterWidth, m_clusterHeight));
+  }
+
   cv::Scalar mean = cv::mean(clone);
   cv::Mat output(m_clusterHeight * 20, m_clusterWidth * 20, CV_8UC1, cv::Scalar(0));
 
-  cv::Mat cleanDron(m_clusterHeight, m_clusterWidth, CV_8UC1, cv::Scalar(0));
+  //cv::Mat cleanDron(m_clusterHeight, m_clusterWidth, CV_8UC1, cv::Scalar(0));
   cv::drawMarker(cleanDron, cv::Point(m_X, m_Y), 255, m_singleMarkerType,
                  m_randomGenerator->bounded(m_sizeMin, m_sizeMax + 1), m_dronThickness, 8);
 
   std::vector<std::vector<cv::Mat>> images;
+  std::vector<std::vector<cv::Mat>> drones;
 
   for (int i = m_noiseStart; i <= m_noiseStop; i += m_noiseDelta) {
     std::vector<cv::Mat> image;
+    std::vector<cv::Mat> drone;
     for (int j = m_contrastStart; j <= m_contrastStop; j += m_contrastDelta) {
       cv::Mat tempClone = clone.clone();
       cv::Mat tempDron = cleanDron.clone();
@@ -186,14 +196,19 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
       temp_image.convertTo(tempDronContrastImage, tempDronContrastImage.type());
 
       image.push_back(tempDronContrastImage);
+      drone.push_back(tempDronContrast);
     }
     images.push_back(image);
+    drones.push_back(drone);
   }
 
   cv::Mat all;
+  cv::Mat allDron;
   std::vector<cv::Mat> part;
+  std::vector<cv::Mat> partDron;
   for (int i = 0; i < images.size(); i++) {
     cv::Mat partSingle;
+    cv::Mat partSingleDron;
     for (int j = 1; j < images[i].size(); j++) {
 #if (DEBUG)
       std::string type = type2strDron(images[i][j].type());
@@ -201,16 +216,25 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 #endif
       if (j == 1) {
         cv::hconcat(images[i][0], images[i][1], partSingle);
+        cv::hconcat(drones[i][0], drones[i][1], partSingleDron);
       } else {
         cv::hconcat(partSingle, images[i][j], partSingle);
+        cv::hconcat(partSingleDron, drones[i][j], partSingleDron);
       }
     }
     part.push_back(partSingle);
+    partDron.push_back(partSingleDron);
 
     if (part.size() == 2) {
       cv::vconcat(part[0], part[1], all);
     } else if (part.size() > 2) {
       cv::vconcat(all, partSingle, all);
+    }
+
+    if (partDron.size() == 2) {
+      cv::vconcat(partDron[0], partDron[1], allDron);
+    } else if (partDron.size() > 2) {
+      cv::vconcat(allDron, partSingleDron, allDron);
     }
   }
 #if (DEBUG)
@@ -249,7 +273,7 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   m_Y = m_oldY + m_velocityY;
 
   // checkBoundies
-  checkBoundies(m_offset, m_X, m_Y, m_bounds);
+  checkBoundies(m_imageOffset, m_X, m_Y, m_bounds);
 
   m_oldX = m_X;
   m_oldY = m_Y;
@@ -257,13 +281,17 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   // 0:
   _data[0].processing = all.clone();
   // 1:
-  struct _data data;
-  data.processing = _data[0].processing.clone();
-  _data.push_back(data);
+  _data[1].processing = allDron.clone();
   // 2:
   struct _data data2;
   data2.processing = _data[0].processing.clone();
   _data.push_back(data2);
+#if (DEBUG)
+  cv::imshow("all:", all);
+  cv::imshow("allDron:", allDron);
+  cv::imshow("_data[1].processing:", _data[1].processing);
+  cv::waitKey(0);
+#endif
 }
 
 void Filters::AddMultipleDron::checkBoundies(const qint32 &offset, qint32 &x, qint32 &y, const struct bounds &b)
