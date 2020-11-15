@@ -25,6 +25,15 @@ class Viterbi : public BaseFilter {
   int m_width;
   int m_height;
 
+  int m_treck{};
+  int m_range{};
+  int clusterWidth{};
+  int clusterHeight{};
+  bool m_absFilter{};
+
+  int i_shift{};
+  int j_shift{};
+
 };
 } // namespace Filters
 

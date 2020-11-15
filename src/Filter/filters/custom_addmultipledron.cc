@@ -10,6 +10,8 @@
     MARKER_TRIANGLE_UP = 5,  //!< An upwards pointing triangle marker shape
     MARKER_TRIANGLE_DOWN = 6 //!< A downwards pointing triangle marker shape
 */
+#define DEBUG FALSE
+
 constexpr auto DRON_SIZE_MIN{ "SizeMin" };
 constexpr auto DRON_SIZE_MAX{ "SizeMax" };
 constexpr auto DRON_COLOR{ "Color" };
@@ -30,6 +32,7 @@ constexpr auto OFFSET{ "Offset" };
 constexpr auto DRON_THICKNESS{ "DronThickness" };
 constexpr auto GLOBAL_OFFSET{ "GlobalOffset" };
 
+#if (DEBUG)
 std::string type2strDron(int type)
 {
   std::string r;
@@ -53,6 +56,7 @@ std::string type2strDron(int type)
 
   return r;
 }
+#endif
 
 Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
   : m_sizeMin{ a_config[DRON_SIZE_MIN].toInt() }
@@ -85,11 +89,8 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
   m_randX = 1;
   m_randY = 1;
   dronVelocity = 3;
-  // offset = 5;
   m_iterator = 0;
-  spdlog::debug("AddMultipleDron::AddMultipleDron()");
-  // m_velocityX = 1;
-  // m_velocityY = 1;
+  spdlog::trace("AddMultipleDron::AddMultipleDron()");
 }
 
 void Filters::AddMultipleDron::process(std::vector<_data> &_data)
@@ -155,8 +156,6 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
       int contrast = int(255.0 * (j / 100.0));
       cv::Mat tempDronContrast;
       cv::threshold(tempDron, tempDronContrast, 1, contrast, 0);
-      // Logger->debug("noise:{},contrast:{} Calculated contrast:{}",i,j, contrast);
-      // mean[0]
       int contrastImage;
       int delta;
       cv::Mat tempDronContrastImage;
@@ -164,20 +163,19 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
       if (color) {
         delta = 255 - mean[0];
         contrastImage = delta * (j / 100.0);
-
         cv::threshold(tempDron, tempDronContrastImage, 1, contrastImage, 0);
         cv::add(tempClone, tempDronContrastImage, tempDronContrastImage);
       } else {
         delta = mean[0];
         contrastImage = delta * (j / 100.0);
-
         cv::threshold(tempDron, tempDronContrastImage, 1, contrastImage, 0);
         cv::subtract(tempClone, tempDronContrastImage, tempDronContrastImage);
       }
-      // Logger->debug("delta:{}", delta);
-      // Logger->debug("contrastImage:{}", contrastImage);
-      // Logger->debug("");
-
+#if (DEBUG)
+      Logger->debug("delta:{}", delta);
+      Logger->debug("contrastImage:{}", contrastImage);
+      Logger->debug("");
+#endif
       cv::Mat noise_image(tempDronContrastImage.size(), CV_16SC1);
       double m_noise_double = i / 1.0;
       cv::randn(noise_image, cv::Scalar::all(0.0), cv::Scalar::all(m_noise_double));
@@ -194,17 +192,13 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 
   cv::Mat all;
   std::vector<cv::Mat> part;
-  //Logger->debug("images.size():{}", images.size());
   for (int i = 0; i < images.size(); i++) {
     cv::Mat partSingle;
-    //Logger->debug("images[{}].size():{}", i, images[i].size());
     for (int j = 1; j < images[i].size(); j++) {
-      //Logger->debug("images[{}][{}]", i, j);
+#if (DEBUG)
       std::string type = type2strDron(images[i][j].type());
-     // Logger->debug("images[{}][{}].type():{}", i, j, type);
-      //Logger->debug("images[{}][{}]:{}x{}", i, j, images[i][j].cols, images[i][j].rows);
-      // cv::cvtColor(images[i][j], images[i][j], cv::COLOR_GRAY2BGR);
-      //Logger->debug("images[{}][{}].type():{}", i, j, type);
+      Logger->debug("images[{}][{}].type():{}", i, j, type);
+#endif
       if (j == 1) {
         cv::hconcat(images[i][0], images[i][1], partSingle);
       } else {
@@ -219,9 +213,10 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
       cv::vconcat(all, partSingle, all);
     }
   }
-
+#if (DEBUG)
   cv::imshow("all:", all);
   cv::waitKey(0);
+#endif
 
   double _chanceOfChangeVelocity = m_randomGenerator->bounded(0, 100) / 100.0;
   if (_chanceOfChangeVelocity < m_probabilityOfChangeVelocity) {
@@ -238,7 +233,6 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   }
 
   // lottery change size:
-
   double _chanceOfChangeSize = m_randomGenerator->bounded(0, 100) / 100.0;
   if (_chanceOfChangeSize < m_probabilityOfChangeSize) {
     m_dronSize = m_randomGenerator->bounded(m_sizeMin, m_sizeMax + 1);
@@ -260,13 +254,13 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
   m_oldX = m_X;
   m_oldY = m_Y;
 
-
-  //0:
+  // 0:
   _data[0].processing = all.clone();
+  // 1:
   struct _data data;
   data.processing = _data[0].processing.clone();
   _data.push_back(data);
-
+  // 2:
   struct _data data2;
   data2.processing = _data[0].processing.clone();
   _data.push_back(data2);
@@ -274,7 +268,9 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 
 void Filters::AddMultipleDron::checkBoundies(const qint32 &offset, qint32 &x, qint32 &y, const struct bounds &b)
 {
-  // Logger->trace("AddDron::AddDron() checkBoundies");
+#if (DEBUG)
+  Logger->debug("AddDron::AddDron() checkBoundies");
+#endif
   if (x < b.x1 + offset) {
     x = b.x1 + offset;
   }
@@ -293,7 +289,9 @@ void Filters::AddMultipleDron::checkBoundies(const qint32 &offset, qint32 &x, qi
 void Filters::AddMultipleDron::addGaussianNoise(cv::Mat &image, double average, double standard_deviation,
                                                 cv::Mat &noise)
 {
-  // Logger->trace("AddDron::AddDron() addGaussianNoise");
+#if (DEBUG)
+  Logger->debug("AddDron::AddDron() addGaussianNoise");
+#endif
   cv::Mat noise_image(image.size(), CV_16SC1);
   randn(noise_image, cv::Scalar::all(average), cv::Scalar::all(standard_deviation));
   cv::Mat temp_image;
