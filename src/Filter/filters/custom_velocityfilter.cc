@@ -63,7 +63,7 @@ void Filters::VelocityFilter::process(std::vector<_data> &_data)
         for (int i = 0; i < m_width; i++) {
           for (int j = 0; j < m_height; j++) {
             m_VAL[z].at<unsigned short>(cv::Point(j, i)) =
-                unsigned short(m_images[z].at<unsigned char>(cv::Point(j, i)));
+                (unsigned short)(m_images[z].at<unsigned char>(cv::Point(j, i)));
           }
         }
 #if (DEBUG)
@@ -99,7 +99,7 @@ void Filters::VelocityFilter::process(std::vector<_data> &_data)
 #endif
              
             m_VAL[z].at<unsigned short>(cv::Point(j, i)) =
-                unsigned short((m_images[z].at<unsigned char>(cv::Point(j, i)) + temp[distance]));
+                (unsigned short)((m_images[z].at<unsigned char>(cv::Point(j, i)) + temp[distance]));
           }
         }
       }
