@@ -29,7 +29,7 @@ class AddGaussianNoise : public BaseFilter {
 
  private:
   double const m_average;
-  double const m_standardDeviation;
+  int const m_standardDeviation;
   bool const m_returnNoise;
 };
 } // namespace Filters
