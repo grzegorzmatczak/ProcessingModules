@@ -5,28 +5,28 @@ project(ProcessingModules
   LANGUAGES C CXX)
 
 set(TARGET_NAME "ProcessingModules")
-set(DEFAULT_BUILD_TYPE "Release")
+set(DEFAULT_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -O1 " )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -O1")
 
 set(CMAKE_AUTOMOC ON)
 
 cmake_policy(SET CMP0054 NEW)
 
-if (UNIX)
-
-endif (UNIX)
-
 if (WIN32)
-	set (CMAKE_PREFIX_PATH "E:\\repo\\opencvBuild")
+	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\opencvBuild")
 	list(APPEND CMAKE_PREFIX_PATH "E:\\Qt\\5.12.8\\msvc2017_64")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\ConfigReader\\build")
+    list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\GeneticOptimization/ConfigReader")
+    
 endif (WIN32)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(ConfigReader REQUIRED)
+find_package(IncludeSpdlog)
+find_package(ConfigReader)
+
 find_package(Threads REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -64,6 +64,7 @@ add_library(${PROJECT_NAME} STATIC
     ${SUBTRACTOR_SRC} ${SUBTRACTOR_HEADERS}
 )
 
+
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -71,23 +72,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
 
-if (UNIX)
-	target_link_libraries(${PROJECT_NAME} Qt5::Core ${OpenCV_LIBS} Threads::Threads)
-endif (UNIX)
-
-if (WIN32)
-	target_link_libraries(${PROJECT_NAME} Qt5::Core ${OpenCV_LIBS} Threads::Threads ConfigReader)
-endif (WIN32)
-
-
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(FILES ${HEADERS} DESTINATION include)
-install(EXPORT ${PROJECT_NAME}Config DESTINATION share/${PROJECT_NAME}/cmake)
-
-export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
+target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader)
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Network  Threads::Threads)
