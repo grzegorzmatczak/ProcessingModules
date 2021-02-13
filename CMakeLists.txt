@@ -74,3 +74,20 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader)
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Network  Threads::Threads)
+
+
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "default install path" FORCE )
+endif()
+
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(FILES  ${HEADERS} DESTINATION include)
+install(EXPORT ${PROJECT_NAME}Config DESTINATION share/${PROJECT_NAME}/cmake)
+
+export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
