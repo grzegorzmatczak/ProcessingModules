@@ -13,17 +13,22 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "../../ConfigReader/include/configreader.h"
+#include "utils/includespdlog.h"
+#include "utils/configreader.h"
 
-struct _data {
+
+struct _data
+{
   cv::Mat processing;
+  QString testStr;
 };
 
 class Filter;
 class Subtractor;
 class Adder;
 
-class Processing : public QObject {
+class Processing : public QObject
+{
   Q_OBJECT
 
 public:
