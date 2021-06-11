@@ -243,10 +243,6 @@ void Filters::AddMultipleDronBlurred::process(std::vector<_data> &_data)
       cv::Mat originalGT = mark(rect);
       cv::add(originalGT, maskResize, maskResize);
       maskResize.copyTo(mark(rect));
-
-
-
-
       cv::Mat cleanROI = clone(rect);
 
       cv::Scalar m = cv::mean(cleanROI);
