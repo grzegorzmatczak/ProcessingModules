@@ -10,5 +10,8 @@
 #include "subtractors/opencv_lsbp.h"
 #include "subtractors/opencv_mog.h"
 #include "subtractors/opencv_mog2.h"
-#include "subtractors/custom_vibe.h"
+#include "subtractors/bgslibrary_vibe.h"
+#include "subtractors/bgslibrary_abl.h"
+#include "subtractors/bgslibrary_asbl.h"
+#include "subtractors/bgslibrary_lobster.h"
 #endif // SUBTRACTOR_LIST_H

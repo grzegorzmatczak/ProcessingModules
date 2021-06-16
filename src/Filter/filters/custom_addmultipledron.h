@@ -37,30 +37,17 @@ private:
  private:
 	int m_sizeMin{};
 	int m_sizeMax{};
+	int m_singleMarkerType{};
 	int m_randSeed{};
 	int m_noiseInt{};
 	int m_contrastInt{};
-	double m_noiseDouble{};
 
-	int m_width{};
-	int m_height{};
-	bool m_firstTime{};
 	int m_iterator{};
-	int m_singleMarkerType{};
-
- private:
-	QRandomGenerator *m_randomGenerator;
-
- private:
+	
 	int m_imageOffset;
 	int m_dronThickness;
 	int m_clusterWidth;
 	int m_clusterHeight;
-
-	struct bounds m_bounds;
-
-	AddDronImpl m_addDronImpl1;
-	AddDronImpl m_addDronImpl2;
 
 	int m_dronNoiseStart;
 	int m_dronNoiseStop;
@@ -69,9 +56,26 @@ private:
 	int m_dronContrastStop;
 	int m_dronContrastDelta;
 
-	QString m_dronWhiteBlack;
+	double m_noiseDouble{};
+	
+	bool m_firstTime{};
 	bool m_whiteDronActive{};
 	bool m_blackDronActive{};
+
+	QString m_dronWhiteBlack;
+
+
+	int m_width{};
+	int m_height{};
+
+ private:
+	QRandomGenerator *m_randomGenerator;
+	AddDronImpl m_addDronImpl1;
+	AddDronImpl m_addDronImpl2;
+	struct bounds m_bounds;
+
+ private:
+	
 
 };
 } // namespace Filters

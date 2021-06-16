@@ -57,6 +57,18 @@ void Subtractor::configure(QJsonObject const &a_config)
   {
     m_subtractor = { new Subtractors::ViBe{ a_config } };
   }
+  else if (NAME_STRING == "ABL")
+  {
+    m_subtractor = { new Subtractors::ABL{ a_config } };
+  }
+  else if (NAME_STRING == "ASBL")
+  {
+    m_subtractor = { new Subtractors::ASBL{ a_config } };
+  }
+  else if (NAME_STRING == "LOBSTER")
+  {
+    m_subtractor = { new Subtractors::LOBSTER{ a_config } };
+  }
   else
   {
     //H_logger->error("Unsupported subtractor type: {}", NAME_STRING.toStdString());

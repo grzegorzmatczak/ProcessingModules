@@ -78,7 +78,7 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	, m_randSeed{ a_config[DRON_RANDSEED].toInt() }
 	, m_noiseInt{ a_config[DRON_NOISE].toInt() }
 	, m_contrastInt{ a_config[DRON_CONTRAST].toInt() }
-	, m_firstTime{ true }
+	
 	, m_clusterWidth{ a_config[CLUSTER_WIDTH].toInt() }
 	, m_clusterHeight{ a_config[CLUSTER_HEIGHT].toInt() }
 	, m_imageOffset{ a_config[IMAGE_OFFSET].toInt() }
@@ -90,6 +90,8 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	, m_dronContrastStop{ a_config[DRON_CONTRAST_STOP].toInt() }
 	, m_dronContrastDelta{ a_config[DRON_CONTRAST_DELTA].toInt() }
 	, m_dronWhiteBlack{ a_config[DRON_TYPE].toString() }
+	, m_noiseDouble(0.0)
+	, m_firstTime( true )
 	, m_whiteDronActive(false)
 	, m_blackDronActive(false)
 {
