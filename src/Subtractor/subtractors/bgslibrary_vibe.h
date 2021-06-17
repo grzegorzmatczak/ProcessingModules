@@ -6,20 +6,22 @@
 
 class QJsonObject;
 
-namespace Subtractors {
-class ViBe : public BaseSubtractor {
+namespace Subtractors 
+{
+class ViBe : public BaseSubtractor 
+{
 public:
   ViBe(QJsonObject const &a_config);
   void process(std::vector<_data> &_data);
 
-
 private:
 
-  int m_numberOfSamples;
-  int m_matchingThreshold;
-  int m_matchingNumber;
-  int m_updateFactor;
+  int m_numberOfSamples{};
+  int m_matchingThreshold{};
+  int m_matchingNumber{};
+  int m_updateFactor{};
   vibe::vibeModel_Sequential_t *model;
+  bool m_firstTime{};
 };
 } // namespace Subtractors
 

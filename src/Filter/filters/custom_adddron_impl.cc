@@ -32,14 +32,11 @@ Filters::AddDronImpl::AddDronImpl()
 	m_randomGenerator = new QRandomGenerator(1);
 }
 
-void Filters::AddDronImpl::configure(int width, int height, int clusterWidth, int clusterHeight, int randSeed)
+void Filters::AddDronImpl::configure(int width, int height, int clusterWidth, int clusterHeight)
 {
 	#ifdef DEBUG
 	Logger->debug("Filters::AddDronImpl::configure(width, height, clusterWidth, clusterHeight)");
 	#endif
-
-	m_randomGenerator->seed(randSeed);
-	
 	m_width = width;
 	m_height = height;
 	m_clusterWidth = clusterWidth;
@@ -61,11 +58,13 @@ void Filters::AddDronImpl::configure(int width, int height, int clusterWidth, in
 	m_markerType = (m_singleMarkerType);
 }
 
-void Filters::AddDronImpl::configure(QJsonObject const &a_config)
+void Filters::AddDronImpl::configure(QJsonObject const &a_config, int randSeed)
 {
 	#ifdef DEBUG
 		Logger->debug("Filters::AddDronImpl::configure(config)");
 	#endif
+	m_randomGenerator->seed(randSeed);
+	Logger->debug("Filters::AddDronImpl::configure() randSeed:{}", randSeed);
 	m_sizeMin = (a_config[DRON_SIZE_MIN].toInt());
 	m_sizeMax = (a_config[DRON_SIZE_MAX].toInt());
 	m_velocityMin = (a_config[DRON_VELOCITY_MIN].toInt());

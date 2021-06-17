@@ -14,7 +14,8 @@ Subtractors::ViBe::ViBe(QJsonObject const &a_config)
 	, m_matchingThreshold{ a_config[MATCHING_THRESHOLD].toInt() }
 	, m_matchingNumber{ a_config[MATCHING_NUMBER].toInt() }
 	, m_updateFactor{ a_config[UPDATE_FACTOR].toInt() }
-	, model{nullptr}
+	, model(nullptr)
+	, m_firstTime(true)
 {
 	#ifdef DEBUG
 	Logger->debug("Subtractors::ViBe::ViBe()");
@@ -31,12 +32,14 @@ void Subtractors::ViBe::process(std::vector<_data> &_data)
 	#ifdef DEBUG
 	Logger->debug("Subtractors::ViBe::process() ");
 	#endif
-	//vibe
+
 	if (_data[0].processing.empty()) 
-			Logger->error("Subtractors::ViBe::process() _data[0].processing.empty()");
-		//return;
-	Logger->debug("Subtractors::ViBe::process() m_firstTime ", m_firstTime);
-	if (m_firstTime) {
+	{
+		Logger->error("Subtractors::ViBe::process() _data[0].processing.empty()");
+	}
+
+	if (m_firstTime)
+	{
 		/* Create a buffer for the output image. */
 		// img_output = cv::Mat(img_input.rows, img_input.cols, CV_8UC1);
 

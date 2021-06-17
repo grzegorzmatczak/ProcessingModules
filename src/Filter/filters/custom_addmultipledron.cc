@@ -98,7 +98,7 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	#ifdef DEBUG
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron()");
 	#endif
-
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() randSeed:{}", m_randSeed); 
 	Filters::AddMultipleDron::checkDronList(m_dronWhiteBlack, m_whiteDronActive, m_blackDronActive);
 
 	// Init randseed's:
@@ -106,8 +106,8 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	cv::theRNG().state = m_randSeed;
 	m_noiseDouble = m_noiseInt / 1.0;
 
-	m_addDronImpl1.configure(a_config);
-	m_addDronImpl2.configure(a_config);
+	m_addDronImpl1.configure(a_config, m_randSeed);
+	m_addDronImpl2.configure(a_config, m_randSeed+100);
 
 	if (m_noiseInt >= 0)
 	{
@@ -190,8 +190,8 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 		m_firstTime = false;
 		m_width = _data[0].processing.cols;
 		m_height = _data[0].processing.rows;
-		m_addDronImpl1.configure(m_width, m_height, m_clusterWidth, m_clusterHeight, 1);
-		m_addDronImpl2.configure(m_width, m_height, m_clusterWidth, m_clusterHeight, 2);
+		m_addDronImpl1.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
+		m_addDronImpl2.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
 	}
 
 	m_addDronImpl1.process();
@@ -351,8 +351,8 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 	}
 
 	#ifdef DEBUG
-		Logger->error("images.size:{}", images.size());
-		Logger->error("images[0].size:{}", images[0].size());
+		Logger->debug("images.size:{}", images.size());
+		Logger->debug("images[0].size:{}", images[0].size());
 	#endif
 
 	if(images.size() == 1)
