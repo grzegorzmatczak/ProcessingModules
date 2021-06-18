@@ -21,6 +21,7 @@ class AddDronImpl
 	AddDronImpl();
 	void configure(int width, int height, int clusterWidth, int clusterHeight);
 	void configure(QJsonObject const &a_config, int randSeed);
+	void configure( int randSeed);
 	void process();
 	void checkBoundies(qint32 offset);
 	void checkBoundies(const qint32 &offset, qint32 &x, qint32 &y, const struct bounds &b);

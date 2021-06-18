@@ -64,7 +64,9 @@ void Filters::AddDronImpl::configure(QJsonObject const &a_config, int randSeed)
 		Logger->debug("Filters::AddDronImpl::configure(config)");
 	#endif
 	m_randomGenerator->seed(randSeed);
+	#ifdef DEBUG
 	Logger->debug("Filters::AddDronImpl::configure() randSeed:{}", randSeed);
+	#endif
 	m_sizeMin = (a_config[DRON_SIZE_MIN].toInt());
 	m_sizeMax = (a_config[DRON_SIZE_MAX].toInt());
 	m_velocityMin = (a_config[DRON_VELOCITY_MIN].toInt());
@@ -77,7 +79,11 @@ void Filters::AddDronImpl::configure(QJsonObject const &a_config, int randSeed)
 	m_globalOffset = (a_config[GLOBAL_OFFSET].toBool());
 	m_imageOffset = (a_config[IMAGE_OFFSET].toInt());
 	m_randSeed = (a_config[DRON_RANDSEED].toInt());
-	m_randomGenerator->seed(m_randSeed);
+}
+
+void Filters::AddDronImpl::configure( int randSeed)
+{
+	m_randomGenerator->seed(randSeed);
 }
 
 void Filters::AddDronImpl::process()

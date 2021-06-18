@@ -83,31 +83,29 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	, m_clusterHeight{ a_config[CLUSTER_HEIGHT].toInt() }
 	, m_imageOffset{ a_config[IMAGE_OFFSET].toInt() }
 	, m_dronThickness{ a_config[DRON_THICKNESS].toInt() }
-	, m_dronNoiseStart{ a_config[DRON_NOISE_START].toInt() }
-	, m_dronNoiseStop{ a_config[DRON_NOISE_STOP].toInt() }
-	, m_dronNoiseDelta{ a_config[DRON_NOISE_DELTA].toInt() }
-	, m_dronContrastStart{ a_config[DRON_CONTRAST_START].toInt() }
-	, m_dronContrastStop{ a_config[DRON_CONTRAST_STOP].toInt() }
-	, m_dronContrastDelta{ a_config[DRON_CONTRAST_DELTA].toInt() }
+	, m_dronNoiseStart{ a_config[DRON_NOISE_START].toDouble() }
+	, m_dronNoiseStop{ a_config[DRON_NOISE_STOP].toDouble() }
+	, m_dronNoiseDelta{ a_config[DRON_NOISE_DELTA].toDouble() }
+	, m_dronContrastStart{ a_config[DRON_CONTRAST_START].toDouble() }
+	, m_dronContrastStop{ a_config[DRON_CONTRAST_STOP].toDouble() }
+	, m_dronContrastDelta{ a_config[DRON_CONTRAST_DELTA].toDouble() }
 	, m_dronWhiteBlack{ a_config[DRON_TYPE].toString() }
-	, m_noiseDouble(0.0)
 	, m_firstTime( true )
 	, m_whiteDronActive(false)
 	, m_blackDronActive(false)
 {
 	#ifdef DEBUG
-	Logger->debug("Filters::AddMultipleDron::AddMultipleDron()");
-	#endif
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() randSeed:{}", m_randSeed); 
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_clusterWidth:{}", m_clusterWidth); 
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_clusterHeight:{}", m_clusterHeight); 
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_sizeMin:{}", m_sizeMin); 
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_sizeMax:{}", m_sizeMax); 
+	#endif
 	Filters::AddMultipleDron::checkDronList(m_dronWhiteBlack, m_whiteDronActive, m_blackDronActive);
 
 	// Init randseed's:
 	m_randomGenerator = new QRandomGenerator(m_randSeed);
 	cv::theRNG().state = m_randSeed;
-	m_noiseDouble = m_noiseInt / 1.0;
-
-	m_addDronImpl1.configure(a_config, m_randSeed);
-	m_addDronImpl2.configure(a_config, m_randSeed+100);
 
 	if (m_noiseInt >= 0)
 	{
@@ -122,6 +120,32 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 		m_dronContrastStop = m_contrastInt;
 		m_dronContrastDelta = 1;
 	}
+
+	for (double i = m_dronNoiseStart; i <= m_dronNoiseStop; i += m_dronNoiseDelta)
+	{
+		for (double j = m_dronContrastStart; j <= m_dronContrastStop; j += m_dronContrastDelta)
+		{	
+			AddDronImpl dron1;
+			AddDronImpl dron2;
+			m_dronImplVector.push_back({dron1,dron1});
+		}
+	}
+
+	for (int it = 0; it < m_dronImplVector.size(); it++)
+	{
+		m_dronImplVector[it].dron1.configure(a_config, m_randSeed+it);
+		m_dronImplVector[it].dron2.configure(a_config, m_randSeed+it+5);
+	}
+
+	#ifdef DEBUG
+	Logger->debug("m_dronNoiseStart:{}", m_dronNoiseStart);
+	Logger->debug("m_dronNoiseStop:{}", m_dronNoiseStop); 
+	Logger->debug("m_dronNoiseDelta:{}", m_dronNoiseDelta); 
+
+	Logger->debug("m_dronContrastStart:{}", m_dronContrastStart); 
+	Logger->debug("m_dronContrastStop:{}", m_dronContrastStop); 
+	Logger->debug("m_dronContrastDelta:{}", m_dronContrastDelta);
+	#endif
 }
 
 void Filters::AddMultipleDron::checkDronList(const QString & dronWhiteBlack, bool & whiteDronActive, bool & blackDronActive)
@@ -140,6 +164,10 @@ void Filters::AddMultipleDron::checkDronList(const QString & dronWhiteBlack, boo
 			blackDronActive = true;
 		}
 	}
+	#ifdef DEBUG
+	Logger->debug("whiteDronActive:{}", whiteDronActive); 
+	Logger->debug("blackDronActive:{}", blackDronActive); 
+	#endif
 }
 
 cv::Mat Filters::AddMultipleDron::prepareDron(cv::Mat & processing, AddDronImpl &addDronImpl)
@@ -155,16 +183,13 @@ cv::Mat Filters::AddMultipleDron::prepareDron(cv::Mat & processing, AddDronImpl 
 	}
 
 	cv::Mat cleanDron = dron.clone();
-
-
-
-	cv::Point positionDron = cv::Point(addDronImpl.x, addDronImpl.y);
+	cv::Point positionDron = cv::Point(addDronImpl.x, addDronImpl.y);	
 
 	#ifdef DEBUG
 		Logger->debug("Filters::AddMultipleDron::prepareDron() positionDron:({},{})",positionDron.x,positionDron.y);
 	#endif
 
-	cv::drawMarker(cleanDron, positionDron, 255, m_singleMarkerType, m_addDronImpl1.dronSize, m_dronThickness, 8);
+	cv::drawMarker(cleanDron, positionDron, 255, m_singleMarkerType, addDronImpl.dronSize, m_dronThickness, 8);
 	return cleanDron;
 }
 
@@ -190,12 +215,26 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 		m_firstTime = false;
 		m_width = _data[0].processing.cols;
 		m_height = _data[0].processing.rows;
-		m_addDronImpl1.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
-		m_addDronImpl2.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
-	}
+		for (int it = 0; it < m_dronImplVector.size(); it++)
+		{
+			m_dronImplVector[it].dron1.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
+			m_dronImplVector[it].dron2.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
+			
+		}
+		for (int it = 0; it < m_dronImplVector.size(); it++)
+		{
+			AddDronImageVector dron{Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron1), 
+			Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron2)};
 
-	m_addDronImpl1.process();
-	m_addDronImpl2.process();
+			m_cleanDron.push_back(dron);
+		}
+	}
+	
+	for (int it = 0; it < m_dronImplVector.size(); it++)
+	{
+		m_cleanDron[it].dron1 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron1).clone();
+		m_cleanDron[it].dron2 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron2).clone();
+	}
 
 	cv::Mat clone;
 	if (m_clusterWidth > m_width || m_clusterHeight > m_height)
@@ -208,40 +247,49 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 	}
 	cv::Scalar mean = cv::mean(clone);
 
-	cv::Mat cleanDron1 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_addDronImpl1);
-	cv::Mat cleanDron2 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_addDronImpl2);
-
-	
-	
-
 	std::vector<std::vector<cv::Mat>> images;
 	std::vector<std::vector<cv::Mat>> drones;
+	int randSeed{0};
 
-	for (int i = m_dronNoiseStart; i <= m_dronNoiseStop; i += m_dronNoiseDelta)
+	for (double i = m_dronNoiseStart; i <= m_dronNoiseStop; i += m_dronNoiseDelta)
 	{
+		
 		std::vector<cv::Mat> image;
 		std::vector<cv::Mat> drone;
-		for (int j = m_dronContrastStart; j <= m_dronContrastStop; j += m_dronContrastDelta)
+		for (double j = m_dronContrastStart; j <= m_dronContrastStop; j += m_dronContrastDelta)
 		{
+			m_dronImplVector[randSeed].dron1.process();
+			m_dronImplVector[randSeed].dron2.process();
+
 			cv::Mat tempClone = clone.clone();
-			cv::Mat tempDron1 = cleanDron1.clone();
-			cv::Mat tempDron2 = cleanDron2.clone();
-			int contrast = int(255.0 * (j / 100.0));
+			#ifdef DEBUG
+			Logger->debug("Filters::AddMultipleDron::process() tempDron1");
+			#endif
+			cv::Mat tempDron1 = m_cleanDron[randSeed].dron1.clone();
+			cv::Mat tempDron2 = m_cleanDron[randSeed].dron2.clone();
+			int contrast = int(255.0 * (j/ 100.0));
 			cv::Mat tempDronContrast1;
 			cv::Mat tempDronContrast2;
 			cv::threshold(tempDron1, tempDronContrast1, 1, contrast, 0);
 			cv::threshold(tempDron2, tempDronContrast2, 1, contrast, 0);
+
 			int contrastImage;
 			int delta;
 			cv::Mat tempDronContrastImage1;
 			cv::Mat tempDronContrastImage2;
 			if(m_whiteDronActive)
 			{
+				#ifdef DEBUG
+				Logger->debug("Filters::AddMultipleDron::process() dron white:");
+				#endif
 				// dron white:
 				delta = 255 - mean[0];
 				contrastImage = delta * (j / 100.0);
 				cv::threshold(tempDron1, tempDronContrastImage1, 1, contrastImage, 0);
 				cv::add(tempClone, tempDronContrastImage1, tempClone);
+				#ifdef DEBUG
+				Logger->debug("Filters::AddMultipleDron::process() m_dronImplVector.size():{}", m_dronImplVector.size());
+				#endif
 				#ifdef DEBUG
 				if(m_dronContrastStart == m_dronContrastStop)
 				{
@@ -254,11 +302,15 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 			}
 			if(m_blackDronActive)
 			{
+				#ifdef DEBUG
+				Logger->debug("Filters::AddMultipleDron::process() dron black:");
+				#endif
 				// dron black:
 				delta = mean[0];
 				contrastImage = delta * (j / 100.0);
 				cv::threshold(tempDron2, tempDronContrastImage2, 1, contrastImage, 0);
 				cv::subtract(tempClone, tempDronContrastImage2, tempClone);
+
 				#ifdef DEBUG
 				if(m_dronContrastStart == m_dronContrastStop)
 				{
@@ -269,16 +321,22 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 				#endif
 			}
 			
+			#ifdef DEBUG
+			Logger->debug("Filters::AddMultipleDron::process() noise:");
+			#endif
 			cv::Mat noise_image(tempClone.size(), CV_16SC1);
-			double m_noiseDouble = i / 1.0;
-			cv::randn(noise_image, cv::Scalar::all(0.0), cv::Scalar::all(m_noiseDouble));
+			double noiseDouble = i / 1.0;
+			cv::randn(noise_image, cv::Scalar::all(0.0), cv::Scalar::all(noiseDouble));
 			cv::Mat temp_image;
 			cv::Mat mark2;
 			tempClone.convertTo(temp_image, CV_16SC1);
 			addWeighted(temp_image, 1.0, noise_image, 1.0, 0.0, temp_image);
 			temp_image.convertTo(tempClone, tempClone.type());
-
 			
+
+			#ifdef DEBUG
+			Logger->debug("Filters::AddMultipleDron::process() tempDronContrast:");
+			#endif
 			cv::Mat tempDronContrast;
 
 			if(m_blackDronActive && m_whiteDronActive)
@@ -297,6 +355,13 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 
 			image.push_back(tempClone);
 			drone.push_back(tempDronContrast);
+
+			#ifdef DEBUG
+			Logger->debug("Filters::AddMultipleDron::process() endProcess:");
+			#endif
+			m_dronImplVector[randSeed].dron1.endProcess();
+			m_dronImplVector[randSeed].dron2.endProcess();
+			randSeed++;
 		}
 		images.push_back(image);
 		drones.push_back(drone);
@@ -306,9 +371,15 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 	cv::Mat allDron;
 	std::vector<cv::Mat> part;
 	std::vector<cv::Mat> partDron;
+	#ifdef DEBUG
+	Logger->debug("images.size():{}", images.size());
+	#endif
 
 	for (int i = 0; i < images.size(); i++)
 	{
+		#ifdef DEBUG
+		Logger->debug("images[i].size():{}", images[i].size());
+		#endif
 		cv::Mat partSingle;
 		cv::Mat partSingleDron;
 		for (int j = 1; j < images[i].size(); j++)
@@ -379,7 +450,9 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 		//cv::imshow("_data[1].processing:", _data[1].processing);
 		cv::waitKey(0);
 	#endif
+	for (int it = 0; it < m_dronImplVector.size(); it++)
+	{
+		
+	}
 
-	m_addDronImpl1.endProcess();
-	m_addDronImpl2.endProcess();
 }

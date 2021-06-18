@@ -22,8 +22,24 @@
 
 class QJsonObject;
 
-namespace Filters {
-class AddMultipleDron : public BaseFilter {
+namespace Filters
+{
+
+struct AddDronImplVector
+{
+	AddDronImpl dron1;
+	AddDronImpl dron2;
+};
+
+struct AddDronImageVector
+{
+	cv::Mat dron1;
+	cv::Mat dron2;
+};
+
+
+class AddMultipleDron : public BaseFilter
+{
  public:
 	AddMultipleDron(QJsonObject const &a_config);
 	void process(std::vector<_data> &_data);
@@ -49,12 +65,12 @@ private:
 	int m_clusterWidth;
 	int m_clusterHeight;
 
-	int m_dronNoiseStart;
-	int m_dronNoiseStop;
-	int m_dronNoiseDelta;
-	int m_dronContrastStart;
-	int m_dronContrastStop;
-	int m_dronContrastDelta;
+	double m_dronNoiseStart;
+	double m_dronNoiseStop;
+	double m_dronNoiseDelta;
+	double m_dronContrastStart;
+	double m_dronContrastStop;
+	double m_dronContrastDelta;
 
 	double m_noiseDouble{};
 	
@@ -70,8 +86,12 @@ private:
 
  private:
 	QRandomGenerator *m_randomGenerator;
-	AddDronImpl m_addDronImpl1;
-	AddDronImpl m_addDronImpl2;
+	//AddDronImpl m_addDronImpl1;
+	//AddDronImpl m_addDronImpl2;
+	std::vector<AddDronImplVector> m_dronImplVector;
+	std::vector<cv::Mat> m_clean;
+	std::vector<AddDronImageVector> m_cleanDron;
+	std::vector<AddDronImageVector> m_tempDronContrast;
 	struct bounds m_bounds;
 
  private:
