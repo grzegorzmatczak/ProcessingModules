@@ -95,6 +95,8 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	, m_blackDronActive(false)
 {
 	#ifdef DEBUG
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_noiseInt:{}", m_noiseInt); 
+	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_contrastInt:{}", m_contrastInt); 
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() randSeed:{}", m_randSeed); 
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_clusterWidth:{}", m_clusterWidth); 
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_clusterHeight:{}", m_clusterHeight); 
