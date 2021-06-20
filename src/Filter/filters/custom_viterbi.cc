@@ -12,7 +12,7 @@ constexpr auto SHIFT_WIDTH{ "ShiftWidth" };
 constexpr auto SHIFT_HEIGHT{ "ShiftHeight" };
 
 #define DEBUG FALSE
-#define TIMER TRUE
+#define TIMER FALSE
 
 #if (TIMER)
 cv::TickMeter m_timer;

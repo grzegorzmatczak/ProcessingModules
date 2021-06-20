@@ -1,7 +1,7 @@
 #include "bgslibrary_vibe.h"
 #include <QJsonObject>
 
-#define DEBUG
+//#define DEBUG
 
 constexpr auto NUMBER_OF_SAMPLES{ "NumberOfSamples" };
 constexpr auto MATCHING_THRESHOLD{ "MatchingThreshold" };

@@ -4,7 +4,7 @@
 #include <vector> 
 
 constexpr auto DRON_SIZE_MIN{ "Deep" };
-#define DEBUG TRUE
+#define DEBUG FALSE
 
 Filters::VelocityFilter::VelocityFilter(QJsonObject const &a_config)
 {
