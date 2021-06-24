@@ -1,6 +1,8 @@
 #include "opencv_mog.h"
 #include <QJsonObject>
 
+//#define DEBUG
+
 constexpr auto HISTORY{ "History" };
 constexpr auto N_MIXTURES{ "Nmixtures" };
 constexpr auto BACKGROUND_RATIO{ "BackgroundRatio" };
@@ -13,6 +15,9 @@ Subtractors::MOG::MOG(QJsonObject const &a_config)
   , m_noiseSigma{ a_config[NOISE_SIGMA].toDouble() }
 
 {
+  #ifdef DEBUG
+  Logger->debug("Subtractor::MOG() m_backgroundRatio{}, m_noiseSigma:{}", m_backgroundRatio, m_noiseSigma);
+  #endif
   m_backgroundSubtractor =
       cv::bgsegm::createBackgroundSubtractorMOG(m_history, m_nmixtures, m_backgroundRatio, m_noiseSigma);
 }
