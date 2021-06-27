@@ -45,13 +45,17 @@ void Subtractor::configure(QJsonObject const &a_config)
   {
     m_subtractor = { new Subtractors::LSBP{ a_config } };
   }
-  else if (NAME_STRING == "None")
+  else if (NAME_STRING == "NONE")
   {
     m_subtractor = { new Subtractors::None{} };
   }
-  else if (NAME_STRING == "Median")
+  else if (NAME_STRING == "MEDIAN")
   {
     m_subtractor = { new Subtractors::Median{ a_config } };
+  }
+  else if (NAME_STRING == "MEDIAN2")
+  {
+    m_subtractor = { new Subtractors::Median2{ a_config } };
   }
   else if (NAME_STRING == "ViBe")
   {

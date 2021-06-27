@@ -2,6 +2,7 @@
 #define SUBTRACTOR_LIST_H
 
 #include "subtractors/custom_median.h"
+#include "subtractors/custom_median2.h"
 #include "subtractors/custom_none.h"
 #include "subtractors/opencv_cnt.h"
 #include "subtractors/opencv_gmg.h"
