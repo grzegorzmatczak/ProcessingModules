@@ -32,6 +32,7 @@ public:
 	int dronSize{};
 	int x{};
 	int y{};
+	int markerType{};
 
  private:
 	int m_sizeMin{};
@@ -66,9 +67,9 @@ public:
 private:
 	QRandomGenerator *m_randomGenerator;
 	int m_singleMarkerType{};
+	int m_markerType{};
 	int m_clusterWidth;
 	int m_clusterHeight;
-	int m_markerType;
 	bool m_globalOffset{};
 	struct bounds m_bounds;
 	int m_randSeed{};

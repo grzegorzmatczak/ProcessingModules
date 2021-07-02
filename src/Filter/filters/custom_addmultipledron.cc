@@ -125,18 +125,25 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 
 	for (double i = m_dronNoiseStart; i <= m_dronNoiseStop; i += m_dronNoiseDelta)
 	{
+		std::vector<AddDronImplVector> m_dronImplVectorTemp;
+
 		for (double j = m_dronContrastStart; j <= m_dronContrastStop; j += m_dronContrastDelta)
 		{	
 			AddDronImpl dron1;
 			AddDronImpl dron2;
-			m_dronImplVector.push_back({dron1,dron1});
+			m_dronImplVectorTemp.push_back({dron1,dron1});
 		}
+
+		m_dronImplVector.push_back(m_dronImplVectorTemp);
 	}
 
 	for (int it = 0; it < m_dronImplVector.size(); it++)
 	{
-		m_dronImplVector[it].dron1.configure(a_config, m_randSeed+it);
-		m_dronImplVector[it].dron2.configure(a_config, m_randSeed+it+5);
+		for (int jt = 0; jt < m_dronImplVector[it].size(); jt++)
+		{
+			m_dronImplVector[it][jt].dron1.configure(a_config, m_randSeed+it+jt);
+			m_dronImplVector[it][jt].dron2.configure(a_config, m_randSeed+it+jt+it*jt);
+		}
 	}
 
 	#ifdef DEBUG
@@ -180,8 +187,8 @@ cv::Mat Filters::AddMultipleDron::prepareDron(cv::Mat & processing, AddDronImpl 
 		cv::resize(processing, dron, cv::Size(m_width, m_height));
 	}
 	else
-	{
-		dron = processing(cv::Rect(0, 0, m_clusterWidth, m_clusterHeight));
+	{dron = processing(cv::Rect(0, 0, m_clusterWidth, m_clusterHeight));
+		
 	}
 
 	cv::Mat cleanDron = dron.clone();
@@ -191,7 +198,7 @@ cv::Mat Filters::AddMultipleDron::prepareDron(cv::Mat & processing, AddDronImpl 
 		Logger->debug("Filters::AddMultipleDron::prepareDron() positionDron:({},{})",positionDron.x,positionDron.y);
 	#endif
 
-	cv::drawMarker(cleanDron, positionDron, 255, m_singleMarkerType, addDronImpl.dronSize, m_dronThickness, 8);
+	cv::drawMarker(cleanDron, positionDron, 255, addDronImpl.markerType, addDronImpl.dronSize, m_dronThickness, 8);
 	return cleanDron;
 }
 
@@ -219,23 +226,104 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 		m_height = _data[0].processing.rows;
 		for (int it = 0; it < m_dronImplVector.size(); it++)
 		{
-			m_dronImplVector[it].dron1.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
-			m_dronImplVector[it].dron2.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
-			
+			for (int jt = 0; jt < m_dronImplVector[it].size(); jt++)
+			{
+				m_dronImplVector[it][jt].dron1.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
+				m_dronImplVector[it][jt].dron2.configure(m_width, m_height, m_clusterWidth, m_clusterHeight);
+			}
 		}
+		//qint32 deltaX = 0;
+    	//qint32 deltaY = 0;
+		#ifdef DEBUG
+		Logger->debug("m_clusterWidth:{}", m_clusterWidth); 
+		Logger->debug("m_clusterHeight:{}", m_clusterHeight); 
+		Logger->debug("m_width:{}", m_width); 
+		Logger->debug("m_height:{}", m_height); 
+		Logger->debug("while:");
+		#endif
+		Logger->debug("m_width:{}", m_width); 
+		Logger->debug("m_height:{}", m_height); 
+/*
+		while (true)
+		{	
+			Logger->debug("x:{},y:{}", deltaX, deltaY);
+			if ((deltaX + m_clusterWidth) <= m_width)
+			{
+				m_processing_clusters.push_back(_data[0].processing(cv::Rect(deltaX, deltaY, m_clusterWidth, m_clusterHeight)));
+				#ifdef DEBUG
+				Logger->debug("m_processing_clusters.push_back:");
+				#endif
+				deltaX += m_clusterWidth;
+			}
+			else if ((deltaX + m_clusterWidth) > m_width && (deltaY + 2* m_clusterHeight) <= m_height)
+			{
+				deltaX = 0;
+				deltaY += m_clusterHeight;
+			}
+			else if((deltaX + m_clusterWidth) > m_width && (deltaY + 2* m_clusterHeight) > m_height)
+			{
+				break;
+			}
+		}
+*/
+		int deltaX = 0;
+    	int deltaY = 0;
+		int clusterIndex{0};
+		int clusterIndex_j{0};
+		Logger->debug("clusterIndex:{}",clusterIndex);
+		for (double i = m_dronNoiseStart; i <= m_dronNoiseStop; i += m_dronNoiseDelta)
+		{
+			Logger->debug("deltaY:{}",deltaY);
+			
+			clusterIndex_j = 0;
+			std::vector<cv::Mat> cluster;
+			deltaX = 0;
+			for (double j = m_dronContrastStart; j <= m_dronContrastStop; j += m_dronContrastDelta)
+			{
+				Logger->debug("deltaX:{}",deltaX);
+				
+				cluster.push_back(_data[0].processing(cv::Rect(deltaX, deltaY, m_clusterWidth, m_clusterHeight)).clone());
+				deltaX += m_clusterWidth;
+				if((deltaX + m_clusterWidth) > m_width)
+				{
+					deltaX = 0;
+				}
+				Logger->debug("deltaX:{} end loop",deltaX);
+			}
+			m_processing_clusters.push_back(cluster);
+
+			if ((deltaY + 2* m_clusterHeight) >= m_height)
+			{
+				Logger->debug("deltaY:{} end loop",deltaY);
+				deltaY = 0;
+			}
+			deltaY += m_clusterHeight;
+			Logger->debug("deltaY:{} end loop",deltaY);
+		}
+
+
+		Logger->debug("rest alg");
 		for (int it = 0; it < m_dronImplVector.size(); it++)
 		{
-			AddDronImageVector dron{Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron1), 
-			Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron2)};
+			std::vector<AddDronImageVector>  cleanDron;
+			for (int jt = 0; jt < m_dronImplVector[it].size(); jt++)
+			{
+				AddDronImageVector dron{Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it][jt].dron1), 
+				Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it][jt].dron2)};
 
-			m_cleanDron.push_back(dron);
+				cleanDron.push_back(dron);
+			}
+			m_cleanDron.push_back(cleanDron);
 		}
 	}
 	
 	for (int it = 0; it < m_dronImplVector.size(); it++)
 	{
-		m_cleanDron[it].dron1 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron1).clone();
-		m_cleanDron[it].dron2 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it].dron2).clone();
+		for (int jt = 0; jt < m_dronImplVector[it].size(); jt++)
+		{
+			m_cleanDron[it][jt].dron1 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it][jt].dron1).clone();
+			m_cleanDron[it][jt].dron2 = Filters::AddMultipleDron::prepareDron(_data[1].processing, m_dronImplVector[it][jt].dron2).clone();
+		}
 	}
 
 	cv::Mat clone;
@@ -253,22 +341,26 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 	std::vector<std::vector<cv::Mat>> drones;
 	int randSeed{0};
 
+	int clusterIndex{0};
+	int clusterIndex_j{0};
+	Logger->debug("clusterIndex:{}",clusterIndex);
 	for (double i = m_dronNoiseStart; i <= m_dronNoiseStop; i += m_dronNoiseDelta)
 	{
-		
+		clusterIndex_j = 0;
 		std::vector<cv::Mat> image;
 		std::vector<cv::Mat> drone;
 		for (double j = m_dronContrastStart; j <= m_dronContrastStop; j += m_dronContrastDelta)
 		{
-			m_dronImplVector[randSeed].dron1.process();
-			m_dronImplVector[randSeed].dron2.process();
+			m_dronImplVector[clusterIndex][clusterIndex_j].dron1.process();
+			m_dronImplVector[clusterIndex][clusterIndex_j].dron2.process();
+			cv::Mat tempClone = m_processing_clusters[clusterIndex][clusterIndex_j].clone();
+			
 
-			cv::Mat tempClone = clone.clone();
 			#ifdef DEBUG
 			Logger->debug("Filters::AddMultipleDron::process() tempDron1");
 			#endif
-			cv::Mat tempDron1 = m_cleanDron[randSeed].dron1.clone();
-			cv::Mat tempDron2 = m_cleanDron[randSeed].dron2.clone();
+			cv::Mat tempDron1 = m_cleanDron[clusterIndex][clusterIndex_j].dron1.clone();
+			cv::Mat tempDron2 = m_cleanDron[clusterIndex][clusterIndex_j].dron2.clone();
 			int contrast = int(255.0 * (j/ 100.0));
 			cv::Mat tempDronContrast1;
 			cv::Mat tempDronContrast2;
@@ -361,12 +453,14 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 			#ifdef DEBUG
 			Logger->debug("Filters::AddMultipleDron::process() endProcess:");
 			#endif
-			m_dronImplVector[randSeed].dron1.endProcess();
-			m_dronImplVector[randSeed].dron2.endProcess();
+			m_dronImplVector[clusterIndex][clusterIndex_j].dron1.endProcess();
+			m_dronImplVector[clusterIndex][clusterIndex_j].dron2.endProcess();
 			randSeed++;
+			clusterIndex_j++;
 		}
 		images.push_back(image);
 		drones.push_back(drone);
+		clusterIndex++;
 	}
 
 	cv::Mat all;

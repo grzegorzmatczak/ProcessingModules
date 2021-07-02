@@ -88,10 +88,12 @@ private:
 	QRandomGenerator *m_randomGenerator;
 	//AddDronImpl m_addDronImpl1;
 	//AddDronImpl m_addDronImpl2;
-	std::vector<AddDronImplVector> m_dronImplVector;
+	std::vector<std::vector<AddDronImplVector>> m_dronImplVector;
 	std::vector<cv::Mat> m_clean;
-	std::vector<AddDronImageVector> m_cleanDron;
-	std::vector<AddDronImageVector> m_tempDronContrast;
+	std::vector<std::vector<AddDronImageVector>> m_cleanDron;
+	//std::vector<std::vector<AddDronImageVector>> m_tempDronContrast;
+
+	std::vector<std::vector<cv::Mat>> m_processing_clusters;
 	struct bounds m_bounds;
 
  private:

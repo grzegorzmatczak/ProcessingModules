@@ -55,7 +55,7 @@ void Filters::AddDronImpl::configure(int width, int height, int clusterWidth, in
 		deltaX, deltaX + m_clusterWidth, deltaY, deltaY + m_clusterHeight
 	};
 	m_bounds = (tmp);
-	m_markerType = (m_singleMarkerType);
+	//m_markerType = (m_singleMarkerType);
 }
 
 void Filters::AddDronImpl::configure(QJsonObject const &a_config, int randSeed)
@@ -119,7 +119,7 @@ void Filters::AddDronImpl::process()
  	double _chanceOfRotate = m_randomGenerator->bounded(0, 100) / 100.0;
 	if (_chanceOfRotate < m_probabilityOfRotate)
 	{
-	 m_markerType = m_randomGenerator->bounded(0, 2);
+	 markerType = m_randomGenerator->bounded(0, m_markerType);
 	}
 
 	// update x,y
