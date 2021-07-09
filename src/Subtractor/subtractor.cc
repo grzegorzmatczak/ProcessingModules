@@ -77,11 +77,11 @@ void Subtractor::configure(QJsonObject const &a_config)
 	{
 		m_subtractor = { new Subtractors::SigmaDelta{ a_config } };
 	}
-	else if (NAME_STRING == "WEIGHTED_MOVING_VARIANCE")
+	else if (NAME_STRING == "WMV")
 	{
 		m_subtractor = { new Subtractors::WeightedMovingVariance{ a_config } };
 	}
-	else if (NAME_STRING == "WEIGHTED_MOVING_MEAN")
+	else if (NAME_STRING == "WMM")
 	{
 		m_subtractor = { new Subtractors::WeightedMovingMean{ a_config } };
 	}
