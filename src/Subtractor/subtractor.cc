@@ -73,10 +73,6 @@ void Subtractor::configure(QJsonObject const &a_config)
 	{
 		m_subtractor = { new Subtractors::LOBSTER{ a_config } };
 	}
-	else if (NAME_STRING == "SIGMA_DELTA")
-	{
-		m_subtractor = { new Subtractors::SigmaDelta{ a_config } };
-	}
 	else if (NAME_STRING == "WMV")
 	{
 		m_subtractor = { new Subtractors::WeightedMovingVariance{ a_config } };

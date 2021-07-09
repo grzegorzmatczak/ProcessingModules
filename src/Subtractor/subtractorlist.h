@@ -15,7 +15,6 @@
 #include "subtractors/bgslibrary_abl.h"
 #include "subtractors/bgslibrary_asbl.h"
 #include "subtractors/bgslibrary_lobster.h"
-#include "subtractors/bgslibrary_sigmadelta.h"
 #include "subtractors/bgslibrary_weightedmovingvariance.h"
 #include "subtractors/bgslibrary_weightedmovingmean.h"
 #include "subtractors/custom_pbas.h"
