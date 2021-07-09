@@ -300,11 +300,10 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 	{
 		clone = _data[0].processing(cv::Rect(0, 0, m_clusterWidth, m_clusterHeight));
 	}
-	cv::Scalar mean = cv::mean(clone);
+	
 
 	std::vector<std::vector<cv::Mat>> images;
 	std::vector<std::vector<cv::Mat>> drones;
-	int randSeed{0};
 
 	int clusterIndex{0};
 	int clusterIndex_j{0};
@@ -331,6 +330,11 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 			int delta;
 			cv::Mat tempDronContrastImage1;
 			cv::Mat tempDronContrastImage2;
+			cv::Scalar mean = cv::mean(tempClone);
+			#ifdef DEBUG
+			Logger->debug("mean:{}", mean[0]); 
+			#endif
+
 			if(m_whiteDronActive)
 			{
 				#ifdef DEBUG
@@ -414,7 +418,6 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 			#endif
 			m_dronImplVector[clusterIndex][clusterIndex_j].dron1.endProcess();
 			m_dronImplVector[clusterIndex][clusterIndex_j].dron2.endProcess();
-			randSeed++;
 			clusterIndex_j++;
 		}
 		images.push_back(image);

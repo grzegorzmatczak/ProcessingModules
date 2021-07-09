@@ -73,6 +73,22 @@ void Subtractor::configure(QJsonObject const &a_config)
 	{
 		m_subtractor = { new Subtractors::LOBSTER{ a_config } };
 	}
+	else if (NAME_STRING == "SIGMA_DELTA")
+	{
+		m_subtractor = { new Subtractors::SigmaDelta{ a_config } };
+	}
+	else if (NAME_STRING == "WEIGHTED_MOVING_VARIANCE")
+	{
+		m_subtractor = { new Subtractors::WeightedMovingVariance{ a_config } };
+	}
+	else if (NAME_STRING == "WEIGHTED_MOVING_MEAN")
+	{
+		m_subtractor = { new Subtractors::WeightedMovingMean{ a_config } };
+	}
+	else if (NAME_STRING == "PBAS")
+	{
+		m_subtractor = { new Subtractors::PixelBasedAdaptiveSegmenter{ a_config } };
+	}
 	else
 	{
 		Logger->error("Unsupported subtractor type:{}", NAME_STRING.toStdString());
