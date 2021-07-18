@@ -14,12 +14,12 @@ constexpr auto LEARNING_RATE{ "LearningRate" };
 
 Subtractors::LOBSTER::LOBSTER(QJsonObject const &a_config) :
 m_relThreshold{ a_config[REL_SIMILARITY_THRESHOLD].toDouble() },
-m_offsetSimilarityThreshold{ a_config[OFFSET_SIMILARITY_THRESHOLD].toInt() },
-m_descDistThreshold{ a_config[DESC_DIST_THRESHOLD].toInt() },
-m_colorDistThreshold{ a_config[COLOR_DIST_THRESHOLD].toInt() },
-m_nbBGSamples{ a_config[NB_BG_SAMPLES].toInt() },
-m_requiredNbBGSamples{ a_config[REQUIRED_NB_BG_SAMPLES].toInt() },
-m_learnignRate{ a_config[LEARNING_RATE].toInt() },
+m_offsetSimilarityThreshold{  size_t(a_config[OFFSET_SIMILARITY_THRESHOLD].toInt()) },
+m_descDistThreshold{ size_t(a_config[DESC_DIST_THRESHOLD].toInt()) },
+m_colorDistThreshold{  size_t(a_config[COLOR_DIST_THRESHOLD].toInt()) },
+m_nbBGSamples{  size_t(a_config[NB_BG_SAMPLES].toInt()) },
+m_requiredNbBGSamples{  size_t(a_config[REQUIRED_NB_BG_SAMPLES].toInt()) },
+m_learnignRate{  size_t(a_config[LEARNING_RATE].toInt()) },
 m_firstTime(true)
 {
 	//debug_construction(AdaptiveBackgroundLearning);

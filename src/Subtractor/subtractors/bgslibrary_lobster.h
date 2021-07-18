@@ -12,7 +12,7 @@ namespace Subtractors
 	{
 
 		private:
-			float m_relThreshold;
+			double m_relThreshold;
             size_t m_offsetSimilarityThreshold;
             size_t m_descDistThreshold;
             size_t m_colorDistThreshold;

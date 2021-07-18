@@ -249,7 +249,7 @@ namespace Subtractors
 
 		while(true)
 		{
-			if(key >= node->key and key <= node->next->key)
+			if(key >= node->key && key <= node->next->key)
 			{
 				Node* next_node = node->next;
 				nodeToAdd->key = key;

@@ -17,14 +17,14 @@ namespace Subtractors
 		bool enableInputBlur;
 		bool enableOutputBlur;
 
-		float alpha;
-		float beta;
+		double alpha;
+		double beta;
 		int N;
 		int Raute_min;
-		float R_incdec;
+		double R_incdec;
 		int R_lower;
 		int R_scale;
-		float T_dec;
+		double T_dec;
 		int T_inc;
 		int T_init;
 		int T_lower;
