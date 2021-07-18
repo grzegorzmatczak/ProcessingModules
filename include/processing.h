@@ -13,8 +13,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "utils/includespdlog.h"
-#include "utils/configreader.h"
+#include "includespdlog.h"
+#include "configreader.h"
 
 
 struct _data
