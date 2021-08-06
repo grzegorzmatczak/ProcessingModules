@@ -1,6 +1,5 @@
 #include "opencv_knn.h"
 #include <QJsonObject>
-//#include <opencv2/tracking/tracker.hpp>
 
 constexpr auto HISTORY{ "History" };
 constexpr auto VAR_THRESHOLD{ "VarThreshold" };

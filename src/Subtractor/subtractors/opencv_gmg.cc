@@ -1,7 +1,6 @@
 #include "opencv_gmg.h"
 #include <QJsonObject>
 
-
 //#define DEBUG
 
 constexpr auto INITIALIZATION_FRAMES{ "InitializationFrames" };

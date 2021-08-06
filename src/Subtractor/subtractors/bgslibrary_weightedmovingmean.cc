@@ -1,6 +1,6 @@
 #include "bgslibrary_weightedmovingmean.h"
 
-#define DEBUG
+//#define DEBUG
 //#define DEBUG_OPENCV
 
 constexpr auto ENABLE_WEIGHT{ "EnableWeight" };
