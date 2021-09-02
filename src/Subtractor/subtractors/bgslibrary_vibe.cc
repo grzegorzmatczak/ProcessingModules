@@ -27,6 +27,11 @@ Subtractors::ViBe::ViBe(QJsonObject const &a_config)
 	#endif
 }
 
+Subtractors::ViBe::~ViBe()
+{
+	vibe::libvibeModel_Sequential_Free(model);
+}
+
 void Subtractors::ViBe::process(std::vector<_data> &_data)
 {
 	#ifdef DEBUG
@@ -53,7 +58,7 @@ void Subtractors::ViBe::process(std::vector<_data> &_data)
 																									 _data[0].processing.rows);
 
 		/* Sets default model values. */
-		// vibe::libvibeModel_Sequential_SetNumberOfSamples(model, numberOfSamples);
+		//vibe::libvibeModel_Sequential_SetNumberOfSamples(model, numberOfSamples);
 		vibe::libvibeModel_Sequential_SetMatchingThreshold(model, m_matchingThreshold);
 		vibe::libvibeModel_Sequential_SetMatchingNumber(model, m_matchingNumber);
 		vibe::libvibeModel_Sequential_SetUpdateFactor(model, m_updateFactor);

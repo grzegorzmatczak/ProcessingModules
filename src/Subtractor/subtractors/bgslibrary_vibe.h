@@ -12,6 +12,7 @@ class ViBe : public BaseSubtractor
 {
 public:
   ViBe(QJsonObject const &a_config);
+  ~ViBe();
   void process(std::vector<_data> &_data);
 
 private:
