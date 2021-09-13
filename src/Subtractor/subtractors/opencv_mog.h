@@ -20,6 +20,7 @@ private:
   int m_nmixtures;
   double m_backgroundRatio;
   double m_noiseSigma;
+  double m_learningRate;
 };
 } // namespace Subtractors
 

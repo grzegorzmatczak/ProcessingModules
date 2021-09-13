@@ -16,10 +16,10 @@ public:
 private:
   cv::Ptr<cv::BackgroundSubtractor> m_backgroundSubtractor;
   cv::Mat m_background;
-  double m_learningRate;
   int m_history;
   double m_varThreshold;
   bool m_detectShadows;
+  double m_learningRate;
 };
 } // namespace Subtractors
 

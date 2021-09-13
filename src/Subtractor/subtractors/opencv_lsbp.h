@@ -29,6 +29,7 @@ private:
   double m_LSBP_NoiseFG;
   int m_LSBP_BinaryThreshold;
   int m_LSBP_minMatchesNumber;
+  double m_learningRate;
 };
 } // namespace Subtractors
 

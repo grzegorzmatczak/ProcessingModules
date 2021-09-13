@@ -21,6 +21,7 @@ private:
   double m_replaceRate;
   double m_propagationRate;
   int m_hitsThreshold;
+  double m_learningRate;
 };
 } // namespace Subtractors
 

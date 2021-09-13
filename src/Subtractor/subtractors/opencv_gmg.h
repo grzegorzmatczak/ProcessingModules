@@ -18,6 +18,7 @@ private:
   cv::Mat m_background;
   int m_initializationFrames;
   double m_decisionThreshold;
+  double m_learningRate;
 };
 } // namespace Subtractors
 

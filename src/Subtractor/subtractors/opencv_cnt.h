@@ -20,6 +20,7 @@ private:
   int m_maxPixelStability;
   bool m_isParallel;
   bool m_useHistory;
+  double m_learningRate;
 };
 } // namespace Subtractors
 

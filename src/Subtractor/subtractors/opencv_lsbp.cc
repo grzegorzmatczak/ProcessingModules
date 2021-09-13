@@ -14,6 +14,8 @@ constexpr auto LSBP_NOISE_BG{ "NoiseBG" };
 constexpr auto LSBP_NOISE_FG{ "NoiseFG" };
 constexpr auto LSBP_BINARY_THRESHOLD{ "BinaryThreshold" };
 constexpr auto LSBP_MIN_MATCHES_NUMBER{ "MinMatchesNumber" };
+constexpr auto LEARNING_RATE{ "LearningRate" };
+
 
 Subtractors::LSBP::LSBP(QJsonObject const &a_config)
   : m_cameraMotionCompensation{ a_config[CAMERA_MOTION_COMPENSATION].toInt() }
@@ -29,6 +31,7 @@ Subtractors::LSBP::LSBP(QJsonObject const &a_config)
   , m_LSBP_NoiseFG{ a_config[LSBP_NOISE_FG].toDouble() }
   , m_LSBP_BinaryThreshold{ a_config[LSBP_BINARY_THRESHOLD].toInt() }
   , m_LSBP_minMatchesNumber{ a_config[LSBP_MIN_MATCHES_NUMBER].toInt() }
+  , m_learningRate{ a_config[LEARNING_RATE].toDouble() }
 {
   m_backgroundSubtractor = cv::bgsegm::createBackgroundSubtractorLSBP(
       m_cameraMotionCompensation, m_numberOfSamples, m_LSBPRadius, m_LSBP_Tlower, m_LSBP_Tupper, m_LSBP_Tincrease,
@@ -38,6 +41,6 @@ Subtractors::LSBP::LSBP(QJsonObject const &a_config)
 void Subtractors::LSBP::process(std::vector<_data> &_data)
 {
   cv::Mat out;
-  m_backgroundSubtractor->apply(_data[0].processing, out);
+  m_backgroundSubtractor->apply(_data[0].processing, out, m_learningRate);
   _data[0].processing = out;
 }
