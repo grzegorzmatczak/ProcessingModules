@@ -32,13 +32,13 @@ public:
   void process(std::vector<_data> &_data);
 
 private:
-  int const m_lowerb1;
-  int const m_lowerb2;
-  int const m_lowerb3;
+  int m_lowerb1;
+  int m_lowerb2;
+  int m_lowerb3;
 
-  int const m_upperb1;
-  int const m_upperb2;
-  int const m_upperb3;
+  int m_upperb1;
+  int m_upperb2;
+  int m_upperb3;
 };
 } // namespace Filters
 
