@@ -103,6 +103,8 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_sizeMin:{}", m_sizeMin); 
 	Logger->debug("Filters::AddMultipleDron::AddMultipleDron() m_sizeMax:{}", m_sizeMax); 
 	#endif
+	// TODO:
+	m_dronWhiteBlack = "BLACK_WHITE";
 	Filters::AddMultipleDron::checkDronList(m_dronWhiteBlack, m_whiteDronActive, m_blackDronActive);
 
 	// Init randseed's:
