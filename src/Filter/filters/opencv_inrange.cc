@@ -24,7 +24,7 @@ Filters::InRange::InRange(QJsonObject const &a_config)
 	}
 	else if (m_lowerb1 == m_upperb1)
 	{
-		if(m_lowerb1 != 1)
+		if(m_lowerb1 != 0)
 		{
 			m_lowerb1--;
 		}
