@@ -2,26 +2,22 @@
 #define CUSTOM_VELOCITY_FILTER_H
 
 #include "basefilter.h"
-#include <deque>
+#include "viterbi/velocityfilter_impl.h"
+
+#include <vector>
 
 class QJsonObject;
 
 namespace Filters {
 class VelocityFilter : public BaseFilter {
  public:
-  VelocityFilter(QJsonObject const &a_config);
+	VelocityFilter(QJsonObject const &a_config);
+	~VelocityFilter();
 
-  void process(std::vector<_data> &_data);
+	void process(std::vector<_data> &_data);
 
  private:
-  private:
-  QRandomGenerator *m_randomGenerator;
-  std::deque<cv::Mat> m_images;
-  std::deque<cv::Mat> m_VAL;
-
-  bool m_firstTime;
-  int m_width;
-  int m_height;
+	viterbi::VelocityFilter_impl *m_viterbi;
 };
 } // namespace Filters
 

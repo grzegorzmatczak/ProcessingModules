@@ -145,7 +145,7 @@ Filters::AddMultipleDron::AddMultipleDron(QJsonObject const &a_config)
 
 		m_dronImplVector.push_back(m_dronImplVectorTemp);
 	}
-
+	Logger->debug("m_dronImplVector.size():{}", m_dronImplVector.size());
 	
 	for (int it = 0; it < m_dronImplVector.size(); it++)
 	{
@@ -513,6 +513,8 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 	_data.push_back(data2);
 
 	#ifdef DEBUG_OPENCV
+
+		
 		cv::imshow("all:", all);
 		cv::imshow("allDron:", allDron);
 		//cv::imshow("_data[1].processing:", _data[1].processing);

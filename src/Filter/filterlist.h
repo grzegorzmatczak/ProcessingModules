@@ -18,6 +18,6 @@
 #include "filters/custom_addgaussiannoise.h"
 #include "filters/custom_addmultipledron.h"
 #include "filters/opencv_findcontours.h"
-#include "filters/custom_viterbi.h"
+#include "filters/custom_viterbifilter.h"
 #include "filters/custom_velocityfilter.h"
 #endif // FILTER_LIST_H

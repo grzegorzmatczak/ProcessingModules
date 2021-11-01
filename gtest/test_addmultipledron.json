@@ -1,0 +1,10 @@
+{
+    "Name": "AddMultipleDron", "SizeMin": 3, "SizeMax":10, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+    "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.2, 
+    "MarkerType":0, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 50, 
+    "ClusterHeight":50, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+    "Noise":5 , "Contrast": 100,
+    "DronNoiseStart" :0, "DronNoiseStop": 1, "DronNoiseDelta": 5,
+    "DronContrastStart" : 49, "DronContrastStop": 50, "DronContrastDelta": 5,
+    "DronType": "WHITE_BLACK"
+}

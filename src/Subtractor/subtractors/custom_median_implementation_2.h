@@ -41,7 +41,6 @@ namespace Subtractors
 		unsigned char getMedian();
 		unsigned char getElement(int element);
 
-
 		Node* m_start;
 		Node* m_stop;
 		std::vector<Node*> m_vector;
@@ -56,8 +55,6 @@ namespace Subtractors
 	private:
 
 	};
-
-
 
 	class MedianImage
 	{

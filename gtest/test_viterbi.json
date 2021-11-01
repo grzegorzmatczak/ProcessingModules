@@ -1,0 +1,67 @@
+{
+    "Name": "Viterbi",
+    "Treck": 2,
+    "Range": 10,
+    "ClusterWidth":25,
+    "ClusterHeight":25,
+    "AbsFilter": true,
+    "ShiftWidth":25,
+    "ShiftHeight":25,
+    "Threshold" : 0.90,
+    "Normalize": true,
+
+
+    
+    "FromVideo": true,
+
+    "SavePreprocessingDataset": false,
+
+    "DatasetWin32": 
+    {
+        "PathToDataset": "C:\\repo\\OptimizationDataset\\NORM0006_1280x720_30FPS\\",
+        "ConfigName": "config.json"
+    },
+    "DatasetLinux": 
+    {
+        "PathToDataset2": "/home/matczak/repo/OptimizationDataset/NORM0010_1280x720_120FPS/",
+        "PathToDataset": "/home/matczak/repo/OptimizationDataset/NORM0006_1280x720_30FPS/",
+        "ConfigName": "config.json"
+    },
+
+    "Graph_estimator_with_filters_small_drons_contrast":
+    [{
+        "Name": "INPUT",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "GT",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "ADD_DRON",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "OUTPUT", "Active": 3, "Signal":0},{"Name": "GT_OUTPUT", "Active": 4, "Signal":1}],
+        "Prev":[{"Name": "INPUT", "Active": 0, "Signal":0},{"Name": "GT", "Active": 1, "Signal":0}],
+        "Config":{
+            "Name": "AddMultipleDron", "SizeMin": 1, "SizeMax":2, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+            "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.01, 
+            "MarkerType":2, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 25, 
+            "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+            "Noise":-1 , "Contrast": -1,
+            "DronNoiseStart" :10.0, "DronNoiseStop": 10.1, "DronNoiseDelta": 0.03,
+            "DronContrastStart" : 35.0, "DronContrastStop": 35.1, "DronContrastDelta": 0.03,
+            "DronType": "BLACK_WHITE"
+        }
+    },{
+        "Name": "OUTPUT",        "Active": 3,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT_OUTPUT",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    }]
+}
