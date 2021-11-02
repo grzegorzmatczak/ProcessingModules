@@ -30,8 +30,11 @@ namespace viterbi
 			#ifdef DEBUG
 			Logger->debug("VelocityFilter_impl::getOutput() m_normalize:");
 			#endif
-			//cv::normalize(ViterbiOutGlobal, ViterbiOutGlobal, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-			//cv::normalize(ViterbiOutGlobal, ViterbiOutGlobal, 0, 255, cv::NORM_MINMAX);
+			cv::normalize(ViterbiOutGlobal, ViterbiOutGlobal, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+		}
+		if (ViterbiOutGlobal.type() != CV_8UC1)
+		{
+			ViterbiOutGlobal.convertTo(ViterbiOutGlobal, CV_8UC1);
 		}
 		double minVal;
 		double maxVal;
@@ -44,10 +47,7 @@ namespace viterbi
 		double tresh = 255 * m_threshold;
 		cv::threshold(ViterbiOutGlobal, ViterbiOutGlobal, int(tresh), 255, 0);
 		
-		if (ViterbiOutGlobal.type() != CV_8UC1)
-		{
-			ViterbiOutGlobal.convertTo(ViterbiOutGlobal, CV_8UC1);
-		}
+		
 		#ifdef DEBUG
 		Logger->debug("VelocityFilter_impl::getOutput() return:");
 		#endif
