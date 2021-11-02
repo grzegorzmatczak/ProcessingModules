@@ -18,8 +18,8 @@ namespace viterbi
     , m_threshold(a_config[THRESHOLD].toDouble())
     , m_normalize(a_config[NORMALIZE].toBool())
 	{
-		Logger->debug("VelocityFilter_impl::VelocityFilter_impl()");
 		#ifdef DEBUG
+        Logger->debug("Viterbi_impl::Viterbi_impl()");
 		Logger->debug("m_treck:{}", m_treck);
 		Logger->debug("m_range:{}", m_range);
 		Logger->debug("m_absFilter:{}", m_absFilter);
@@ -28,9 +28,10 @@ namespace viterbi
 
     Viterbi_impl::~Viterbi_impl()
     {
-
+        #ifdef DEBUG
+		Logger->debug("Viterbi_impl::~Viterbi_impl()");
+		#endif
     }
-
 
     void Viterbi_impl::firstTime(cv::Mat& input)
     {

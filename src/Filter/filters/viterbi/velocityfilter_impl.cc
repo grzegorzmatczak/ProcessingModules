@@ -9,11 +9,17 @@ namespace viterbi
 {
 	VelocityFilter_impl::VelocityFilter_impl(QJsonObject const &a_config)
 	: Viterbi_impl(a_config)
-	{}
+	{
+		#ifdef DEBUG
+		Logger->debug("VelocityFilter_impl::VelocityFilter_impl()");
+		#endif
+	}
 
 	VelocityFilter_impl::~VelocityFilter_impl()
 	{
+		#ifdef DEBUG
 		Logger->debug("VelocityFilter_impl::~VelocityFilter_impl()");
+		#endif
 	}
 	
 	cv::Mat VelocityFilter_impl::getOutput()
@@ -21,7 +27,7 @@ namespace viterbi
 		#ifdef DEBUG
 		Logger->debug("VelocityFilter_impl::getOutput() m_height:{}, m_width:{}", m_height, m_width);
 		Logger->debug("VelocityFilter_impl::getOutput() [m_VAL.size() - 1]:{}", m_VAL.size() - 1);
-		#endif
+		
 		//cv::Mat ViterbiOutGlobal = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 		cv::Mat ViterbiOutGlobal = m_VAL[m_VAL.size() - 1];
 

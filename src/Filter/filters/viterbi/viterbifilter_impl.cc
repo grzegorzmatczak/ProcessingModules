@@ -28,8 +28,9 @@ namespace viterbi
 			m_iShift = m_clusterWidth;
 			m_jShift = m_clusterHeight;
 		}
-		Logger->debug("ViterbiFilter_impl::ViterbiFilter_impl()");
+		
 		#ifdef DEBUG
+		Logger->debug("ViterbiFilter_impl::ViterbiFilter_impl()");
 		Logger->debug("m_clusterWidth:{}", m_clusterWidth);
 		Logger->debug("m_clusterHeight:{}", m_clusterHeight);
 		Logger->debug("m_iShift:{}", m_iShift);
@@ -40,7 +41,9 @@ namespace viterbi
 
 	ViterbiFilter_impl::~ViterbiFilter_impl()
 	{
+		#ifdef DEBUG
 		Logger->debug("ViterbiFilter_impl::~ViterbiFilter_impl()");
+		#endif
 	}
 	
 	void ViterbiFilter_impl::backwardStep()
