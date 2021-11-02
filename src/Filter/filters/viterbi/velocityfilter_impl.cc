@@ -2,9 +2,6 @@
 
 //#define DEBUG_OPENCV
 
-
-
-
 namespace viterbi
 {
 	VelocityFilter_impl::VelocityFilter_impl(QJsonObject const &a_config)

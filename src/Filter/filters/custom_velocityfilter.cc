@@ -1,16 +1,20 @@
 #include "custom_velocityfilter.h"
 
-#define DEBUG_OPENCV
+//#define DEBUG
 
 Filters::VelocityFilter::VelocityFilter(QJsonObject const &a_config)
 {
-	Logger->debug("Filters::VelocityFilter::VelocityFilter(...)");
+	#ifdef DEBUG
+	Logger->debug("VelocityFilter::VelocityFilter()");
+	#endif
 	m_viterbi = new viterbi::VelocityFilter_impl(a_config);
 }
 
 Filters::VelocityFilter::~VelocityFilter()
 {
-	Logger->debug("Filters::VelocityFilter::~VelocityFilter()");
+	#ifdef DEBUG
+	Logger->debug("VelocityFilter::~VelocityFilter()");
+	#endif
 	delete m_viterbi;
 }
 

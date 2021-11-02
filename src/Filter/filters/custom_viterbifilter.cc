@@ -1,16 +1,20 @@
 #include "custom_viterbifilter.h"
 
-#define DEBUG
+//#define DEBUG
 
 Filters::ViterbiFilter::ViterbiFilter(QJsonObject const &a_config)
 {
-	Logger->debug("Filters::ViterbiFilter::ViterbiFilter(...)");
+	#ifdef DEBUG
+	Logger->debug("ViterbiFilter::ViterbiFilter()");
+	#endif
 	m_viterbi = new viterbi::ViterbiFilter_impl(a_config);
 }
 
 Filters::ViterbiFilter::~ViterbiFilter()
 {
-	Logger->debug("Filters::ViterbiFilter::~ViterbiFilter()");
+	#ifdef DEBUG
+	Logger->debug("ViterbiFilter::~ViterbiFilter()");
+	#endif
 	delete m_viterbi;
 }
 
