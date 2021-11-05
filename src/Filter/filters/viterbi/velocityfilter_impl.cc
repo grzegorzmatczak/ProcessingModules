@@ -35,6 +35,10 @@ namespace viterbi
 			#endif
 			cv::normalize(ViterbiOutGlobal, ViterbiOutGlobal, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 		}
+		if(m_bitwisenot)
+		{
+			cv::bitwise_not(ViterbiOutGlobal, ViterbiOutGlobal);
+		}
 		if (ViterbiOutGlobal.type() != CV_8UC1)
 		{
 			ViterbiOutGlobal.convertTo(ViterbiOutGlobal, CV_8UC1);

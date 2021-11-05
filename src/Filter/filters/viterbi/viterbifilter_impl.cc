@@ -84,6 +84,14 @@ namespace viterbi
 						{
 							cv::normalize(roi, roi, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 						}
+						if(m_bitwisenot)
+						{
+							cv::bitwise_not(roi, roi);
+						}
+						if (roi.type() != CV_8UC1)
+						{
+							roi.convertTo(roi, CV_8UC1);
+						}
 
 						if(m_velocityFilter)
 						{
@@ -180,8 +188,6 @@ namespace viterbi
 
 		cv::Mat ViterbiOutGlobal = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
-		
-
 		if (m_kernels.size() > m_minimumKernelSize && m_kernelsVAL.size() > m_minimumKernelSize)
 		{
 			int iter = 0;
@@ -196,18 +202,6 @@ namespace viterbi
 					{
 						break;
 					}
-					if (m_normalize)
-					{
-						#ifdef DEBUG
-						Logger->debug("VelocityFilter_impl::getOutput() m_normalize:");
-						#endif
-						cv::normalize(m_viterbiOut[iter], m_viterbiOut[iter], 0, 255, cv::NORM_MINMAX, CV_8UC1);
-					}
-					if (m_viterbiOut[iter].type() != CV_8UC1)
-					{
-						m_viterbiOut[iter].convertTo(m_viterbiOut[iter], CV_8UC1);
-					}
-
 					if (kernelOut.cols == m_viterbiOut[iter].cols)
 					{
 						cv::add(kernelOut, m_viterbiOut[iter], kernelOut);

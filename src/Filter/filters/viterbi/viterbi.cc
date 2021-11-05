@@ -5,6 +5,7 @@ constexpr auto RANGE{ "Range" };
 constexpr auto ABS_FILTER{ "AbsFilter" };
 constexpr auto THRESHOLD{ "Threshold" };
 constexpr auto NORMALIZE{ "Normalize" };
+constexpr auto BITWISE_NOT{ "BitwiseNot" };
 
 namespace viterbi
 {
@@ -17,6 +18,7 @@ namespace viterbi
 	, m_absFilter(a_config[ABS_FILTER].toBool())
     , m_threshold(a_config[THRESHOLD].toDouble())
     , m_normalize(a_config[NORMALIZE].toBool())
+    , m_bitwisenot(a_config[BITWISE_NOT].toBool())
 	{
 		#ifdef DEBUG
         Logger->debug("Viterbi_impl::Viterbi_impl()");

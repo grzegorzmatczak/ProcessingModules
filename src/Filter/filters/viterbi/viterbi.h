@@ -41,6 +41,7 @@ namespace viterbi
             bool m_absFilter{};
             double m_threshold{};
             bool m_normalize{};
+            bool m_bitwisenot{};
             #ifdef TIMER
             cv::TickMeter m_timer;
             cv::TickMeter m_timerForward;

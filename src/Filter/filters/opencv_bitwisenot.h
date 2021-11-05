@@ -7,14 +7,14 @@ class QJsonObject;
 
 namespace Filters
 {
-class BitwiseNot : public BaseFilter
-{
- public:
-  BitwiseNot(QJsonObject const &a_config);
+	class BitwiseNot : public BaseFilter
+	{
+		public:
+			BitwiseNot(QJsonObject const &a_config);
 
-  void process(std::vector<_data> &_data);
+			void process(std::vector<_data> &_data);
+	};
 
-};
 } // namespace Filters
 
 #endif // FILTER_OPENCV_BITWISE_NOT
