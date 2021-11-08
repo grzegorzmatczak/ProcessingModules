@@ -79,13 +79,18 @@ namespace viterbi
 						cv::Rect rect(0, 0, m_clusterWidth, m_clusterHeight);
 						cv::Mat roi = m_kernelsVAL[z][kernel](rect);
 						cv::Mat roiThresh;
-
-						
-						
 						
 						double maxValInt = 255.0 * m_range;
 						if(m_velocityFilter)
 						{
+							if (m_normalize)
+							{
+								cv::normalize(roi, roi, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+							}
+							if (roi.type() != CV_8UC1)
+							{
+								roi.convertTo(roi, CV_8UC1);
+							}
 							m_viterbiOut.push_back(roi);
 						}
 						else
@@ -205,15 +210,7 @@ namespace viterbi
 				}
 			}
 		}
-		if (m_normalize)
-		{
-			cv::normalize(ViterbiOutGlobal, ViterbiOutGlobal, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-
-		}
-		if (ViterbiOutGlobal.type() != CV_8UC1)
-		{
-			ViterbiOutGlobal.convertTo(ViterbiOutGlobal, CV_8UC1);
-		}
+		
 		if(m_bitwisenot)
 		{
 			cv::bitwise_not(ViterbiOutGlobal, ViterbiOutGlobal);
