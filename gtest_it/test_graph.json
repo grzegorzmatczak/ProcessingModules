@@ -1,0 +1,125 @@
+{
+    "Graph_two_filter_test":
+    [{
+        "Name": "FILTER_1",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_2", "Active": 1, "Signal":0}],
+        "Prev":[{"Name": "IN", "Active": -1}]
+    },{
+        "Name": "FILTER_2",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "OUT", "Active": -1, "Signal":0}],
+        "Prev":[{"Name": "FILTER_1", "Active": 0}]
+    }],
+    
+    "Graph_estimator":
+    [{
+        "Name": "ESTIMATOR",        "Active": 0,        "Type": "Estimator",
+        "Next":[{"Name": "THRESHOLD", "Active": 1, "Signal":0}],
+        "Prev":[{"Name": "IN", "Active": -1}]
+    },{
+        "Name": "THRESHOLD",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "OUT", "Active": -1, "Signal":0}],
+        "Prev":[{"Name": "ESTIMATOR", "Active": 0}]
+    }],
+    "Graph_estimator_viterbi":
+    [{
+        "Name": "ESTIMATOR",        "Active": 0,        "Type": "Estimator",
+        "Next":[{"Name": "THRESHOLD", "Active": 1, "Signal":0}],
+        "Prev":[{"Name": "IN", "Active": -1}]
+    },{
+        "Name": "THRESHOLD",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "OUT", "Active": -1, "Signal":0}],
+        "Prev":[{"Name": "ESTIMATOR", "Active": 0}]
+    }],
+	"Graph_estimator_with_filters":
+    [{
+        "Name": "FILTER_1",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_2", "Active": 1, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1}]
+    },{
+        "Name": "FILTER_2",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_3", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "FILTER_1", "Active": 0}]
+    },{
+        "Name": "FILTER_3",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "Estimator", "Active": 3, "Signal":0}],
+        "Prev":[{"Name": "FILTER_2", "Active": 1}]
+    },{
+        "Name": "Estimator",        "Active": 3,        "Type": "Estimator",
+        "Next":[{"Name": "FILTER_4", "Active": 4, "Signal":0}],
+        "Prev":[{"Name": "FILTER_3", "Active": 2}]
+    },{
+        "Name": "FILTER_4",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_5", "Active": 5, "Signal":0}],
+        "Prev":[{"Name": "Estimator", "Active": 3}]
+    },{
+        "Name": "FILTER_5",        "Active": 5,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_6", "Active": 6, "Signal":0}],
+        "Prev":[{"Name": "FILTER_4", "Active": 4}]
+    },{
+        "Name": "FILTER_6",        "Active": 6,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1, "Signal":0}],
+        "Prev":[{"Name": "FILTER_5", "Active": 5}]
+    }],
+    
+    "Graph_estimator_with_filters_small_drons_contrast":
+    [{
+        "Name": "FILTER_1",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_2", "Active": 1, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1}]
+    },{
+        "Name": "FILTER_2",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_3", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "FILTER_1", "Active": 0}]
+    },{
+        "Name": "FILTER_3",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "Estimator", "Active": 3, "Signal":0}],
+        "Prev":[{"Name": "FILTER_2", "Active": 1}]
+    },{
+        "Name": "Estimator",        "Active": 3,        "Type": "Estimator",
+        "Next":[{"Name": "FILTER_4", "Active": 4, "Signal":0}],
+        "Prev":[{"Name": "FILTER_3", "Active": 2}]
+    },{
+        "Name": "FILTER_4",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_5", "Active": 5, "Signal":0}],
+        "Prev":[{"Name": "Estimator", "Active": 3}]
+    },{
+        "Name": "FILTER_5",        "Active": 5,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_6", "Active": 6, "Signal":0}],
+        "Prev":[{"Name": "FILTER_4", "Active": 4}]
+    },{
+        "Name": "FILTER_6",        "Active": 6,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1, "Signal":0}],
+        "Prev":[{"Name": "FILTER_5", "Active": 5}]
+    }],
+    
+    "Graph_estimator_with_viterbi_small_drons_contrast":
+    [{
+        "Name": "FILTER_1",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_2", "Active": 1, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1}]
+    },{
+        "Name": "FILTER_2",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_3", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "FILTER_1", "Active": 0}]
+    },{
+        "Name": "FILTER_3",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "Estimator", "Active": 3, "Signal":0}],
+        "Prev":[{"Name": "FILTER_2", "Active": 1}]
+    },{
+        "Name": "Estimator",        "Active": 3,        "Type": "Estimator",
+        "Next":[{"Name": "FILTER_4", "Active": 4, "Signal":0}],
+        "Prev":[{"Name": "FILTER_3", "Active": 2}]
+    },{
+        "Name": "FILTER_4",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_5", "Active": 5, "Signal":0}],
+        "Prev":[{"Name": "Estimator", "Active": 3}]
+    },{
+        "Name": "FILTER_5",        "Active": 5,        "Type": "Filter",
+        "Next":[{"Name": "FILTER_6", "Active": 6, "Signal":0}],
+        "Prev":[{"Name": "FILTER_4", "Active": 4}]
+    },{
+        "Name": "FILTER_6",        "Active": 6,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1, "Signal":0}],
+        "Prev":[{"Name": "FILTER_5", "Active": 5}]
+    }]
+}

@@ -11,6 +11,8 @@
 constexpr auto CONFIG{ "ProcessingModules/gtest/test_viterbi.json" };
 constexpr auto TEST_DATA{ "TestData" };
 
+#define DEBUG_OPENCV
+
 using ::testing::AtLeast;
 
 
@@ -58,6 +60,10 @@ namespace gtest_filter_custom_viterbi
 				const char* err_msg = e.what();
 				qDebug() << "exception caught: " << err_msg;
 			}
+			#ifdef DEBUG_OPENCV
+			cv::Mat preview;
+			cv::cvtColor(input, preview, cv::COLOR_GRAY2BGR);
+			#endif
 		}
 	}
 	

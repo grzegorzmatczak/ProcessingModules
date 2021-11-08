@@ -1,0 +1,231 @@
+{
+    "Graph_estimator":
+    [{
+        "Name": "INPUT",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "GT",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "ADD_DRON",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "OUTPUT", "Active": 3, "Signal":0},{"Name": "GT_OUTPUT", "Active": 4, "Signal":1}],
+        "Prev":[{"Name": "INPUT", "Active": 0, "Signal":0},{"Name": "GT", "Active": 1, "Signal":0}],
+        "Config":{
+            "Name": "AddMultipleDron", "SizeMin": 1, "SizeMax":2, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+            "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.01, 
+            "MarkerType":2, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 25, 
+            "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+            "Noise":-1 , "Contrast": -1,
+            "DronNoiseStart" :0.0, "DronNoiseStop": 0.1, "DronNoiseDelta": 0.01,
+            "DronContrastStart" : 100.0, "DronContrastStop": 100.1, "DronContrastDelta": 0.01,
+            "DronType": "WHITE_BLACK"
+        }
+    },{
+        "Name": "OUTPUT",        "Active": 3,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT_OUTPUT",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    }],
+    "Graph_estimator_viterbi":
+    [{
+        "Name": "INPUT",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "GT",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "ADD_DRON",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "OUTPUT", "Active": 3, "Signal":0},{"Name": "GT_OUTPUT", "Active": 4, "Signal":1}],
+        "Prev":[{"Name": "INPUT", "Active": 0, "Signal":0},{"Name": "GT", "Active": 1, "Signal":0}],
+        "Config":{
+            "Name": "AddMultipleDron", "SizeMin": 1, "SizeMax":2, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+            "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.01, 
+            "MarkerType":2, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 25, 
+            "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+            "Noise":-1 , "Contrast": -1,
+            "DronNoiseStart" :0.0, "DronNoiseStop": 0.1, "DronNoiseDelta": 0.02,
+            "DronContrastStart" : 100.0, "DronContrastStop": 100.1, "DronContrastDelta": 0.02,
+            "DronType": "WHITE_BLACK"
+        }
+    },{
+        "Name": "OUTPUT",        "Active": 3,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT_OUTPUT",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    }],
+    "Graph_estimator_with_filters":
+    [{
+        "Name": "INPUT",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "GT",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "ADD_DRON",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "OUTPUT", "Active": 3, "Signal":0},{"Name": "GT_OUTPUT", "Active": 4, "Signal":1}],
+        "Prev":[{"Name": "INPUT", "Active": 0, "Signal":0},{"Name": "GT", "Active": 1, "Signal":0}],
+        "Config":{
+            "Name": "AddMultipleDron", "SizeMin": 1, "SizeMax":2, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+            "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.01, 
+            "MarkerType":2, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 25, 
+            "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+            "Noise":-1 , "Contrast": -1,
+            "DronNoiseStart" :0.0, "DronNoiseStop": 0.1, "DronNoiseDelta": 0.01,
+            "DronContrastStart" : 100.0, "DronContrastStop": 100.1, "DronContrastDelta": 0.01,
+            "DronType": "WHITE_BLACK"
+        }
+    },{
+        "Name": "OUTPUT",        "Active": 3,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT_OUTPUT",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    }],
+
+    "Graph_estimator_with_filters_small_drons_contrast":
+    [{
+        "Name": "INPUT",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "GT",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "ADD_DRON",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "OUTPUT", "Active": 3, "Signal":0},{"Name": "GT_OUTPUT", "Active": 4, "Signal":1}],
+        "Prev":[{"Name": "INPUT", "Active": 0, "Signal":0},{"Name": "GT", "Active": 1, "Signal":0}],
+        "Config":{
+            "Name": "AddMultipleDron", "SizeMin": 1, "SizeMax":2, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+            "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.01, 
+            "MarkerType":2, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 25, 
+            "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+            "Noise":-1 , "Contrast": -1,
+            "DronNoiseStart" :0.0, "DronNoiseStop": 0.1, "DronNoiseDelta": 0.01,
+            "DronContrastStart" : 0.0, "DronContrastStop": 100.1, "DronContrastDelta": 5,
+            "DronType": "BLACK_WHITE"
+        }
+    },{
+        "Name": "OUTPUT",        "Active": 3,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT_OUTPUT",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    }],
+
+    "Graph_estimator_with_viterbi_small_drons_contrast":
+    [{
+        "Name": "INPUT",        "Active": 0,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "GT",        "Active": 1,        "Type": "Filter",
+        "Next":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1, "Signal":0}],
+        "Config": {"Name": "RegionOfInterest", "X": 0, "Y": 0,"Width": 1280,"Height": 720}
+    },{
+        "Name": "ADD_DRON",        "Active": 2,        "Type": "Filter",
+        "Next":[{"Name": "OUTPUT", "Active": 3, "Signal":0},{"Name": "GT_OUTPUT", "Active": 4, "Signal":1}],
+        "Prev":[{"Name": "INPUT", "Active": 0, "Signal":0},{"Name": "GT", "Active": 1, "Signal":0}],
+        "Config":{
+            "Name": "AddMultipleDron", "SizeMin": 1, "SizeMax":2, "Color":255 , "Rotate": 90, "VelocityMin":2 , 
+            "VelocityMax":3, "ProbabilityOfChangeSize":0.1, "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.01, 
+            "MarkerType":2, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, "ClusterWidth" : 25, 
+            "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1,
+            "Noise":-1 , "Contrast": -1,
+            "DronNoiseStart" :0.0, "DronNoiseStop": 0.1, "DronNoiseDelta": 0.01,
+            "DronContrastStart" : 0.0, "DronContrastStop": 100.1, "DronContrastDelta": 5,
+            "DronType": "BLACK_WHITE"
+        }
+    },{
+        "Name": "OUTPUT",        "Active": 3,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT_OUTPUT",        "Active": 4,        "Type": "Filter",
+        "Next":[{"Name": "", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    }],
+
+    "Graph":
+    [{
+        "Name": "IMAGE",
+        "Active": 0,
+        "Type": "Filter",
+        "Next":[{"Name": "B1", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "IN", "Active": -1, "Signal":0}],
+        "Config":{"Name": "None", "ColorCode": 6}
+    },{
+        "Name": "GT",
+        "Active": 1,
+        "Type": "Filter",
+        "Next":[{"Name": "B1", "Active": 2, "Signal":0}],
+        "Prev":[{"Name": "A", "Active": -1, "Signal":0}],
+        "Config": {"Name": "None", "X": 100, "Y": 100,"Width": 600,"Height": 600}
+    },{
+        "Name": "ADD_DRON",
+        "Active": 2,
+        "Type": "Filter",
+        "Next":[{"Name": "WITH_NOISE", "Active": 3, "Signal":0},{"Name": "GT", "Active": 4, "Signal":1},{"Name": "NOISE", "Active": 5, "Signal":2}],
+        "Prev":[{"Name": "A1", "Active": 0, "Signal":0},{"Name": "A1", "Active": 1, "Signal":0}],
+        "Config":{"Name": "AddMultipleDron", "SizeMin": 2, "SizeMax":3, "Color":255 , "Rotate": 90, "VelocityMin":3 ,  "VelocityMax":4, "ProbabilityOfChangeSize":0.1,
+        "ProbabilityOfChangeVelocity":0.1,"ProbabilityOfRotate":0.2, "MarkerType":0, "StartGT":0, "UnknownGTColor":170, "RandSeed":10, 
+        "Noise":0 , "ClusterWidth" : 25, "ClusterHeight":25, "ImageOffset":7, "DronThickness":1, "GlobalOffset":true, "RandomColor": true,"ContrastOffset": 1}
+    },{
+        "Name": "WITH_NOISE",
+        "Active": 3,
+        "Type": "Filter",
+        "Next":[{"Name": "OUT2", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":0}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "GT",
+        "Active": 4,
+        "Type": "Filter",
+        "Next":[{"Name": "OUT2", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":1}],
+        "Config": {"Name": "None"}
+    },{
+        "Name": "NOISE",
+        "Active": 5,
+        "Type": "Filter",
+        "Next":[{"Name": "OUT3", "Active": -1,"Signal":0}],
+        "Prev":[{"Name": "ADD_DRON", "Active": 2, "Signal":2}],
+        "Config": {"Name": "BitwiseNot"}
+    }]
+}

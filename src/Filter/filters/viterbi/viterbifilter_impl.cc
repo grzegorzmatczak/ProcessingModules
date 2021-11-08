@@ -157,8 +157,6 @@ namespace viterbi
 							cv::imshow("VAL", m_VAL_CAT);
 							cv::resize(m_VAL_CAT_Thresh, m_VAL_CAT_Thresh, cv::Size(2800, 300), 0, 0, cv::INTER_NEAREST);
 							cv::imshow("VAL_Thresh", m_VAL_CAT_Thresh);
-
-
 						}
 						#endif
 					}
@@ -191,11 +189,11 @@ namespace viterbi
 		if (m_kernels.size() > m_minimumKernelSize && m_kernelsVAL.size() > m_minimumKernelSize)
 		{
 			int iter = 0;
-			for (int i = 0; i <= m_width - m_clusterWidth; i = i + m_iShift)
+			for (int i = 0; i <= m_height - m_clusterHeight; i = i + m_iShift)
 			{
-				for (int j = 0; j <= m_height - m_clusterHeight; j = j + m_jShift)
+				for (int j = 0; j <= m_width - m_clusterWidth; j = j + m_jShift)
 				{
-					cv::Rect rect(i, j, m_clusterWidth, m_clusterHeight);
+					cv::Rect rect(j, i, m_clusterWidth, m_clusterHeight);
 					cv::Mat kernelOut = ViterbiOutGlobal(rect);
 
 					if (iter >= m_viterbiOut.size())
@@ -216,6 +214,11 @@ namespace viterbi
 			}
 		}
 		m_viterbiOut.clear();
+		#ifdef DEBUG_OPENCV
+		cv::Mat preview_input;
+		cv::resize(ViterbiOutGlobal, preview_input, cv::Size(1000, 1000), 0, 0, cv::INTER_NEAREST);
+		cv::imshow("ViterbiOutGlobal", preview_input);	
+		#endif
 		return ViterbiOutGlobal;
 	}
 

@@ -1,0 +1,51 @@
+{
+    "General": 
+	{
+		"LogLevel": 0,
+		"ThreadsMax": 1,
+		"Standalone": false
+	},
+	"Genetic":
+	{
+		"PopulationSize" : 1,
+		"GraphType" : "",
+		"DronType" : "",
+		"BoundsType" : "",
+		"GraphTypes":[ "Graph_estimator_viterbi"],
+		"GraphTypes2":[ "Graph_estimator_with_filters"],
+		"GraphTypesALL":[ "Graph_estimator", "Graph_estimator_with_filters", "Graph_estimator_with_filters_small_drons_contrast", 
+							"Graph_estimator_with_viterbi_small_drons_contrast" , "Graph_estimator_viterbi"],
+		"DronTypes" : [ "BLACK_WHITE", "WHITE", "BLACK"],
+		"DronTypes3" : [ "CONTRAST_5", "CONTRAST_65","CONTRAST_35","CONTRAST_95"],
+
+		"BoundsTypes_all" : ["MEDIAN2", "NONE","LOBSTER", "NONE", "MOG2", "CNT" , "MOG", "KNN","ABL", "ASBL", "ViBe", "GSOC", "GMG"],
+		"BoundsTypes" : [ "NONE"],
+		"BoundsTypes4" : [ "MOG","NONE","WMM", "WMV", "ABL","KNN","MOG2", "CNT" , "MEDIAN2", "ViBe", "ASBL"],
+		"BoundsTypes3" : [ "WMV", "ASBL","ViBe", "GMG", "GSOC", "MEDIAN2"],
+		"BoundsTypes2" : [ "MOG","NONE","WMM", "ABL","KNN","MOG2", "CNT"],
+		"SaveBestPopulationVideo": true,
+		"FitnessThreshold": 5.9999,
+		"MaxIteration": 1000,
+		"MaxBestNotChange": 100
+	},
+	"ConfigUnix": 
+	{
+		"Dataset": "/home/matczak/repo/Optimization/ProcessingModules/gtest_it/dataset.json",
+		"Graph": "/home/matczak/repo/Optimization/ProcessingModules/gtest_it/graph.json",
+		"Bounds": "/home/matczak/repo/Optimization/ProcessingModules/gtest_it/bounds.json",
+		"Preprocess": "/home/matczak/repo/Optimization/ProcessingModules/gtest_it/preprocess.json",
+		"Postprocess": "/home/matczak/repo/Optimization/ProcessingModules/gtest_it/postprocess.json",
+		"LogsFolder" : "/home/matczak/repo/test_logs/",
+		"VideoLogsFolder" : "/home/matczak/repo/test_video_logs/"
+	},
+	"ConfigWin": 
+	{
+		"Dataset": "C:\\repo\\Optimization\\ProcessingModules\\gtest_it\\test_dataset.json",
+		"Graph": "C:\\repo\\Optimization\\ProcessingModules\\gtest_it\\test_graph.json",
+		"Bounds": "C:\\repo\\Optimization\\ProcessingModules\\gtest_it\\test_bounds.json",
+		"Preprocess": "C:\\repo\\Optimization\\ProcessingModules\\gtest_it\\test_preprocess.json",
+		"Postprocess": "C:\\repo\\Optimization\\ProcessingModules\\gtest_it\\test_postprocess.json",
+		"LogsFolder" : "C:\\repo\\test_logs\\",
+		"VideoLogsFolder" : "C:\\repo\\test_video_logs\\"
+	}
+}
