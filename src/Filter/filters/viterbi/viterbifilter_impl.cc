@@ -80,19 +80,10 @@ namespace viterbi
 						cv::Mat roi = m_kernelsVAL[z][kernel](rect);
 						cv::Mat roiThresh;
 
-						if (m_normalize)
-						{
-							cv::normalize(roi, roi, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-						}
-						if(m_bitwisenot)
-						{
-							cv::bitwise_not(roi, roi);
-						}
-						if (roi.type() != CV_8UC1)
-						{
-							roi.convertTo(roi, CV_8UC1);
-						}
-
+						
+						
+						
+						double maxValInt = 255.0 * m_range;
 						if(m_velocityFilter)
 						{
 							m_viterbiOut.push_back(roi);
@@ -100,7 +91,7 @@ namespace viterbi
 						else
 						{
 							cv::minMaxLoc(roi, &minVal, &maxVal, &minLoc, &maxLoc);
-							double tresh = maxVal * m_threshold;
+							double tresh = maxValInt * m_threshold;
 							cv::threshold(roi, roiThresh, int(tresh), 255, 0);
 							roiThresh.convertTo(roiThresh, CV_8UC1);
 							m_viterbiOut.push_back(roiThresh);
@@ -113,6 +104,7 @@ namespace viterbi
 							#ifdef DEBUG
 							Logger->debug("minVal:{:f}", minVal);
 							Logger->debug("maxVal:{:f}", maxVal);
+							Logger->debug("maxValInt:{:f}", maxValInt);
 							#endif
 
 							cv::Mat preview_ViterbiOut;
@@ -213,6 +205,20 @@ namespace viterbi
 				}
 			}
 		}
+		if (m_normalize)
+		{
+			cv::normalize(ViterbiOutGlobal, ViterbiOutGlobal, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+
+		}
+		if (ViterbiOutGlobal.type() != CV_8UC1)
+		{
+			ViterbiOutGlobal.convertTo(ViterbiOutGlobal, CV_8UC1);
+		}
+		if(m_bitwisenot)
+		{
+			cv::bitwise_not(ViterbiOutGlobal, ViterbiOutGlobal);
+		}
+
 		m_viterbiOut.clear();
 		#ifdef DEBUG_OPENCV
 		cv::Mat preview_input;

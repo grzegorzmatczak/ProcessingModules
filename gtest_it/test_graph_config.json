@@ -15,7 +15,7 @@
         },
         {
             "Name": "ViterbiFilter", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
-            "ClusterWidth":20, "ClusterHeight":20, "ShiftWidth":20, "ShiftHeight":20,"VelocityFilter":false, "Threshold":0.99
+            "ClusterWidth":150, "ClusterHeight":150, "ShiftWidth":20, "ShiftHeight":20,"VelocityFilter":false, "Threshold":0.15
         }
     ],
 	"Graph_estimator_with_filters":

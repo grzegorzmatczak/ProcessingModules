@@ -14,8 +14,8 @@
 namespace viterbi
 {
 
-#define DEBUG
-#define TIMER
+//#define DEBUG
+//#define TIMER
 
 
 
