@@ -15,11 +15,19 @@
         },
         {
             "Name": "ViterbiFilter", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
-            "ClusterWidth":150, "ClusterHeight":150, "ShiftWidth":20, "ShiftHeight":20,"VelocityFilter":false, "Threshold":0.15
+            "ClusterWidth":100, "ClusterHeight":150, "ShiftWidth":25, "ShiftHeight":40,"VelocityFilter":false, "Threshold":0.15
         }
     ],
 	"Graph_estimator_with_filters":
-    [],
+    [
+        {
+            "Name": "NONE","NONE":0
+        },
+        {
+            "Name": "VelocityFilter", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
+            "ClusterWidth":100, "ClusterHeight":150, "ShiftWidth":25, "ShiftHeight":40,"VelocityFilter":false, "Threshold":0.15
+        }
+    ],
     
     "Graph_estimator_with_filters_small_drons_contrast":
     [],

@@ -114,10 +114,5 @@ namespace gtest_filter_custom_viterbi
 
 		Case *m_case = new Case(m_dataMemory);
 		fitness fs = m_case->onConfigureAndStart(graph, graph_config, postprocess);
-		
-
-
-		
-	}
-	
+	}	
 }  // namespace gtest_filter_custom_viterbi

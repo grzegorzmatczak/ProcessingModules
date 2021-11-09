@@ -27,6 +27,17 @@ namespace viterbi
 		#endif
 		//cv::Mat ViterbiOutGlobal = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 		cv::Mat ViterbiOutGlobal = m_VAL[m_VAL.size() - 1];
+		
+		//double minVal;
+		//double maxVal;
+		//cv::Point minLoc;
+		//cv::Point maxLoc;
+		#ifdef DEBUG
+		Logger->debug("VelocityFilter_impl::getOutput() minMaxLoc:");
+		#endif
+		//cv::minMaxLoc(ViterbiOutGlobal, &minVal, &maxVal, &minLoc, &maxLoc);
+		double tresh = 255 * m_threshold;
+		cv::threshold(ViterbiOutGlobal, ViterbiOutGlobal, int(tresh), 255, 0);
 
 		if (m_normalize)
 		{
@@ -43,17 +54,6 @@ namespace viterbi
 		{
 			ViterbiOutGlobal.convertTo(ViterbiOutGlobal, CV_8UC1);
 		}
-		double minVal;
-		double maxVal;
-		cv::Point minLoc;
-		cv::Point maxLoc;
-		#ifdef DEBUG
-		Logger->debug("VelocityFilter_impl::getOutput() minMaxLoc:");
-		#endif
-		//cv::minMaxLoc(ViterbiOutGlobal, &minVal, &maxVal, &minLoc, &maxLoc);
-		double tresh = 255 * m_threshold;
-		cv::threshold(ViterbiOutGlobal, ViterbiOutGlobal, int(tresh), 255, 0);
-		
 		
 		#ifdef DEBUG
 		Logger->debug("VelocityFilter_impl::getOutput() return:");
