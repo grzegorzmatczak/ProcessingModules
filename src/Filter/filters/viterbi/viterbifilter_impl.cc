@@ -23,7 +23,7 @@ namespace viterbi
 			m_clusterWidth = 10;
 			m_clusterHeight = 10;
 		}
-		if (m_iShift < 2 || m_jShift < 2 )
+		if (m_iShift < 1 || m_jShift < 1 )
 		{
 			m_iShift = m_clusterWidth;
 			m_jShift = m_clusterHeight;
