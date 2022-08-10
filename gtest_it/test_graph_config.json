@@ -3,19 +3,31 @@
     [
 
     ],
-    
     "Graph_estimator":
     [
     ],
-
     "Graph_estimator_viterbi":
+    [
+        {
+            "Name": "NONE","NONE":0
+        },{
+            "Name": "NONE","NONE":0
+        },{
+            "Name": "NONE","NONE":0
+        },
+        {
+            "Name": "ViterbiFilter", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
+            "ClusterWidth":50, "ClusterHeight":50, "ShiftWidth":25, "ShiftHeight":25,"VelocityFilter":false, "Threshold":0.95
+        }
+    ],
+    "Graph_estimator_viterbi_copy":
     [
         {
             "Name": "NONE","NONE":0
         },
         {
             "Name": "ViterbiFilter", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
-            "ClusterWidth":100, "ClusterHeight":150, "ShiftWidth":25, "ShiftHeight":40,"VelocityFilter":false, "Threshold":0.15
+            "ClusterWidth":50, "ClusterHeight":150, "ShiftWidth":25, "ShiftHeight":40,"VelocityFilter":false, "Threshold":0.15
         }
     ],
 	"Graph_estimator_with_filters":
@@ -28,10 +40,8 @@
             "ClusterWidth":100, "ClusterHeight":150, "ShiftWidth":25, "ShiftHeight":40,"VelocityFilter":false, "Threshold":0.15
         }
     ],
-    
     "Graph_estimator_with_filters_small_drons_contrast":
     [],
-    
     "Graph_estimator_with_viterbi_small_drons_contrast":
     []
 }

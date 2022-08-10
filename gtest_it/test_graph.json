@@ -22,6 +22,32 @@
     }],
     "Graph_estimator_viterbi":
     [{
+        "Name": "IN1",        "Active": 0,        "Type": "Estimator",
+        "Next":[{"Name": "", "Active": 3, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1}]
+    },{
+        "Name": "IN2",        "Active": 1,        "Type": "Estimator",
+        "Next":[{"Name": "", "Active": 3, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1}]
+    },{
+        "Name": "IN3",        "Active": 2,        "Type": "Estimator",
+        "Next":[{"Name": "", "Active": 3, "Signal":0}],
+        "Prev":[{"Name": "", "Active": -1}]
+    },{
+        "Name": "VITERBI",        "Active": 3,        "Type": "Filter",
+        "Next":[
+            {"Name": "out", "Active": -1, "Signal":0},
+            {"Name": "gt", "Active": -1, "Signal":0},
+            {"Name": "input", "Active": -1, "Signal":0}
+        ],
+        "Prev":[
+            {"Name": "in_Viterbi", "Active": 0, "Signal":0}, 
+            {"Name": "gt", "Active": 1, "Signal":0}, 
+            {"Name": "input", "Active": 2, "Signal":0}
+        ]
+    }],
+    "Graph_estimator_viterbi_copy":
+    [{
         "Name": "ESTIMATOR",        "Active": 0,        "Type": "Estimator",
         "Next":[{"Name": "THRESHOLD", "Active": 1, "Signal":0}],
         "Prev":[{"Name": "IN", "Active": -1}]
