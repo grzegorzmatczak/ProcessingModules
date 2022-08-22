@@ -12,7 +12,7 @@ namespace viterbi
         public:
             VelocityFilter_impl(QJsonObject const &a_config);
             ~VelocityFilter_impl();
-            void forwardStep(cv::Mat& input) override;
+            void forwardStep() override;
             //void backwardStep() ;
             cv::Mat getOutput() override;
 

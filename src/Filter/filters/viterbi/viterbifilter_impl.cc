@@ -1,12 +1,14 @@
 #include "viterbifilter_impl.h"
 
-//#define DEBUG_OPENCV
+#define DEBUG_OPENCV
+#define DEBUG
 
 constexpr auto CLUSTER_WIDTH{ "ClusterWidth" };
 constexpr auto CLUSTER_HEIGHT{ "ClusterHeight" };
 constexpr auto SHIFT_WIDTH{ "ShiftWidth" };
 constexpr auto SHIFT_HEIGHT{ "ShiftHeight" };
 constexpr auto VELOCITY_FILTER{ "VelocityFilter" };
+
 
 namespace viterbi
 {
@@ -42,8 +44,39 @@ namespace viterbi
 	ViterbiFilter_impl::~ViterbiFilter_impl()
 	{
 		#ifdef DEBUG
-		Logger->debug("ViterbiFilter_impl::~ViterbiFilter_impl()");
+		Logger->debug("{}()", __FUNCTION__);
 		#endif
+	}
+
+	void ViterbiFilter_impl::nextIteration(std::vector<_data> &_data)
+	{
+		mCounter++;
+		#ifdef DEBUG
+		Logger->debug("{}() mCounter:{}", __FUNCTION__, mCounter);
+		#endif
+		if(mCounter < 30)
+		{
+			m_inputs.push_back(_data[0].processing.clone());
+			m_gt.push_back(_data[1].processing.clone());
+			Logger->debug("{}() push images to deque", __FUNCTION__);
+
+			_data[0].processing = m_inputs[0];
+			_data[1].processing = m_gt[0];
+		}
+		else
+		{
+			
+			m_inputs.pop_front();
+			m_inputs.push_back(_data[0].processing.clone());
+			m_gt.pop_front();
+			m_gt.push_back(_data[1].processing.clone());
+
+			_data[0].processing = m_inputs[0];
+			_data[1].processing = m_gt[0];
+
+			Logger->debug("{}() push/pop images to deque", __FUNCTION__);
+		}
+
 	}
 	
 	void ViterbiFilter_impl::backwardStep()
@@ -57,9 +90,7 @@ namespace viterbi
 		if (m_kernelsSize > m_minimumKernelSize && m_kernelsSizeVAL > m_minimumKernelSize)
 		{
 			for (int z = 0; z < m_kernelsSize; z++)
-			{ 
-				//Logger->debug("ViterbiFilter_impl::backwardStep() kernel:{}", z);
-				// wielokosc kolejnki
+			{
 				#ifdef TIMER
 				m_timer.start();
 				#endif
@@ -71,7 +102,6 @@ namespace viterbi
 				{
 					if (z == (m_kernelsSize - 1))
 					{
-						//Logger->debug("ViterbiFilter_impl::backwardStep() kernel[{}]:{}", z, kernel);
 						double minVal;
 						double maxVal;
 						cv::Point minLoc;
@@ -96,7 +126,8 @@ namespace viterbi
 						else
 						{
 							cv::minMaxLoc(roi, &minVal, &maxVal, &minLoc, &maxLoc);
-							double tresh = maxValInt * m_threshold;
+							//double tresh = maxValInt * m_threshold;
+							double tresh = maxVal-200;
 							cv::threshold(roi, roiThresh, int(tresh), 255, 0);
 							roiThresh.convertTo(roiThresh, CV_8UC1);
 							m_viterbiOut.push_back(roiThresh);
@@ -178,7 +209,7 @@ namespace viterbi
 	{
 
 		#ifdef DEBUG
-		Logger->debug("ViterbiFilter_impl::getOutput()");
+		Logger->debug("{}()", __FUNCTION__);
 		#endif
 
 		cv::Mat ViterbiOutGlobal = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
@@ -225,118 +256,125 @@ namespace viterbi
 		return ViterbiOutGlobal;
 	}
 
-	void ViterbiFilter_impl::forwardStep(cv::Mat& input)
+	void ViterbiFilter_impl::absFilter(cv::Mat& kernel, int clusterHeight, int clusterWidth, double mean)
+	{
+		for (int ii = 0; ii < clusterHeight; ii++)
+		{
+			for (int jj = 0; jj < clusterWidth; jj++)
+			{
+				auto meanInt = static_cast<int>(std::round(mean));
+				if (kernel.at<unsigned char>(cv::Point(jj, ii)) > meanInt)
+					kernel.at<unsigned char>(cv::Point(jj, ii)) = kernel.at<unsigned char>(cv::Point(jj, ii)) - meanInt;
+				else
+					kernel.at<unsigned char>(cv::Point(jj, ii)) = meanInt - kernel.at<unsigned char>(cv::Point(jj, ii));
+			}
+		}
+	}
+
+	void ViterbiFilter_impl::addKernelsToDeque(int range, std::deque<std::vector<cv::Mat>>& kernelsDeque, std::vector<cv::Mat>& kernels)
+	{
+		if (kernelsDeque.size() > range)
+		{
+			#ifdef DEBUG
+			Logger->debug("{}() pop/push", __FUNCTION__);
+			#endif
+			kernelsDeque.pop_front();
+			kernelsDeque.push_back(kernels);
+		}
+		else
+		{
+			#ifdef DEBUG
+			Logger->debug("{}() push", __FUNCTION__);
+			#endif
+			kernelsDeque.push_back(kernels);
+			
+		}
+	}
+
+	void ViterbiFilter_impl::opencvPreviewForwardKernel(cv::Mat& input, cv::Mat& kernel)
+	{
+		cv::Mat previewKernel, previewKernelAfterAbsFilter;
+		cv::resize(input, previewKernel, cv::Size(500, 500), 0, 0, cv::INTER_NEAREST);
+		cv::resize(kernel, previewKernelAfterAbsFilter, cv::Size(500, 500), 0, 0, cv::INTER_NEAREST);
+		cv::Mat previewImage;
+		cv::hconcat(previewKernel, previewKernelAfterAbsFilter, previewImage);
+		cv::imshow("previewKernel + AfterAbsFilter", previewImage);	
+	}
+
+	void ViterbiFilter_impl::checkSizes(std::deque<std::vector<cv::Mat>>& kernels, int z, int kernel, int clusterWidth, int clusterHeight)
 	{
 		#ifdef DEBUG
-		Logger->debug("ViterbiFilter_impl::forwardStep()");
+		if(kernels[z][kernel].cols != clusterWidth)
+		{
+			Logger->error("m_kernelsVAL[{}][{}].cols != {}", z, kernel, clusterWidth);
+		}
+		if(kernels[z][kernel].rows != clusterHeight)
+		{
+			Logger->error("m_kernelsVAL[{}][{}].rows != {}", z, kernel, clusterHeight);
+		}
+		#endif
+	}
+
+	void ViterbiFilter_impl::forwardStep()
+	{
+		#ifdef DEBUG
+		Logger->debug("{}() m_iShift:{}", __FUNCTION__, m_iShift);
 		#endif
 		#ifdef TIMER
 		m_timerForward.start();
 		m_timer.start();
 		#endif
+		
+		cv::Mat lastImage = m_inputs.back();
+		cv::Mat cloneOfLastImage = (m_inputs.back()).clone();
 		if (m_firstTime)
-			firstTime(input);
+			firstTime(cloneOfLastImage);
 
-		cv::Mat clone = input.clone();
 		#ifdef DEBUG_OPENCV
-		cv::Mat preview;
-		cv::cvtColor(input, preview, cv::COLOR_GRAY2BGR);
+		cv::Mat previewRGB;
+		cv::Mat preview = (m_inputs.back()).clone();
+		cv::cvtColor(cloneOfLastImage, previewRGB, cv::COLOR_GRAY2BGR);
 		#endif
 
 		std::vector<cv::Mat> kernels;
 		std::vector<cv::Mat> kernelsVAL;
-		std::vector<cv::Scalar> vectorMean;
 
 		for (int i = 0; i <= m_height - m_clusterHeight; i = i + m_iShift)
 		{
 			#ifdef DEBUG
-			Logger->debug("VelocityFilter_impl::forwardStep() width:{}, height:{}", m_width, m_height);
-			Logger->debug("ViterbiFilter_impl::forwardStep() i:{}", i);
+			Logger->debug("{}() width:{}, height:{}", __FUNCTION__, m_width, m_height);
 			#endif
-			
 			for (int j = 0; j <= m_width - m_clusterWidth; j = j + m_jShift)
 			{
-				#ifdef DEBUG
-				Logger->debug("ViterbiFilter_impl::forwardStep() j:{}", j);
-				#endif
 				cv::Rect rect(j, i, m_clusterWidth, m_clusterHeight);
-				cv::Mat kernel = clone(rect);
-				#ifdef DEBUG_OPENCV
-				if(i==0 && j==0)
-				{
-					cv::Mat kernel2 = clone(rect);
-					cv::Mat preview_kernel;
-					cv::resize(kernel2, preview_kernel, cv::Size(1000, 1000), 0, 0, cv::INTER_NEAREST);
-					cv::imshow("preview_kernel", preview_kernel);	
-				}
-				#endif
+				cv::Mat kernel = cloneOfLastImage(rect);
 				cv::Scalar mean = cv::mean(kernel);
-				vectorMean.push_back(mean);
 
 				if (m_absFilter)
-				{
-					
-					for (int ii = 0; ii < m_clusterHeight; ii++)
-					{
-						for (int jj = 0; jj < m_clusterWidth; jj++)
-						{
-							if (kernel.at<unsigned char>(cv::Point(jj, ii)) > mean[0])
-							{
-								kernel.at<unsigned char>(cv::Point(jj, ii)) = kernel.at<unsigned char>(cv::Point(jj, ii)) - mean[0];
-							}
-							else
-							{
-								kernel.at<unsigned char>(cv::Point(jj, ii)) = mean[0] - kernel.at<unsigned char>(cv::Point(jj, ii));
-							}
-						}
-					}
-				}
+					absFilter(kernel, m_clusterHeight, m_clusterWidth, mean[0]);
+
 				#ifdef DEBUG_OPENCV
 				if(i==0 && j==0)
-				{
-					cv::Mat preview_kernelafter_abs;
-					cv::resize(kernel, preview_kernelafter_abs, cv::Size(1000, 1000), 0, 0, cv::INTER_NEAREST);
-					cv::imshow("preview_kernelafter_abs", preview_kernelafter_abs);	
-				}
+					opencvPreviewForwardKernel(preview(rect), kernel);
 				#endif
+				
 				kernels.push_back(kernel.clone());
 				cv::Mat VAL = cv::Mat(m_clusterHeight, m_clusterWidth, CV_16UC1, cv::Scalar(0));
 				kernelsVAL.push_back(VAL.clone());
 			}
 		}
+		addKernelsToDeque(m_range, m_kernels, kernels);
+		addKernelsToDeque(m_range, m_kernelsVAL, kernelsVAL);
 
-
-		if (m_kernels.size() > m_range)
-		{
-			m_kernels.pop_front();
-			m_kernels.push_back(kernels);
-			m_kernelsVAL.pop_front();
-			m_kernelsVAL.push_back(kernelsVAL);
-			#ifdef DEBUG
-			Logger->debug("ViterbiFilter_impl::forwardStep() pop/push");
-			#endif
-			
-		}
-		else
-		{
-			m_kernels.push_back(kernels);
-			m_kernelsVAL.push_back(kernelsVAL);
-			#ifdef DEBUG
-			Logger->debug("ViterbiFilter_impl::forwardStep() push");
-			#endif
-			
-		}
 		m_kernelsSize = m_kernels.size();
 		m_kernelsSizeVAL = m_kernelsVAL.size();
 		m_minimumKernelSize = 5;
 		#ifdef DEBUG
-		Logger->debug("ViterbiFilter_impl::forwardStep() kernelsSize:{}", m_kernelsSize);
-		Logger->debug("ViterbiFilter_impl::forwardStep() kernelsSizeVAL:{}", m_kernelsSizeVAL);
-		Logger->debug("ViterbiFilter_impl::forwardStep() minimumKernelSize:{}", m_minimumKernelSize);
+		Logger->debug("{}() m_kernels.size():{}, m_kernelsVAL.size():{}, m_minimumKernelSize:{}", 
+						__FUNCTION__, m_kernels.size(), m_kernelsVAL.size(), m_minimumKernelSize);
 		#endif
 		
-		
-		std::vector<unsigned char> temp;
+		std::vector<int> temp;
 		temp.reserve(m_treck * 2 + 1);
 
 		#ifdef TIMER
@@ -369,16 +407,7 @@ namespace viterbi
 						{
 							for (int j = 0; j < m_clusterWidth; j++)
 							{
-								#ifdef DEBUG
-								if(m_kernelsVAL[z][kernel].cols != m_clusterWidth)
-								{
-									Logger->error("m_kernelsVAL[{}][{}].cols != {}", z, kernel, m_clusterWidth);
-								}
-								if(m_kernelsVAL[z][kernel].rows != m_clusterHeight)
-								{
-									Logger->error("m_kernelsVAL[{}][{}].rows != {}", z, kernel, m_clusterHeight);
-								}
-								#endif
+								checkSizes(m_kernelsVAL, z, kernel, m_clusterWidth, m_clusterHeight);
 								m_kernelsVAL[z][kernel].at<unsigned short>(cv::Point(j, i)) =
 								(unsigned short)(m_kernels[z][kernel].at<unsigned char>(cv::Point(j, i)));
 							}
@@ -391,22 +420,19 @@ namespace viterbi
 							for (int j = m_treck; j < m_clusterWidth - m_treck; j++)
 							{
 								temp.clear();
-
 								for (int ii = -m_treck; ii <= m_treck; ii++)
 								{
 									for (int jj = -m_treck; jj <= m_treck; jj++)
 									{
-										temp.push_back(
-											m_kernelsVAL[z - 1][kernel].at<unsigned short>(cv::Point(j + jj, i + ii)));
+										temp.push_back(m_kernelsVAL[z - 1][kernel].at<unsigned short>(cv::Point(j + jj, i + ii)));
 									}
 								}
 
-								std::vector<unsigned char>::iterator result;
+								std::vector<int>::iterator result;
 								result = std::max_element(temp.begin(), temp.end());
 								int distance = std::distance(temp.begin(), result);
 								m_kernelsVAL[z][kernel].at<unsigned short>(cv::Point(j, i)) =
 									( unsigned short)((m_kernels[z][kernel].at<unsigned char>(cv::Point(j, i)) + 
-									//	temp[distance];
 									temp[distance]));
 							}
 						}
@@ -423,7 +449,7 @@ namespace viterbi
 		
 		#ifdef DEBUG_OPENCV
 			cv::Mat preview_input;
-			cv::resize(input, preview_input, cv::Size(1000, 1000), 0, 0, cv::INTER_NEAREST);
+			cv::resize(preview, preview_input, cv::Size(1000, 1000), 0, 0, cv::INTER_NEAREST);
 			cv::imshow("preview_input", preview_input);	
 			cv::waitKey(0);
 		#endif

@@ -16,7 +16,7 @@
             "Name": "NONE","NONE":0
         },
         {
-            "Name": "ViterbiFilter", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
+            "Name": "ViterbiGlobal", "Treck":2, "Range":10, "AbsFilter":true, "Normalize":true,"BitwiseNot":false,
             "ClusterWidth":50, "ClusterHeight":50, "ShiftWidth":25, "ShiftHeight":25,"VelocityFilter":false, "Threshold":0.95
         }
     ],

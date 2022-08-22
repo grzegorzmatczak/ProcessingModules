@@ -1,5 +1,5 @@
-#ifndef VITERBI_FILTER_IMPL_H
-#define VITERBI_FILTER_IMPL_H
+#ifndef VITERBI_GLOBAL_IMPL_H
+#define VITERBI_GLOBAL_IMPL_H
 
 #include "viterbi.h"
 #include "processing.h"
@@ -8,11 +8,11 @@ class QJsonObject;
 
 namespace viterbi
 {
-	class ViterbiFilter_impl: public Viterbi_impl
+	class ViterbiGlobal_impl: public Viterbi_impl
 	{
 		public:
-			ViterbiFilter_impl(QJsonObject const &a_config);
-			~ViterbiFilter_impl();
+			ViterbiGlobal_impl(QJsonObject const &a_config);
+			~ViterbiGlobal_impl();
 			void forwardStep() override; 
 			void backwardStep();
 			cv::Mat getOutput() override;
@@ -21,13 +21,13 @@ namespace viterbi
 		private:
 			void absFilter(cv::Mat& kernel, int clusterHeight, int clusterWidth, double mean);
 			void opencvPreviewForwardKernel(cv::Mat& input, cv::Mat& kernel);
-			void addKernelsToDeque(int range, std::deque<std::vector<cv::Mat>>& kernelsDeque, std::vector<cv::Mat>& kernels);
-			void checkSizes(std::deque<std::vector<cv::Mat>>& kernels, int z, int kernel, int clusterWidth, int clusterHeight);
+			void addKernelsToDeque(int range, std::deque<cv::Mat>& kernelsDeque, cv::Mat& kernels);
+			void checkSizes(cv::Mat& input, int width, int height);
 
 		private:
-			std::deque<std::vector<cv::Mat>> m_kernels; // CV_16UC1
-			std::deque<std::vector<cv::Mat>> m_kernelsVAL; // CV_16UC1
-			std::vector<cv::Mat> m_viterbiOut;
+			std::deque<cv::Mat> m_kernels; // CV_16UC1
+			std::deque<cv::Mat> m_kernelsVAL; // CV_16UC1
+			cv::Mat mVelocityFilterOutput;
 			int m_clusterWidth{50};
 			int m_clusterHeight{50};
 			int m_iShift{25};
@@ -42,4 +42,4 @@ namespace viterbi
 	};
 } // namespace viterbi
 
-#endif // VITERBI_FILTER_IMPL_H
+#endif // VITERBI_GLOBAL_IMPL_H

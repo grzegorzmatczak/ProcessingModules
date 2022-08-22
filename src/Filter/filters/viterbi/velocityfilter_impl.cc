@@ -63,8 +63,9 @@ namespace viterbi
 	}
 
 
-	void VelocityFilter_impl::forwardStep(cv::Mat& input)
+	void VelocityFilter_impl::forwardStep()
 	{
+		/*
 		#ifdef DEBUG
 		Logger->debug("VelocityFilter_impl::forwardStep()");
 		#endif
@@ -76,15 +77,12 @@ namespace viterbi
 			firstTime(input);
 
 		cv::Mat VAL = cv::Mat(m_height, m_width, CV_16UC1, cv::Scalar(0));
-		
 		cv::Mat kernel = input.clone();
 		if (kernel.channels() == 3)
 		{
 			cv::cvtColor(kernel, kernel, cv::COLOR_BGR2GRAY);
 		}
 		cv::Scalar mean = cv::mean(kernel);
-
-
 
 		#ifdef DEBUG
 		std::string str = type2str(input.type());
@@ -298,6 +296,7 @@ namespace viterbi
 		Logger->debug("VelocityFilter_impl::forwardStep() {:f}", time);
 		m_timer.reset();
 		#endif
+		*/
 	}
 	
 

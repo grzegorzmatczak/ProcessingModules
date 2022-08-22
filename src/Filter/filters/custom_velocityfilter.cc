@@ -21,7 +21,7 @@ Filters::VelocityFilter::~VelocityFilter()
 void Filters::VelocityFilter::process(std::vector<_data> &_data)
 {
 	
-	m_viterbi->forwardStep(_data[0].processing);
+	m_viterbi->forwardStep();
 	//m_viterbi->backwardStep();
 	_data[0].processing = m_viterbi->getOutput();
 	/*

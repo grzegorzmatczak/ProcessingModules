@@ -19,6 +19,7 @@ class ViterbiFilter : public BaseFilter
 
  private:
 	viterbi::ViterbiFilter_impl *m_viterbi;
+
 };
 } // namespace Filters
 

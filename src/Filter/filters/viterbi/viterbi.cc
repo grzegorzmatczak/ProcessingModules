@@ -1,5 +1,7 @@
 #include "viterbi.h"
 
+#define DEBUG
+
 constexpr auto TRECK{ "Treck" };
 constexpr auto RANGE{ "Range" };
 constexpr auto ABS_FILTER{ "AbsFilter" };

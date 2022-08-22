@@ -10,8 +10,8 @@
 		MARKER_TRIANGLE_UP = 5,  //!< An upwards pointing triangle marker shape
 		MARKER_TRIANGLE_DOWN = 6 //!< A downwards pointing triangle marker shape
 */
-//#define DEBUG
-//#define DEBUG_OPENCV
+#define DEBUG
+#define DEBUG_OPENCV
 
 constexpr auto DRON_SIZE_MIN{ "SizeMin" };
 constexpr auto DRON_SIZE_MAX{ "SizeMax" };
@@ -202,6 +202,10 @@ cv::Mat Filters::AddMultipleDron::prepareDron(cv::Mat & processing, AddDronImpl 
 		dron = processing(cv::Rect(0, 0, m_clusterWidth, m_clusterHeight));
 	}
 
+	if(dron.empty())
+		Logger->error("Filters::AddMultipleDron::prepareDron() dron.empty()");
+
+	Logger->debug("Filters::AddMultipleDron::prepareDron() dron.size:({}x{})" , dron.cols, dron.rows);	
 	cv::Mat cleanDron = dron.clone();
 	cv::Point positionDron = cv::Point(addDronImpl.x, addDronImpl.y);	
 
@@ -209,7 +213,18 @@ cv::Mat Filters::AddMultipleDron::prepareDron(cv::Mat & processing, AddDronImpl 
 		Logger->debug("Filters::AddMultipleDron::prepareDron() positionDron:({},{})",positionDron.x,positionDron.y);
 	#endif
 
-	cv::drawMarker(cleanDron, positionDron, 255, addDronImpl.markerType, addDronImpl.dronSize, m_dronThickness, 8);
+	try
+	{
+		cv::drawMarker(cleanDron, positionDron, 255, addDronImpl.markerType, addDronImpl.dronSize, m_dronThickness, 8);
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		qDebug() << "exception caught: " << err_msg;
+	}
+	#ifdef DEBUG
+		Logger->debug("Filters::AddMultipleDron::prepareDron() return");
+	#endif
 	return cleanDron;
 }
 
@@ -232,6 +247,9 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 
 	if (m_firstTime) 
 	{
+		#ifdef DEBUG
+		Logger->debug("Filters::AddMultipleDron::prepareDron() if (m_firstTime)");
+		#endif
 		m_firstTime = false;
 		m_width = _data[0].processing.cols;
 		m_height = _data[0].processing.rows;
@@ -290,6 +308,7 @@ void Filters::AddMultipleDron::process(std::vector<_data> &_data)
 			}
 			m_cleanDron.push_back(cleanDron);
 		}
+		Logger->debug("Filters::AddMultipleDron::prepareDron() if (m_firstTime) done");
 	}
 	
 	for (int it = 0; it < m_dronImplVector.size(); it++)

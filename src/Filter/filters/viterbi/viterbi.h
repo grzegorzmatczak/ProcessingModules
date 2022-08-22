@@ -24,7 +24,7 @@ namespace viterbi
         public:
             Viterbi_impl(QJsonObject const &a_config);
             ~Viterbi_impl();
-            virtual void forwardStep(cv::Mat& input) = 0;
+            virtual void forwardStep() = 0;
             virtual cv::Mat getOutput() = 0;
 
         public:
