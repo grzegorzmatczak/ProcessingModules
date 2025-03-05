@@ -17,14 +17,14 @@ namespace viterbi
 	, m_velocityFilter(a_config[VELOCITY_FILTER].toBool())
 	{
 		#ifdef DEBUG
-		Logger->debug("m_velocityFilter:{:f}", m_velocityFilter);
+		//Logger->debug("m_velocityFilter:{:f}", m_velocityFilter);
 		#endif
 	}
 
 	ViterbiGlobal_impl::~ViterbiGlobal_impl()
 	{
 		#ifdef DEBUG
-		Logger->debug("{}()", __FUNCTION__);
+		//Logger->debug("{}()", __FUNCTION__);
 		#endif
 	}
 
@@ -32,13 +32,13 @@ namespace viterbi
 	{
 		mCounter++;
 		#ifdef DEBUG
-		Logger->debug("{}() mCounter:{}", __FUNCTION__, mCounter);
+		//Logger->debug("{}() mCounter:{}", __FUNCTION__, mCounter);
 		#endif
 		if(mCounter < 30)
 		{
 			m_inputs.push_back(_data[0].processing.clone());
 			m_gt.push_back(_data[1].processing.clone());
-			Logger->debug("{}() push images to deque", __FUNCTION__);
+			//Logger->debug("{}() push images to deque", __FUNCTION__);
 
 			_data[0].processing = m_inputs[0];
 			_data[1].processing = m_gt[0];
@@ -54,7 +54,7 @@ namespace viterbi
 			_data[0].processing = m_inputs[0];
 			_data[1].processing = m_gt[0];
 
-			Logger->debug("{}() push/pop images to deque", __FUNCTION__);
+			//Logger->debug("{}() push/pop images to deque", __FUNCTION__);
 		}
 
 	}
@@ -96,7 +96,7 @@ namespace viterbi
 		//min.push_back(minLoc);
 		//max.push_back(maxLoc);
 
-		Logger->debug("{}() maxVal:{:f}, point({},{})", __FUNCTION__, maxVal, maxLoc.x, maxLoc.y);
+		//Logger->debug("{}() maxVal:{:f}, point({},{})", __FUNCTION__, maxVal, maxLoc.x, maxLoc.y);
 		//}
 		cv::Vec3b color{0,255,0};
 		colorPreview.at<cv::Vec3b>(maxLoc) = color;
@@ -120,7 +120,7 @@ namespace viterbi
 		#ifdef TIMER
 		m_timerBackward.stop();
 		double time = m_timerBackward.getTimeMilli();
-		Logger->debug("ViterbiGlobal_impl() m_timerBackward {:f}", time);
+		//Logger->debug("ViterbiGlobal_impl() m_timerBackward {:f}", time);
 		#endif
 	}
 
@@ -128,7 +128,7 @@ namespace viterbi
 	{
 /*
 		#ifdef DEBUG
-		Logger->debug("{}()", __FUNCTION__);
+		//Logger->debug("{}()", __FUNCTION__);
 		#endif
 
 		cv::Mat ViterbiOutGlobal = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
@@ -197,7 +197,7 @@ namespace viterbi
 		if (kernelsDeque.size() > range)
 		{
 			#ifdef DEBUG
-			Logger->debug("{}() pop/push", __FUNCTION__);
+			//Logger->debug("{}() pop/push", __FUNCTION__);
 			#endif
 			kernelsDeque.pop_front();
 			kernelsDeque.push_back(kernels);
@@ -205,7 +205,7 @@ namespace viterbi
 		else
 		{
 			#ifdef DEBUG
-			Logger->debug("{}() push", __FUNCTION__);
+			//Logger->debug("{}() push", __FUNCTION__);
 			#endif
 			kernelsDeque.push_back(kernels);
 			
@@ -225,17 +225,17 @@ namespace viterbi
 	void ViterbiGlobal_impl::checkSizes(cv::Mat& input, int width, int height)
 	{
 		#ifdef DEBUG
-		if(input.cols != width)
-			Logger->error("cols != {}", width);
-		if(input.rows != height)
-			Logger->error("rows != {}", height);
+		//if(input.cols != width)
+			//Logger->error("cols != {}", width);
+		//if(input.rows != height)
+			//Logger->error("rows != {}", height);
 		#endif
 	}
 
 	void ViterbiGlobal_impl::forwardStep()
 	{
 		#ifdef DEBUG
-		Logger->debug("{}() ", __FUNCTION__);
+		//Logger->debug("{}() ", __FUNCTION__);
 		#endif
 		#ifdef TIMER
 		m_timerForward.start();
@@ -267,7 +267,7 @@ namespace viterbi
 		#ifdef TIMER
 		m_timer.stop();
 		double time = m_timer.getTimeMilli();
-		Logger->debug("ViterbiFilter_impl::forwardStep() Init time:{:f}", time);
+		//Logger->debug("ViterbiFilter_impl::forwardStep() Init time:{:f}", time);
 		m_timer.reset();
 		#endif
 		#ifdef TIMER
@@ -280,7 +280,7 @@ namespace viterbi
 				if (z == 0)
 				{
 					#ifdef DEBUG
-					Logger->debug("VelocityFilter_impl::forwardStep() z=0");
+					//Logger->debug("VelocityFilter_impl::forwardStep() z=0");
 					#endif
 					for (int i = 0; i < m_height; i++)
 					{
@@ -291,7 +291,7 @@ namespace viterbi
 						}
 					}
 					#ifdef DEBUG
-					//Logger->debug("m_kernelsVAL[z] = m_kernels[z].clone();");
+					////Logger->debug("m_kernelsVAL[z] = m_kernels[z].clone();");
 					#endif
 				}
 				else
@@ -318,7 +318,7 @@ namespace viterbi
 									(unsigned short)((m_kernels[z].at<unsigned char>(cv::Point(j, i)) + 
 									temp[distance]));
 							//if(i==10 && j==10)
-							//	Logger->debug("{}() {}", __FUNCTION__, m_kernelsVAL[z].at<unsigned char>(cv::Point(j, i)));
+							//	//Logger->debug("{}() {}", __FUNCTION__, m_kernelsVAL[z].at<unsigned char>(cv::Point(j, i)));
 						}
 					}
 				}
@@ -335,7 +335,7 @@ namespace viterbi
 		#ifdef TIMER
 		m_timer.stop();
 		time = m_timer.getTimeMilli();
-		Logger->debug("ViterbiFilter_impl() range:{}:    {:f}", z, time);
+		//Logger->debug("ViterbiFilter_impl() range:{}:    {:f}", z, time);
 		#endif
 
 

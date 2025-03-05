@@ -1,5 +1,9 @@
 #include "opencv_findcontours.h"
+
 #include <QJsonObject>
+#include <QJsonArray>
+
+#include <opencv2/imgproc.hpp>
 
 constexpr auto DRAW_CONTOURS_VALID{ "DrawContoursValid" };
 constexpr auto DRAW_CONTOURS_NOT_VALID{ "DrawContoursNotValid" };

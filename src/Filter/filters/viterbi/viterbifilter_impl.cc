@@ -32,19 +32,19 @@ namespace viterbi
 		}
 		
 		#ifdef DEBUG
-		Logger->debug("ViterbiFilter_impl::ViterbiFilter_impl()");
-		Logger->debug("m_clusterWidth:{}", m_clusterWidth);
-		Logger->debug("m_clusterHeight:{}", m_clusterHeight);
-		Logger->debug("m_iShift:{}", m_iShift);
-		Logger->debug("m_jShift:{}", m_jShift);
-		Logger->debug("m_velocityFilter:{:f}", m_velocityFilter);
+		//Logger->debug("ViterbiFilter_impl::ViterbiFilter_impl()");
+		//Logger->debug("m_clusterWidth:{}", m_clusterWidth);
+		//Logger->debug("m_clusterHeight:{}", m_clusterHeight);
+		//Logger->debug("m_iShift:{}", m_iShift);
+		//Logger->debug("m_jShift:{}", m_jShift);
+		//Logger->debug("m_velocityFilter:{:f}", m_velocityFilter);
 		#endif
 	}
 
 	ViterbiFilter_impl::~ViterbiFilter_impl()
 	{
 		#ifdef DEBUG
-		Logger->debug("{}()", __FUNCTION__);
+		//Logger->debug("{}()", __FUNCTION__);
 		#endif
 	}
 
@@ -52,13 +52,13 @@ namespace viterbi
 	{
 		mCounter++;
 		#ifdef DEBUG
-		Logger->debug("{}() mCounter:{}", __FUNCTION__, mCounter);
+		//Logger->debug("{}() mCounter:{}", __FUNCTION__, mCounter);
 		#endif
 		if(mCounter < 30)
 		{
 			m_inputs.push_back(_data[0].processing.clone());
 			m_gt.push_back(_data[1].processing.clone());
-			Logger->debug("{}() push images to deque", __FUNCTION__);
+			//Logger->debug("{}() push images to deque", __FUNCTION__);
 
 			_data[0].processing = m_inputs[0];
 			_data[1].processing = m_gt[0];
@@ -74,7 +74,7 @@ namespace viterbi
 			_data[0].processing = m_inputs[0];
 			_data[1].processing = m_gt[0];
 
-			Logger->debug("{}() push/pop images to deque", __FUNCTION__);
+			//Logger->debug("{}() push/pop images to deque", __FUNCTION__);
 		}
 
 	}
@@ -95,7 +95,7 @@ namespace viterbi
 				m_timer.start();
 				#endif
 				#ifdef DEBUG
-				Logger->debug("ViterbiFilter_impl::backwardStep() m_kernels[z].size():{}", m_kernels[z].size());
+				//Logger->debug("ViterbiFilter_impl::backwardStep() m_kernels[z].size():{}", m_kernels[z].size());
 				#endif
 				
 				for (int kernel = 0; kernel < m_kernels[z].size(); kernel++)
@@ -138,9 +138,9 @@ namespace viterbi
 						if(kernel==0)
 						{
 							#ifdef DEBUG
-							Logger->debug("minVal:{:f}", minVal);
-							Logger->debug("maxVal:{:f}", maxVal);
-							Logger->debug("maxValInt:{:f}", maxValInt);
+							//Logger->debug("minVal:{:f}", minVal);
+							//Logger->debug("maxVal:{:f}", maxVal);
+							//Logger->debug("maxValInt:{:f}", maxValInt);
 							#endif
 
 							cv::Mat preview_ViterbiOut;
@@ -192,7 +192,7 @@ namespace viterbi
 				#ifdef TIMER
 				m_timer.stop();
 				double time = m_timer.getTimeMilli();
-				Logger->debug("ViterbiFilter_impl() backwardStep range:{}:    {:f}", z, time);
+				//Logger->debug("ViterbiFilter_impl() backwardStep range:{}:    {:f}", z, time);
 				m_timer.reset();
 				#endif
 			}
@@ -201,16 +201,12 @@ namespace viterbi
 		#ifdef TIMER
 		m_timerBackward.stop();
 		double time = m_timerBackward.getTimeMilli();
-		Logger->debug("ViterbiFilter_impl() m_timerBackward {:f}", time);
+		//Logger->debug("ViterbiFilter_impl() m_timerBackward {:f}", time);
 		#endif
 	}
 
 	cv::Mat ViterbiFilter_impl::getOutput()
 	{
-
-		#ifdef DEBUG
-		Logger->debug("{}()", __FUNCTION__);
-		#endif
 
 		cv::Mat ViterbiOutGlobal = cv::Mat(m_height, m_width, CV_8UC1, cv::Scalar(0));
 
@@ -276,7 +272,7 @@ namespace viterbi
 		if (kernelsDeque.size() > range)
 		{
 			#ifdef DEBUG
-			Logger->debug("{}() pop/push", __FUNCTION__);
+			//Logger->debug("{}() pop/push", __FUNCTION__);
 			#endif
 			kernelsDeque.pop_front();
 			kernelsDeque.push_back(kernels);
@@ -284,7 +280,7 @@ namespace viterbi
 		else
 		{
 			#ifdef DEBUG
-			Logger->debug("{}() push", __FUNCTION__);
+			//Logger->debug("{}() push", __FUNCTION__);
 			#endif
 			kernelsDeque.push_back(kernels);
 			
@@ -306,11 +302,11 @@ namespace viterbi
 		#ifdef DEBUG
 		if(kernels[z][kernel].cols != clusterWidth)
 		{
-			Logger->error("m_kernelsVAL[{}][{}].cols != {}", z, kernel, clusterWidth);
+			//Logger->error("m_kernelsVAL[{}][{}].cols != {}", z, kernel, clusterWidth);
 		}
 		if(kernels[z][kernel].rows != clusterHeight)
 		{
-			Logger->error("m_kernelsVAL[{}][{}].rows != {}", z, kernel, clusterHeight);
+			//Logger->error("m_kernelsVAL[{}][{}].rows != {}", z, kernel, clusterHeight);
 		}
 		#endif
 	}
@@ -318,7 +314,7 @@ namespace viterbi
 	void ViterbiFilter_impl::forwardStep()
 	{
 		#ifdef DEBUG
-		Logger->debug("{}() m_iShift:{}", __FUNCTION__, m_iShift);
+		//Logger->debug("{}() m_iShift:{}", __FUNCTION__, m_iShift);
 		#endif
 		#ifdef TIMER
 		m_timerForward.start();
@@ -342,7 +338,7 @@ namespace viterbi
 		for (int i = 0; i <= m_height - m_clusterHeight; i = i + m_iShift)
 		{
 			#ifdef DEBUG
-			Logger->debug("{}() width:{}, height:{}", __FUNCTION__, m_width, m_height);
+			//Logger->debug("{}() width:{}, height:{}", __FUNCTION__, m_width, m_height);
 			#endif
 			for (int j = 0; j <= m_width - m_clusterWidth; j = j + m_jShift)
 			{
@@ -370,8 +366,8 @@ namespace viterbi
 		m_kernelsSizeVAL = m_kernelsVAL.size();
 		m_minimumKernelSize = 5;
 		#ifdef DEBUG
-		Logger->debug("{}() m_kernels.size():{}, m_kernelsVAL.size():{}, m_minimumKernelSize:{}", 
-						__FUNCTION__, m_kernels.size(), m_kernelsVAL.size(), m_minimumKernelSize);
+		//Logger->debug("{}() m_kernels.size():{}, m_kernelsVAL.size():{}, m_minimumKernelSize:{}", 
+		//				__FUNCTION__, m_kernels.size(), m_kernelsVAL.size(), m_minimumKernelSize);
 		#endif
 		
 		std::vector<int> temp;
@@ -380,7 +376,7 @@ namespace viterbi
 		#ifdef TIMER
 		m_timer.stop();
 		double time = m_timer.getTimeMilli();
-		Logger->debug("ViterbiFilter_impl::forwardStep() Init time:{:f}", time);
+		//Logger->debug("ViterbiFilter_impl::forwardStep() Init time:{:f}", time);
 		m_timer.reset();
 		#endif
 
@@ -393,13 +389,13 @@ namespace viterbi
 				m_timer.start();
 				#endif
 				#ifdef DEBUG
-				//Logger->debug("ViterbiFilter_impl::forwardStep() m_kernels[z].size():{}", m_kernels[z].size());
+				////Logger->debug("ViterbiFilter_impl::forwardStep() m_kernels[z].size():{}", m_kernels[z].size());
 				#endif
 				for (int kernel = 0; kernel < m_kernels[z].size(); kernel++)
 				{
 					// ilosc kerneli
 					#ifdef DEBUG
-					//Logger->debug("ViterbiFilter_impl::forwardStep() kernel[{}]:{}", z, kernel);
+					////Logger->debug("ViterbiFilter_impl::forwardStep() kernel[{}]:{}", z, kernel);
 					#endif
 					if (z == 0)
 					{
@@ -441,7 +437,7 @@ namespace viterbi
 				#ifdef TIMER
 				m_timer.stop();
 				time = m_timer.getTimeMilli();
-				Logger->debug("ViterbiFilter_impl() range:{}:    {:f}", z, time);
+				//Logger->debug("ViterbiFilter_impl() range:{}:    {:f}", z, time);
 				#endif
 			}
 		}
@@ -457,7 +453,7 @@ namespace viterbi
 		#ifdef TIMER
 			m_timerForward.stop();
 			time = m_timerForward.getTimeMilli();
-			Logger->debug("ViterbiFilter_impl() m_timerForward {:f}", time);
+			//Logger->debug("ViterbiFilter_impl() m_timerForward {:f}", time);
 		#endif
 	}
 

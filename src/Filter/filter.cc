@@ -9,7 +9,7 @@ Filter::Filter(QObject *parent)
 	: Processing(parent)
 {
 	#ifdef DEBUG_FILTERS_MODULES
-	Logger->debug("Filter::Filter()");
+	//Logger->debug("Filter::Filter()");
 	#endif
 
 	m_baseFilter = new Filters::None{};
@@ -19,7 +19,7 @@ void Filter::configure(QJsonObject const &a_config)
 {
 	auto const _name{ a_config[NAME].toString() };
 	#ifdef DEBUG_FILTERS_MODULES
-	Logger->debug("Filter::configure() filter type: {}", _name.toStdString());
+	//Logger->debug("Filter::configure() filter type: {}", _name.toStdString());
 	#endif
 	delete m_baseFilter;
 	m_timer.reset();
@@ -65,14 +65,14 @@ void Filter::configure(QJsonObject const &a_config)
 	} else if (_name == "None") {
 	m_baseFilter = new Filters::None{};
 	} else {
-	Logger->error("Filter::configure() Unsupported filter type: {}", _name.toStdString());
+	//Logger->error("Filter::configure() Unsupported filter type: {}", _name.toStdString());
 	}
 }
 
 void Filter::process(std::vector<_data> &_data)
 {
 	#ifdef DEBUG_FILTERS_MODULES
-	Logger->debug("Filter::process()");
+	//Logger->debug("Filter::process()");
 	#endif
 	m_timer.start();
 	m_baseFilter->process(_data);

@@ -3,8 +3,6 @@
 
 #include <QDebug>
 
-#include "configreader.h"
-#include "includespdlog.h"
 #include "custom_median_implementation.h"
 #include "custom_median_implementation_2.h"
 #include "processing.h"

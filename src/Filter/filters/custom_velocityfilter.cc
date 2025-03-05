@@ -1,5 +1,7 @@
 #include "custom_velocityfilter.h"
 
+#include <QJsonObject>
+
 //#define DEBUG
 
 Filters::VelocityFilter::VelocityFilter(QJsonObject const &a_config)

@@ -1,4 +1,5 @@
 #include "opencv_bitwisenot.h"
+
 #include <QJsonObject>
 
 //#define DEBUG

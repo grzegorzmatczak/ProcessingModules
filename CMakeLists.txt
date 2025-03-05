@@ -1,36 +1,38 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
-project(ProcessingModules
+project(processing_module
   VERSION 0.0.1
-  DESCRIPTION "ProcessingModules"
+  DESCRIPTION "processing_module"
   LANGUAGES C CXX)
 
-set(TARGET_NAME "ProcessingModules")
-set(DEFAULT_BUILD_TYPE "Debug")
-set(CMAKE_BUILD_TYPE "Debug")
+set(TARGET_NAME "processing_module")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -O1")
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -lX11 -Wall" )
+endif (UNIX)
 
 set(CMAKE_AUTOMOC ON)
-
-cmake_policy(SET CMP0054 NEW)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 if (WIN32)
-	list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\opencvBuild")
-	list(APPEND CMAKE_PREFIX_PATH "E:\\Qt\\5.12.8\\msvc2017_64")
-    list(APPEND CMAKE_PREFIX_PATH "E:\\repo\\GeneticOptimization/ConfigReader")
+    set(QT5_PATH  "D:\\Qt5\\5.15.2\\msvc2019_64")
+    list(APPEND CMAKE_PREFIX_PATH ${QT5_PATH})
+    set(OpenCV_DIR "D:\\repo\\opencv-4.10.0-build")
+    list(APPEND CMAKE_PREFIX_PATH CMAKE_INSTALL_LIBDIR)
+    list(APPEND CMAKE_PREFIX_PATH CMAKE_INSTALL_PREFIX)
     
 endif (WIN32)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(IncludeSpdlog)
-find_package(ConfigReader)
 
 find_package(Threads REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenCV  REQUIRED)
+find_package(OpenCV QUIET COMPONENTS core highgui imgproc imgcodecs videoio video tracking)
+#find_package(utils2  REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -57,37 +59,52 @@ set(HEADERS
   include/processing.h
 )
 
-add_library(${PROJECT_NAME} STATIC
+set(SRC_HEADERS_TEST
+	gtest/gtest.cc
+    gtest/gtest_filter_custom_addmultipledron.cc
+    gtest/gtest_filter_custom_addmultipledron.h
+    gtest/gtest_filter_custom_velocityfilter.cc
+    gtest/gtest_filter_custom_velocityfilter.h
+    gtest/gtest_filter_custom_viterbi.cc
+    gtest/gtest_filter_custom_viterbi.h
+    gtest/gtest_filter_median_impl_2.cc
+    gtest/gtest_filter_median_impl_2.h
+
+)
+
+include_directories( "src" )
+include_directories( "include" )
+include_directories( "src/Subtractor" )
+include_directories( "src/Subtractor/subtractors" )
+include_directories( "src/Filter" )
+include_directories( "src/Filter/filters" )
+include_directories( "src/Adder" )
+include_directories( "src/Adder/adders" )
+
+add_library(${PROJECT_NAME}_lib STATIC
     ${SRC} ${HEADERS}
     ${ADDER_SRC}  ${ADDER_HEADERS}
     ${FILTER_SRC} ${FILTER_HEADERS}
     ${SUBTRACTOR_SRC} ${SUBTRACTOR_HEADERS}
 )
 
+target_link_libraries(${PROJECT_NAME}_lib utils2_lib Qt::Core Threads::Threads ${OpenCV_LIBS})
 
-qt5_use_modules(${PROJECT_NAME} Widgets)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    PRIVATE src)
-
-target_link_libraries(${PROJECT_NAME} IncludeSpdlog ConfigReader)
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Network  Threads::Threads)
-
-
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set (CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "default install path" FORCE )
-endif()
-
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
+install(TARGETS ${PROJECT_NAME}_lib
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    
+install(TARGETS ${PROJECT_NAME}_lib EXPORT ${PROJECT_NAME}Config
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(FILES  ${HEADERS} DESTINATION include)
-install(EXPORT ${PROJECT_NAME}Config DESTINATION share/${PROJECT_NAME}/cmake)
+MESSAGE(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+MESSAGE(STATUS "CMAKE_INSTALL_LIBDIR: ${CMAKE_INSTALL_LIBDIR}")
+MESSAGE(STATUS "CMAKE_INSTALL_BINDIR: ${CMAKE_INSTALL_BINDIR}")
 
-export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
+add_executable(${PROJECT_NAME}_test ${SRC_HEADERS_TEST})
+target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME}_lib gtest gmock)
+
+#export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)

@@ -18,12 +18,12 @@ Subtractors::ViBe::ViBe(QJsonObject const &a_config)
 	, m_firstTime(true)
 {
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::ViBe()");
+	//Logger->debug("Subtractors::ViBe::ViBe()");
 	#endif
 	model = vibe::libvibeModel_Sequential_New();
 	
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::ViBe() model create done");
+	//Logger->debug("Subtractors::ViBe::ViBe() model create done");
 	#endif
 }
 
@@ -35,12 +35,12 @@ Subtractors::ViBe::~ViBe()
 void Subtractors::ViBe::process(std::vector<_data> &_data)
 {
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::process() ");
+	//Logger->debug("Subtractors::ViBe::process() ");
 	#endif
 
 	if (_data[0].processing.empty()) 
 	{
-		Logger->error("Subtractors::ViBe::process() _data[0].processing.empty()");
+		//Logger->error("Subtractors::ViBe::process() _data[0].processing.empty()");
 	}
 
 	if (m_firstTime)
@@ -50,7 +50,7 @@ void Subtractors::ViBe::process(std::vector<_data> &_data)
 
 		/* Initialization of the ViBe model. */
 		#ifdef DEBUG
-		Logger->debug("Subtractors::ViBe::process() m_firstTime:");
+		//Logger->debug("Subtractors::ViBe::process() m_firstTime:");
 		#endif
 	 // vibe::libvibeModel_Sequential_AllocInit_8u_C3R(model, _data[0].processing.data, _data[0].processing.cols,
 		//                                               _data[0].processing.rows);
@@ -63,31 +63,31 @@ void Subtractors::ViBe::process(std::vector<_data> &_data)
 		vibe::libvibeModel_Sequential_SetMatchingNumber(model, m_matchingNumber);
 		vibe::libvibeModel_Sequential_SetUpdateFactor(model, m_updateFactor);
 		#ifdef DEBUG
-		Logger->debug("Subtractors::ViBe::process() m_firstTime: setting done");
+		//Logger->debug("Subtractors::ViBe::process() m_firstTime: setting done");
 		#endif
 	}
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::process() struct _data data:");
+	//Logger->debug("Subtractors::ViBe::process() struct _data data:");
 	#endif
 	struct _data data;
 	cv::Mat tempImage=cv::Mat(_data[0].processing.rows, _data[0].processing.cols, CV_8UC1, cv::Scalar(0));
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::process() libvibeModel_Sequential_Segmentation_8u_C3R:");
+	//Logger->debug("Subtractors::ViBe::process() libvibeModel_Sequential_Segmentation_8u_C3R:");
 	#endif
 	vibe::libvibeModel_Sequential_Segmentation_8u_C1R(model, _data[0].processing.data, tempImage.data);
 	// vibe::libvibeModel_Sequential_Update_8u_C3R(model, model_img_input.data, img_output.data);
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::process() libvibeModel_Sequential_Update_8u_C3R:");
+	//Logger->debug("Subtractors::ViBe::process() libvibeModel_Sequential_Update_8u_C3R:");
 	#endif
 	vibe::libvibeModel_Sequential_Update_8u_C1R(model, _data[0].processing.data, tempImage.data);
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::process() _data.push_back(data):");
+	//Logger->debug("Subtractors::ViBe::process() _data.push_back(data):");
 	#endif
 
 	_data[0].processing = tempImage.clone();
 
 	m_firstTime = false;
 	#ifdef DEBUG
-	Logger->debug("Subtractors::ViBe::process() done");
+	//Logger->debug("Subtractors::ViBe::process() done");
 	#endif
 }

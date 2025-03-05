@@ -1,4 +1,5 @@
 #include "opencv_bilateralfilter.h"
+
 #include <QJsonObject>
 
 // Diameter - diameter of each pixel neighborhood that is used during filtering.

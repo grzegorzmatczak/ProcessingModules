@@ -1,5 +1,8 @@
 #include "custom_addgaussiannoise.h"
+
 #include <QJsonObject>
+
+#include <opencv2/opencv.hpp>
 
 constexpr auto AVERAGE{ "Average" };
 constexpr auto STANDARD_DEVIATION{ "StandardDeviation" };

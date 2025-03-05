@@ -1,21 +1,34 @@
-#include "../include/processing.h"
+#include "processing.h"
+
 #include "Adder/adder.h"
 #include "Filter/filter.h"
 #include "Subtractor/subtractor.h"
 
-//#define DEBUG_PROCESSING_MODULES
+#include "logger.hpp"
+
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include <QDebug>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QMetaEnum>
+#include <QtCore>
+#include <stdio.h>
 
 Processing::Processing(QObject *parent)
 	: QObject(parent)
 {
+  mLogger =
+      std::make_unique<logger::Logger>(logger::LogType::CONFIG, logger::LogLevel::MEDIUM, logger::LogFunction::YES);
 }
+Processing::~Processing()
+{}
 
-Processing *Processing::make(QString model)
+Processing* Processing::make(QString model)
 {
-	#ifdef DEBUG_PROCESSING_MODULES
-		Logger->debug("Processing::make type: {}", model.toStdString());
-	#endif
-
 	if (model == "Filter")
 	{
 		return new Filter(nullptr);

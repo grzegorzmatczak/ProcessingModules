@@ -3,6 +3,8 @@
 //#define DEBUG
 //#define DEBUG_OPENCV
 
+#include <QJsonObject>
+
 constexpr auto ENABLE_INPUT_BLUR{ "EnableInputBlur" };
 constexpr auto ENABLE_OUTPUT_BLUR{ "EnableOutputBlur" };
 constexpr auto ALPHA{ "Alpha" };

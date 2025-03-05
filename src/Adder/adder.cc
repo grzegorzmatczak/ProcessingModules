@@ -3,21 +3,22 @@
 
 #define DEBUG_ADDER_MODULES
 
+#include "logger.hpp"
+
+#include <QJsonObject>
+#include <QJsonArray>
+
 constexpr auto NAME{ "Name" };
 
-Adder::Adder(QObject *parent) : Processing(parent) { m_adder = new Adders::None();
-	#ifdef DEBUG_ADDER_MODULES
-	Logger->debug("Adder::Adder()");
-	#endif
+Adder::Adder(QObject *parent) : Processing(parent) 
+{ 
+	m_adder = new Adders::None();
 }
 
 void Adder::configure(QJsonObject const &a_config) {
 	delete m_adder;
 	m_timer.reset();
 	auto const _name{ a_config[NAME].toString() };
-	#ifdef DEBUG_FILTERS_MODULES
-	Logger->debug("Filter::configure() filter type: {}", _name.toStdString());
-	#endif
 
 	if (_name == "Add")
 	{
@@ -37,7 +38,7 @@ void Adder::configure(QJsonObject const &a_config) {
 	}
 	else
 	{
-		Logger->error("Adder::configure() Unsupported Adder type: {}", _name.toStdString());
+		mLogger->print(QString("Unsupported Adder type:%1").arg(_name), logger::LogLevel::MEDIUM, __FUNCTION__);
 	}
 }
 

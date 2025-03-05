@@ -13,7 +13,7 @@ Filters::MorphologyOperation::MorphologyOperation(QJsonObject const &a_config)
 	, m_morphElement{ a_config[MORPH_ELEMENT].toInt() }
 {
 	#ifdef DEBUG
-	Logger->debug("Filters::MorphologyOperation::MorphologyOperation()");
+	//Logger->debug("Filters::MorphologyOperation::MorphologyOperation()");
 	#endif
 }
 
@@ -21,7 +21,7 @@ void Filters::MorphologyOperation::process(std::vector<_data> &_data)
 {
 	if (_data[0].processing.empty())
 	{
-		Logger->error("Filters::MorphologyOperation::process() image is empty!");
+		//Logger->error("Filters::MorphologyOperation::process() image is empty!");
 	} 
 
 	assert(_data[0].processing.empty() == false);

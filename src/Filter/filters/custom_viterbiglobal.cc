@@ -1,11 +1,13 @@
 #include "custom_viterbiglobal.h"
 
+#include <QJsonObject>
+
 #define DEBUG
 
 Filters::ViterbiGlobal::ViterbiGlobal(QJsonObject const &a_config)
 {
 	#ifdef DEBUG
-	Logger->debug("{}() {}:", __FUNCTION__, __LINE__);
+	//Logger->debug("{}() {}:", __FUNCTION__, __LINE__);
 	#endif
 	m_viterbi = new viterbi::ViterbiGlobal_impl(a_config);
 }
@@ -13,7 +15,7 @@ Filters::ViterbiGlobal::ViterbiGlobal(QJsonObject const &a_config)
 Filters::ViterbiGlobal::~ViterbiGlobal()
 {
 	#ifdef DEBUG
-	Logger->debug("{}() {}:", __FUNCTION__, __LINE__);
+	//Logger->debug("{}() {}:", __FUNCTION__, __LINE__);
 	#endif
 	delete m_viterbi;
 }
@@ -21,7 +23,7 @@ Filters::ViterbiGlobal::~ViterbiGlobal()
 void Filters::ViterbiGlobal::process(std::vector<_data> &_data)
 {
 	#ifdef DEBUG
-	Logger->debug("{}() _data.size:{}", __FUNCTION__, _data.size());
+	//Logger->debug("{}() _data.size:{}", __FUNCTION__, _data.size());
 	#endif
 	m_viterbi->nextIteration(_data);
 	m_viterbi->forwardStep();

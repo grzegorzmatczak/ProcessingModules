@@ -23,17 +23,17 @@ namespace viterbi
     , m_bitwisenot(a_config[BITWISE_NOT].toBool())
 	{
 		#ifdef DEBUG
-        Logger->debug("Viterbi_impl::Viterbi_impl()");
-		Logger->debug("m_treck:{}", m_treck);
-		Logger->debug("m_range:{}", m_range);
-		Logger->debug("m_absFilter:{}", m_absFilter);
+        //Logger->debug("Viterbi_impl::Viterbi_impl()");
+		//Logger->debug("m_treck:{}", m_treck);
+		//Logger->debug("m_range:{}", m_range);
+		//Logger->debug("m_absFilter:{}", m_absFilter);
 		#endif
 	}
 
     Viterbi_impl::~Viterbi_impl()
     {
         #ifdef DEBUG
-		Logger->debug("Viterbi_impl::~Viterbi_impl()");
+		//Logger->debug("Viterbi_impl::~Viterbi_impl()");
 		#endif
     }
 
@@ -41,7 +41,7 @@ namespace viterbi
     {
         m_firstTime = false;
         #ifdef DEBUG
-            Logger->debug("Viterbi_impl::firstTime() size:{}x{}", input.cols, input.rows);
+            ////Logger->debug("Viterbi_impl::firstTime() size:{}x{}", input.cols, input.rows);
         #endif
         #ifdef DEBUG_OPENCV
             cv::imshow("input", input);
@@ -77,7 +77,7 @@ namespace viterbi
     void Viterbi_impl::showDebugImages(int z, int kernel)
 	{
         /*
-		Logger->debug("ViterbiFilter_impl::showDebugImages()");
+		//Logger->debug("ViterbiFilter_impl::showDebugImages()");
 
 		int histSize = 256;
 		float range[] = { 0, 256 };
@@ -103,7 +103,7 @@ namespace viterbi
 		}
 		imshow("Hist", histImage);
 		//std::string type = type2str(roiThresh.type());
-		//Logger->debug("ViterbiFilter_impl::showDebugImages() type:{}", type);
+		////Logger->debug("ViterbiFilter_impl::showDebugImages() type:{}", type);
         */
 	}
 

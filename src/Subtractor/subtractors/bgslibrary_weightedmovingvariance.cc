@@ -1,5 +1,7 @@
 #include "bgslibrary_weightedmovingvariance.h"
 
+#include <QJsonObject>
+
 //#define DEBUG
 //#define DEBUG_OPENCV
 

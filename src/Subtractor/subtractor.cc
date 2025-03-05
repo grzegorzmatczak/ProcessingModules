@@ -1,6 +1,8 @@
 #include "subtractor.h"
 #include "subtractorlist.h"
 
+
+#include <QJsonObject>
 //#define DEBUG
 
 constexpr auto NAME{ "Name" };
@@ -10,7 +12,7 @@ Subtractor::Subtractor(QObject *parent)
 	: Processing(parent)
 {
 	#ifdef DEBUG
-	Logger->debug("Subtractor::Subtractor()");
+	//Logger->debug("Subtractor::Subtractor()");
 	#endif
 	m_subtractor = new Subtractors::None();
 }
@@ -18,7 +20,7 @@ Subtractor::Subtractor(QObject *parent)
 void Subtractor::configure(QJsonObject const &a_config)
 {
 	#ifdef DEBUG
-	Logger->debug("Filter::Filter()");
+	//Logger->debug("Filter::Filter()");
 	#endif
 	delete m_subtractor;
 	m_timer.reset();
@@ -96,7 +98,7 @@ void Subtractor::configure(QJsonObject const &a_config)
 	}
 	else
 	{
-		Logger->error("Unsupported subtractor type:{}", _name.toStdString());
+		//Logger->error("Unsupported subtractor type:{}", _name.toStdString());
 	}
 }
 
@@ -106,7 +108,7 @@ void Subtractor::process(std::vector<_data> &_data)
 
 	if (_data[0].processing.empty())
 	{
-		Logger->error("Subtractor::process() image is empty!");
+		//Logger->error("Subtractor::process() image is empty!");
 	}
 
 	m_subtractor->process(_data);

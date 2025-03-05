@@ -2,7 +2,7 @@
 #define BASEFILTER_H
 
 #include "../filter.h"
-#include <opencv2/imgproc.hpp>
+#include "processing_global.h"
 
 class BaseFilter {
 public:

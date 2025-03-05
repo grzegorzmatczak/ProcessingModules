@@ -3,9 +3,6 @@
 
 #include <QDebug>
 
-#include "configreader.h"
-#include "includespdlog.h"
-
 #include "processing.h"
 
 

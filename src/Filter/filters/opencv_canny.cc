@@ -1,4 +1,5 @@
 #include "opencv_canny.h"
+
 #include <QJsonObject>
 
 constexpr auto TH1{"Threshold1"};

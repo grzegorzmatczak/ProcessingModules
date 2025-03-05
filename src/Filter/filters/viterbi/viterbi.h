@@ -1,8 +1,6 @@
 #ifndef VITERBI_H
 #define VITERBI_H
 
-#include "includespdlog.h"
-
 #include <deque>
 #include <vector>
 

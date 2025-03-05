@@ -1,4 +1,5 @@
 #include "opencv_blur.h"
+
 #include <QJsonObject>
 
 constexpr auto KERNEL_SIZE_X{ "KernelSizeX" };

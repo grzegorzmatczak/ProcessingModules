@@ -1,5 +1,7 @@
 #include "bgslibrary_abl.h"
 
+#include <QJsonObject>
+
 //#define DEBUG
 //#define DEBUG_OPENCV
 

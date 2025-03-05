@@ -3,7 +3,7 @@
 
 #include "basefilter.h"
 
-class QJsonObject;
+
 
 /* Paste in configuration:
 */

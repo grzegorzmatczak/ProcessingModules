@@ -1,5 +1,7 @@
 #include "custom_adddron_impl.h"
+
 #include <QJsonObject>
+#include <QRandomGenerator>
 
 //#define DEBUG
 

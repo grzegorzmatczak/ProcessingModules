@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BackgroundSubtractorLBSP.h"
-#include "includespdlog.h"
 
 
 namespace lbsp

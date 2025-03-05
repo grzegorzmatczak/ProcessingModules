@@ -1,4 +1,5 @@
 #include "opencv_color.h"
+
 #include <QJsonObject>
 
 constexpr auto COLOR_CODE{ "ColorCode" };
