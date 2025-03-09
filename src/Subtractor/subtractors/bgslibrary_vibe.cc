@@ -1,4 +1,5 @@
 #include "bgslibrary_vibe.h"
+
 #include <QJsonObject>
 
 //#define DEBUG

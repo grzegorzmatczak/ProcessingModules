@@ -8,6 +8,10 @@ set(TARGET_NAME "processing_module")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if (WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FS " )
+endif (WIN32)
+ 
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -lX11 -Wall" )
 endif (UNIX)
@@ -32,7 +36,6 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenCV  REQUIRED)
 find_package(OpenCV QUIET COMPONENTS core highgui imgproc imgcodecs videoio video tracking)
-#find_package(utils2  REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -69,7 +72,6 @@ set(SRC_HEADERS_TEST
     gtest/gtest_filter_custom_viterbi.h
     gtest/gtest_filter_median_impl_2.cc
     gtest/gtest_filter_median_impl_2.h
-
 )
 
 include_directories( "src" )

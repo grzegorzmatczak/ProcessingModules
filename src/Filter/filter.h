@@ -17,11 +17,14 @@ class Filter : public Processing
 	Q_OBJECT
 public:
 	explicit Filter(QObject *parent = nullptr);
-	void configure(QJsonObject const &a_config);
-
+	~Filter();
+	Filter(const Filter& other); // II. copy constructor
+	Filter& operator=(const Filter& other); // III. copy assignment
+	Filter(Filter&& other) noexcept; // IV. move constructor
+	Filter& operator=(Filter&& other) noexcept; // V. move assignment
 	void process(std::vector<_data> &_data);
 	double getElapsedTime();
-
+	void configure(QJsonObject const& a_config);
 private:
 	BaseFilter *m_baseFilter{};
 	cv::TickMeter m_timer;

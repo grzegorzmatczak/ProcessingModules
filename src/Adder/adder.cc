@@ -7,8 +7,7 @@
 
 #include <QJsonObject>
 #include <QJsonArray>
-
-constexpr auto NAME{ "Name" };
+#include <QString>
 
 Adder::Adder(QObject *parent) : Processing(parent) 
 { 

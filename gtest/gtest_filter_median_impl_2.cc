@@ -1,14 +1,11 @@
 #include "gtest_filter_median_impl_2.h"
 
-
-constexpr auto CONFIG{ "GeneticOptimizationModule/gtest/test_addmultipledron.json" };
-constexpr auto TEST_DATA{ "TestData" };
-
 using ::testing::AtLeast;
-
 
 namespace gtest_filter_custom_median_impl_2
 {
+	constexpr auto CONFIG{"GeneticOptimizationModule/gtest/test_addmultipledron.json"};
+	constexpr auto TEST_DATA{"TestData"};
 	void GTest_filter_custom_median_impl_2::checkPointers(std::vector<int> m_vector, Subtractors::Node *p)
 	{
 		EXPECT_EQ(p->key, m_vector[0]);

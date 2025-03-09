@@ -5,14 +5,13 @@
 #include "filterlist.h"
 #include "configreader.hpp"
 
-constexpr auto CONFIG{ "ProcessingModules/gtest/test_addmultipledron.json" };
-constexpr auto TEST_DATA{ "TestData" };
-
 using ::testing::AtLeast;
 
 
 namespace gtest_filter_custom_addmultipledron {
 
+	constexpr auto CONFIG{"ProcessingModules/gtest/test_addmultipledron.json"};
+	constexpr auto TEST_DATA{"TestData"};
 	TEST_F(GTest_filter_custom_addmultipledron, test_checkDronList)
 	{
 		std::shared_ptr<ConfigReader> cR = std::make_shared<ConfigReader>();

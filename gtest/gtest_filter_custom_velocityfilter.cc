@@ -8,14 +8,15 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-constexpr auto CONFIG{ "ProcessingModules/gtest/test_viterbi.json" };
-constexpr auto TEST_DATA{ "TestData" };
+
 
 using ::testing::AtLeast;
 
 
 namespace gtest_filter_custom_velocityfilter
 {
+	constexpr auto CONFIG{"ProcessingModules/gtest/test_viterbi.json"};
+	constexpr auto TEST_DATA{"TestData"};
 	TEST_F(GTest_filter_custom_velocityfilter, test_velocity_filter_contructor)
 	{
 		/*

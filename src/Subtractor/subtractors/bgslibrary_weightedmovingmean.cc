@@ -1,5 +1,6 @@
 #include "bgslibrary_weightedmovingmean.h"
 
+#include <QJsonObject>
 //#define DEBUG
 //#define DEBUG_OPENCV
 

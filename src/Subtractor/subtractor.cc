@@ -1,11 +1,10 @@
 #include "subtractor.h"
 #include "subtractorlist.h"
 
-
 #include <QJsonObject>
+#include <QString>
 //#define DEBUG
 
-constexpr auto NAME{ "Name" };
 
 
 Subtractor::Subtractor(QObject *parent)

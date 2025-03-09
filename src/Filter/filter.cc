@@ -1,9 +1,11 @@
 #include "filter.h"
 #include "filterlist.h"
 
-//#define DEBUG_FILTERS_MODULES
+#include "logger.hpp"
 
-constexpr auto NAME{ "Name" };
+#include <QString>
+
+#define  DEBUG_FILTERS_MODULES
 
 Filter::Filter(QObject *parent)
 	: Processing(parent)
@@ -11,15 +13,52 @@ Filter::Filter(QObject *parent)
 	#ifdef DEBUG_FILTERS_MODULES
 	//Logger->debug("Filter::Filter()");
 	#endif
-
+	mLogger =
+		std::make_unique<logger::Logger>(logger::LogType::CONFIG, logger::LogLevel::MEDIUM, logger::LogFunction::YES);
 	m_baseFilter = new Filters::None{};
+
+	mLogger->printStartFunction(__FUNCTION__, logger::LogLevel::MEDIUM);
+}
+Filter::~Filter()
+{
+	mLogger->printStartFunction(__FUNCTION__, logger::LogLevel::MEDIUM);
+}
+
+Filter::Filter(const Filter& other)
+{
+	mLogger =
+		std::make_unique<logger::Logger>(logger::LogType::CONFIG, logger::LogLevel::MEDIUM, logger::LogFunction::YES);
+	mLogger->printStartFunction(__FUNCTION__, logger::LogLevel::MEDIUM);
+}
+
+Filter& Filter::operator=(const Filter& other)
+{
+	mLogger =
+		std::make_unique<logger::Logger>(logger::LogType::CONFIG, logger::LogLevel::MEDIUM, logger::LogFunction::YES);
+	mLogger->printStartFunction(__FUNCTION__, logger::LogLevel::MEDIUM);
+	if(this==&other)
+		return *this;
+	return *this;
+}
+Filter::Filter(Filter&& other) noexcept
+{
+	mLogger =
+		std::make_unique<logger::Logger>(logger::LogType::CONFIG, logger::LogLevel::MEDIUM, logger::LogFunction::YES);
+	mLogger->printStartFunction(__FUNCTION__, logger::LogLevel::MEDIUM);
+}
+Filter& Filter::operator=(Filter&& other) noexcept
+{
+	mLogger =
+		std::make_unique<logger::Logger>(logger::LogType::CONFIG, logger::LogLevel::MEDIUM, logger::LogFunction::YES);
+	mLogger->printStartFunction(__FUNCTION__, logger::LogLevel::MEDIUM);
+	return *this;
 }
 
 void Filter::configure(QJsonObject const &a_config)
 {
 	auto const _name{ a_config[NAME].toString() };
 	#ifdef DEBUG_FILTERS_MODULES
-	//Logger->debug("Filter::configure() filter type: {}", _name.toStdString());
+	mLogger->print(QString("filter type:%1").arg(_name), __FUNCTION__);
 	#endif
 	delete m_baseFilter;
 	m_timer.reset();
@@ -72,7 +111,7 @@ void Filter::configure(QJsonObject const &a_config)
 void Filter::process(std::vector<_data> &_data)
 {
 	#ifdef DEBUG_FILTERS_MODULES
-	//Logger->debug("Filter::process()");
+	mLogger->print(QString("process"), __FUNCTION__);
 	#endif
 	m_timer.start();
 	m_baseFilter->process(_data);
